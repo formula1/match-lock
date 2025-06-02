@@ -1,0 +1,35 @@
+{
+  "name": "@match-lock/shared",
+  "version": "0.0.0",
+  "description": "Shared utilities, variables, etc between client and server",
+  "keywords": [
+    "match-lock",
+    "game"
+  ],
+  "homepage": "https://github.com/formula1/match-lock#readme",
+  "bugs": {
+    "url": "https://github.com/formula1/match-lock/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/formula1/match-lock.git"
+  },
+  "license": "JSON",
+  "author": "Sam Tobia",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/magnet-uri": "^5.1.5",
+    "@types/node": "^22.14.1",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "magnet-uri": "^7.0.7",
+    "runtypes": "^7.0.4"
+  }
+}
