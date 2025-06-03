@@ -1,4 +1,4 @@
-import { MatchLockRestrictionConfig } from "../restriction-config";
+import { MatchLockRestrictionConfig } from "../match-config/restriction";
 import { MatchLockSelectionConfig } from "../types/selection";
 
 export function doesSelectionFitRestriction(

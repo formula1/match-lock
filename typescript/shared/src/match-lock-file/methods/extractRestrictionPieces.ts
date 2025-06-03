@@ -1,5 +1,5 @@
 
-import { MatchLockGamePiece, MatchLockRestrictionConfig } from "../restriction-config";
+import { MatchLockGamePiece, MatchLockRestrictionConfig } from "../match-config/restriction";
 import { MatchLockSelectionConfig } from "../types/selection";
 
 export function* extractRestrictionPiecesMatchingSelection(

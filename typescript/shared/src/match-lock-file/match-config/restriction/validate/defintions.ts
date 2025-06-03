@@ -1,12 +1,8 @@
 import { MatchLockRestrictionConfig } from "../types";
 
 export function validatePieceDefinitions(restriction: MatchLockRestrictionConfig){
-  const assetDefinitions = restriction.engine.assetDefinitions;
   for(const [pieceType, definition] of Object.entries(restriction.engine.pieceDefinitions)){
     for(const [assetType, pieceAssetDefinition] of Object.entries(definition.assets)){
-      if(!(assetType in assetDefinitions)){
-        throw new Error(`Piece ${pieceType} references asset ${assetType} which is not defined`);
-      }
       const pieceAssetDefinitionCount = pieceAssetDefinition.count;
       if(!Array.isArray(pieceAssetDefinitionCount)){
         continue;

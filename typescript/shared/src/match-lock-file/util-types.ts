@@ -1,4 +1,10 @@
-import { String as CastString, Number as CastNumber } from "runtypes";
+import {
+  String as CastString,
+  Number as CastNumber,
+  Boolean as CastBoolean,
+  Union as CastUnion,
+  Literal as CastLiteral,
+} from "runtypes";
 
 export type DateTime = string;
 export const DateTimeCaster = CastString.withConstraint(value => {
@@ -99,3 +105,9 @@ export function parseFilePath(filepath: string){
   };
 }
 
+export const JSONPrimitiveCaster = CastUnion(
+  CastString,
+  CastNumber,
+  CastBoolean,
+  CastLiteral(null),
+);

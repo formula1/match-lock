@@ -1,5 +1,10 @@
-import { parseFilePath } from "../../../util-types";
-import { MatchLockRestrictionConfig, MatchLockGamePiece } from "../../types";
+import { parseFilePath } from "../../../../util-types";
+import { MatchLockRestrictionConfig, MatchLockRestrictionPiece } from "../../types";
+import {
+  validatePieceMatchesEngineDefinition,
+  validatePieceVersion,
+  validatePublishPieceSha,
+} from "../../../piece";
 
 export function validatePieces(restriction: MatchLockRestrictionConfig){
   for(const [collectionId, collection] of Object.entries(restriction.pieces)){
@@ -14,13 +19,16 @@ export function validatePieces(restriction: MatchLockRestrictionConfig){
       ids.add(piece.id);
 
       validatePiecesRequired(restriction, piece);
-      validatePieceAssets(restriction, collection.pieceDefinition, piece);
+      validatePieceMatchesEngineDefinition(restriction.engine, piece);
+      validatePieceVersion(restriction.engine, piece);
+      validatePublishPieceSha(piece);
     }
+    validateMatchLockSelection(collection.selectionConfig, ids);
   }
 }
 
 function validatePiecesRequired(
-  restriction: MatchLockRestrictionConfig, piece: MatchLockGamePiece
+  restriction: MatchLockRestrictionConfig, piece: MatchLockRestrictionPiece
 ){
   if(!piece.requiredPieces) return;
   for(const [requiredCollectionId, requiredPieceIds] of Object.entries(piece.requiredPieces)){
@@ -34,21 +42,5 @@ function validatePiecesRequired(
     }
   }
 }
-import { validateAssetType } from "./validateAssetType";
-import { validateAssetCount } from "./validateAssetCount";
-
-function validatePieceAssets(
-  restriction: MatchLockRestrictionConfig, pieceDefinition: string, piece: MatchLockGamePiece
-){
-  const pieceConfig = restriction.engine.pieceDefinitions[pieceDefinition];
-  const counts = new Map<string, number>();
-  for(const [filePath, assetInfo] of Object.entries(piece.assets)){
-    const assetType = validateAssetType(restriction, pieceConfig, piece, filePath, assetInfo);
-    counts.set(assetType, (counts.get(assetType) ?? 0) + 1);
-  }
-  for(const [assetType, { count: expectedCount }] of Object.entries(pieceConfig.assets)){
-    const assetCount = counts.get(assetType) ?? 0;
-    validateAssetCount(expectedCount, assetCount, { pieceId: piece.id, assetType });
-  }
-}
+import { validateMatchLockSelection } from "../../../selection";
 

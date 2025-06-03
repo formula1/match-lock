@@ -1,7 +1,7 @@
 
 import { createHash } from "node:crypto";
 import { MatchLockRestrictionConfig } from "../types";
-import { canonicalJSONStringify } from "../../../utils/JSON";
+import { canonicalJSONStringify } from "../../../../utils/JSON";
 
 export function validateRestrictionSha(restriction: MatchLockRestrictionConfig){
   const predictableString = canonicalJSONStringify({
@@ -11,7 +11,6 @@ export function validateRestrictionSha(restriction: MatchLockRestrictionConfig){
 
     engine: restriction.engine,
     pieces: restriction.pieces,
-    sharedAssets: restriction.sharedAssets,
   });
   const sha = createHash("sha256")
     .update(predictableString, "utf8")          // feed the UTF‑8 bytes
