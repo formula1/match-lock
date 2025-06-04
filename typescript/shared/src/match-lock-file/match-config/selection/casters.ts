@@ -61,14 +61,20 @@ export const MatchLockSelectionConfigCaster = CastUnion(
   }),
   CastObject({
     type: Literal("algorithm"),
-    algorithm: ScriptWithPieceMetaCaster,
+    algorithm: CastObject({
+      script: ScriptWithPieceMetaCaster,
+      expectedResult: CastUnion(Literal("global"), Literal("player")),
+    })
   }),
   CastObject({
     type: Literal("choice-algorithm"),
     count: CastUnion(CountCaster, CastTuple(CountCaster, CountCaster)),
     unique: CastBoolean,
     customValidation: CastArray(ScriptWithPieceMetaCaster).optional(),
-    algorithm: ScriptWithPieceMetaCaster,
+    algorithm: CastObject({
+      script: ScriptWithPieceMetaCaster,
+      expectedResult: CastUnion(Literal("global"), Literal("player")),
+    })
   }),
   CastObject({
     type: Literal("democracy-random"),

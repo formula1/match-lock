@@ -20,11 +20,11 @@ export function validateMatchLockSelection(
       }
       return;
     case "algorithm":
-      validateScriptMeta(selection.algorithm, pieceIds);
+      validateScriptMeta(selection.algorithm.script, pieceIds);
       return;
     case "choice-algorithm":
       validateCount(selection.count);
-      validateScriptMeta(selection.algorithm, pieceIds);
+      validateScriptMeta(selection.algorithm.script, pieceIds);
       if(!selection.customValidation) return;
       for(const script of selection.customValidation){
         validateScriptMeta(script, pieceIds);

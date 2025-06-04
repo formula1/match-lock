@@ -39,7 +39,10 @@ export type MatchLockSelectionConfig = (
   // An algorithm chooses the pieces requiring only the user's to provide their random seed
   | {
     type: "algorithm",
-    algorithm: ScriptWithPieceMeta<any>
+    algorithm: {
+      script: ScriptWithPieceMeta<any>
+      expectedResult: "global" | "player"
+    }
   }
   // The users input their choices but an algorithm chooses the final result
   | {
@@ -47,7 +50,10 @@ export type MatchLockSelectionConfig = (
     count: Count | [Count, Count],
     unique: boolean,
     customValidation?: Array<ScriptWithPieceMeta<any>>
-    algorithm: ScriptWithPieceMeta<any>
+    algorithm: {
+      script: ScriptWithPieceMeta<any>
+      expectedResult: "global" | "player"
+    }
   }
   // The users input their choices and a random piece is chosen from the list
   // Technically this can be done through a custom algorithm
