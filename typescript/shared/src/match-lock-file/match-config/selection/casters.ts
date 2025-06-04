@@ -34,7 +34,7 @@ const ScriptCaster = CastObject({
   content: CastString,
 }).conform<GasLimittedScript>();
 
-const ScriptWithPieceMetaCaster = CastObject({
+export const ScriptWithPieceMetaCaster = CastObject({
   name: CastString,
   scriptMeta: CastObject({
     defaultValue: CastRecord(CastString, JSONPrimitiveCaster),

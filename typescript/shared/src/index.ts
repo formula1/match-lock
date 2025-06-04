@@ -1,5 +1,6 @@
 
 export * from "./match-lock-file/util-types";
+export * from "./match-lock-file/config-types";
 export * from "./match-lock-file";
 
 export * from "./tools/compression";
