@@ -1,0 +1,1 @@
+By using a range of values, any value within that range is acceptable.
