@@ -1,12 +1,12 @@
 
 import { MatchLockRestrictionConfig } from "../types";
 import { validateRestrictionSha } from "./sha";
-import { validatePieceDefinitions } from "./defintions";
+import { validateEngineConfig } from "../../engine";
 import { validatePieces } from "./piece";
 
 export function validateMatchLockRestriction(restriction: MatchLockRestrictionConfig) {
   validateRestrictionSha(restriction);
-  validatePieceDefinitions(restriction);
+  validateEngineConfig(restriction.engine);
   validatePieces(restriction);
   return true;
 }

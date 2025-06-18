@@ -13,9 +13,13 @@ export type MatchLockEngineConfig = {
   name: string,
   version: string,
   pieceDefinitions: Record<PieceType, {
-    assets: Record<AssetType, {
-      classification: AssetClassification,
-      count: Count | "*" | [Count, Count | "*"]
-    }>
+    assets: Array<MatchLockEngineAssetDefinition>
   }>
+}
+
+export type MatchLockEngineAssetDefinition = {
+  name: string,
+  classification: AssetClassification,
+  count: Count | "*" | [Count, Count | "*"]
+  glob: Array<string>,
 }

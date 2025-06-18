@@ -21,7 +21,7 @@ import {
 import { MatchLockRestrictionConfig } from "./types";
 
 
-
+import { MatchLockEngineCaster } from "../engine";
 import { MatchLockPublishPieceCaster } from "../piece";
 import { MatchLockSelectionConfigCaster } from "../selection";
 
@@ -35,20 +35,7 @@ export const MatchLockRestrictionConfigCaster = CastObject({
   signature: CastString,
   signatureVerificationUrl: URLTypeCaster,
 
-  engine: CastObject({
-    name: CastString,
-    version: CastString,
-    pieceDefinitions: CastRecord(CastString, CastObject({
-      assets: CastRecord(CastString, CastObject({
-        classification: CastUnion(Literal("logic"), Literal("media"), Literal("doc")),
-        count: CastUnion(
-          CountCaster,
-          Literal("*"),
-          CastTuple(CountCaster, CastUnion(CountCaster, Literal("*")))
-        )
-      }))
-    })),
-  }),
+  engine: MatchLockEngineCaster,
 
   pieces: CastRecord(CastString, CastObject({
     selectionConfig: MatchLockSelectionConfigCaster,
