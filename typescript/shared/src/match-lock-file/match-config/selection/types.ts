@@ -12,6 +12,12 @@ export type GasLimittedScript = {
   content: string,
 }
 
+export type UserSelectionValidation = {
+  count: Count | [Count, Count],
+  unique: boolean,
+  customValidation: Array<ScriptWithPieceMeta<any>>
+}
+
 export type ScriptWithPieceMeta<Meta extends Record<string, JSON_Primitive>> = {
   name: string,
   scriptMeta?: {
@@ -30,38 +36,25 @@ export type MatchLockSelectionConfig = (
   // Since the users agree on this, the selection config is expecting the game to validate the choices
   | { type: "agreed" }
   // The user chooses their own pieces
+  // an algorithm may or may not run to change the player's choices
+  // The algorithm is always considered correct even if the count and uniqueness is not met
   | {
-    type: "choice",
-    count: Count | [Count, Count],
-    unique: boolean,
-    customValidation?: Array<ScriptWithPieceMeta<any>>
+    type: "player-choices"
+    validation: UserSelectionValidation,
+    algorithm?: ScriptWithPieceMeta<any>
   }
-  // An algorithm chooses the pieces requiring only the user's to provide their random seed
+  // The users may or may not input their choices
+  // but an algorithm always runs to determine the order and contents of a list
   | {
-    type: "algorithm",
-    algorithm: {
-      script: ScriptWithPieceMeta<any>
-      expectedResult: "global" | "player"
-    }
-  }
-  // The users input their choices but an algorithm chooses the final result
-  | {
-    type: "choice-algorithm",
-    count: Count | [Count, Count],
-    unique: boolean,
-    customValidation?: Array<ScriptWithPieceMeta<any>>
-    algorithm: {
-      script: ScriptWithPieceMeta<any>
-      expectedResult: "global" | "player"
-    }
+    type: "global-choices",
+    validation?: UserSelectionValidation,
+    algorithm: ScriptWithPieceMeta<any>
   }
   // The users input their choices and a random piece is chosen from the list
   // Technically this can be done through a custom algorithm
   // I'm unsure if the scripts are going to run properly so this might have to be seperate
   | {
     type: "democracy-random",
-    count: Count | [Count, Count],
-    unique: boolean,
-    customValidation?: Array<ScriptWithPieceMeta<any>>,
+    validation?: UserSelectionValidation,
   }
 )

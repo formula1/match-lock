@@ -15,12 +15,13 @@ import {
 
 import {
   GasLimittedScript,
+  UserSelectionValidation,
   ScriptWithPieceMeta,
   MatchLockSelectionConfig
 } from "./types";
 import {
   CountCaster,
-  JSONPrimitiveCaster
+  JSONPrimitiveCaster,
 } from "../../util-types";
 import { JSON_Primitive } from "../../../utils/JSON";
 
@@ -34,6 +35,20 @@ const ScriptCaster = CastObject({
   content: CastString,
 }).conform<GasLimittedScript>();
 
+const SelectionCountCaster = CastUnion(
+  CountCaster,
+  CastTuple(CountCaster, CountCaster),
+).withConstraint((value) => {
+  if(!Array.isArray(value)){
+    if(value < 0) return "Count is negative";
+    return true;
+  }
+  if(value[0] < 0) return "Count range min is negative";
+  const [min, max] = value;
+  if(min > max) return "Count range min is greater than max";
+  return true;
+});
+
 export const ScriptWithPieceMetaCaster = CastObject({
   name: CastString,
   scriptMeta: CastObject({
@@ -42,6 +57,14 @@ export const ScriptWithPieceMetaCaster = CastObject({
   }).optional(),
   script: ScriptCaster,
 }).conform<ScriptWithPieceMeta<any>>();
+
+
+export const UserSelectionValidationCaster = CastObject({
+  count: SelectionCountCaster,
+  unique: CastBoolean,
+  customValidation: CastArray(ScriptWithPieceMetaCaster),
+}).conform<UserSelectionValidation>();
+
 
 export const MatchLockSelectionConfigCaster = CastUnion(
   CastObject({
@@ -54,32 +77,29 @@ export const MatchLockSelectionConfigCaster = CastUnion(
     type: Literal("agreed"),
   }),
   CastObject({
-    type: Literal("choice"),
-    count: CastUnion(CountCaster, CastTuple(CountCaster, CountCaster)),
-    unique: CastBoolean,
-    customValidation: CastArray(ScriptWithPieceMetaCaster).optional(),
+    type: Literal("player-choices"),
+    validation: CastObject({
+      count: SelectionCountCaster,
+      unique: CastBoolean,
+      customValidation: CastArray(ScriptWithPieceMetaCaster),
+    }),
+    algorithm: ScriptWithPieceMetaCaster.optional(),
   }),
   CastObject({
-    type: Literal("algorithm"),
-    algorithm: CastObject({
-      script: ScriptWithPieceMetaCaster,
-      expectedResult: CastUnion(Literal("global"), Literal("player")),
-    })
-  }),
-  CastObject({
-    type: Literal("choice-algorithm"),
-    count: CastUnion(CountCaster, CastTuple(CountCaster, CountCaster)),
-    unique: CastBoolean,
-    customValidation: CastArray(ScriptWithPieceMetaCaster).optional(),
-    algorithm: CastObject({
-      script: ScriptWithPieceMetaCaster,
-      expectedResult: CastUnion(Literal("global"), Literal("player")),
-    })
+    type: Literal("global-choices"),
+    validation: CastObject({
+      count: SelectionCountCaster,
+      unique: CastBoolean,
+      customValidation: CastArray(ScriptWithPieceMetaCaster),
+    }).optional(),
+    algorithm: ScriptWithPieceMetaCaster,
   }),
   CastObject({
     type: Literal("democracy-random"),
-    count: CastUnion(CountCaster, CastTuple(CountCaster, CountCaster)),
-    unique: CastBoolean,
-    customValidation: CastArray(ScriptWithPieceMetaCaster).optional(),
+    validation: CastObject({
+      count: SelectionCountCaster,
+      unique: CastBoolean,
+      customValidation: CastArray(ScriptWithPieceMetaCaster),
+    }).optional(),
   }),
 ).conform<MatchLockSelectionConfig>();

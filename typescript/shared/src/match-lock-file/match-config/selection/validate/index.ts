@@ -12,28 +12,28 @@ export function validateMatchLockSelection(
       return;
     case "agreed":
       return;
-    case "choice":
-      validateCount(selection.count);
-      if(!selection.customValidation) return;
-      for(const script of selection.customValidation){
+    case "player-choices":
+      validateCount(selection.validation.count);
+      for(const script of selection.validation.customValidation){
         validateScriptMeta(script, pieceIds);
       }
+      if(!selection.algorithm) return;
+      validateScriptMeta(selection.algorithm, pieceIds);
       return;
-    case "algorithm":
-      validateScriptMeta(selection.algorithm.script, pieceIds);
-      return;
-    case "choice-algorithm":
-      validateCount(selection.count);
-      validateScriptMeta(selection.algorithm.script, pieceIds);
-      if(!selection.customValidation) return;
-      for(const script of selection.customValidation){
-        validateScriptMeta(script, pieceIds);
+    case "global-choices":
+      if(selection.validation){
+        validateCount(selection.validation.count);
+        for(const script of selection.validation.customValidation){
+          validateScriptMeta(script, pieceIds);
+        }
       }
+      validateScriptMeta(selection.algorithm, pieceIds);
       return;
     case "democracy-random":
-      validateCount(selection.count);
-      if(!selection.customValidation) return;
-      for(const script of selection.customValidation){
+      if(!selection.validation) return;
+      validateCount(selection.validation.count);
+      if(!selection.validation.customValidation) return;
+      for(const script of selection.validation.customValidation){
         validateScriptMeta(script, pieceIds);
       }
   }
