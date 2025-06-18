@@ -2,14 +2,11 @@
 import {
   CollectionId,
   PieceType, PieceId,
-  AssetType, AssetId,
 } from "../../config-types";
 import {
   DateTime,
   Sha256,
   URLType,
-  MagnetUri,
-  Count,
   SemVer,
   SignedContent,
 } from "../../util-types";

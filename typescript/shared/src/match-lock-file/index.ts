@@ -1,6 +1,5 @@
 
-export * from "./match-config/restriction";
-export * from "./match-config/selection";
+export * from "./match-config";
 
 export * from "./validation/doesSelectionFitRestriction";
 
