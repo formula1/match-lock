@@ -9,6 +9,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      'crypto': require.resolve('crypto-browserify'),
       'path': require.resolve('path-browserify'),
       'process': require.resolve('process/browser'),
     },
