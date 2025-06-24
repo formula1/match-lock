@@ -20,10 +20,13 @@ function getCombinedAssetSha(
 ){
   const pieceId = getPieceId(piece);
   const assetShas: Array<string> = [];
-  for(const asset of Object.values(piece.assets)){
-    const config = engine.pieceDefinitions[piece.pieceDefinition].assets[asset.assetType];
-    if(!config) throw new Error(`Asset Type for ${pieceId} doesn't exist in engine config`);
-    if(config.classification !== type) continue;
+  for(const [filepath, asset] of Object.entries(piece.assets)){
+    const assetByFilename = getAssetByGlob(engine.pieceDefinitions[piece.pieceDefinition], filepath);
+    const assetByName = getAssetByName(engine.pieceDefinitions[piece.pieceDefinition], assetByFilename.name);
+    if(assetByFilename.name !== assetByName.name){
+      throw new Error(`Asset Name Mismatch for ${pieceId}`);
+    }
+    if(assetByFilename.classification !== type) continue;
     assetShas.push(canonicalJSONStringify(asset));
   }
 
@@ -39,4 +42,19 @@ function getCombinedAssetSha(
 
   // 4) Hash it
   return createHash("sha256").update(concatenated).digest("hex");
+}
+
+import { getMatchingAssetsForFile } from "../../engine";
+function getAssetByGlob(pieceDefinition: MatchLockEngineConfig["pieceDefinitions"][string], filepath: string){
+  const assets = getMatchingAssetsForFile(pieceDefinition, filepath);
+  if(assets.length === 0){
+    throw new Error(`No matching asset for ${filepath}`);
+  }
+  return assets[0];
+}
+
+function getAssetByName(pieceDefinition: MatchLockEngineConfig["pieceDefinitions"][string], name: string){
+  const config = pieceDefinition.assets.find((a) => a.name === name);
+  if(!config) throw new Error(`No matching asset for ${name}`);
+  return config;
 }
