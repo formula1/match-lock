@@ -19,7 +19,7 @@ function EngineTabs(){
   return (
     <LinkTabs
       pages={[
-        { title: 'Home', href: EngineConfigPaths.root },
+        { title: 'Engine', href: EngineConfigPaths.root },
         { title: 'New', href: EngineConfigPaths.new },
         !activeFileLocation ? null :
         {
