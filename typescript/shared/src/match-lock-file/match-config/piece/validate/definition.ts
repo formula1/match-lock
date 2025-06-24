@@ -56,9 +56,6 @@ function validateAssetCount(
 ){
   const expectedCount = assetConfig.count;
   if(!Array.isArray(expectedCount)){
-    if(expectedCount === 0){
-      throw new Error(`Piece ${errorInfo.pieceId} has no assets for ${errorInfo.assetType} but the piece definition expects at least one`);
-    }
     if(expectedCount === "*"){
       return;
     }
