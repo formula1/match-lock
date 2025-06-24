@@ -3,9 +3,19 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    global: 'globalThis',
+    'process.env': {},
+  },
+  resolve: {
+    alias: {
+      'path': require.resolve('path-browserify'),
+      'process': require.resolve('process/browser'),
+    },
+  },
   plugins: [
     react(),
-        {
+    {
       name: 'markdown-as-raw',
       enforce: 'pre',
       transform(code, id) {
@@ -33,6 +43,10 @@ export default defineConfig({
       // Include the shared module for CommonJS transformation
       include: [/node_modules/, /shared/],
     },
+  },
+  optimizeDeps: {
+    // Force Vite to pre-bundle the shared module and polyfills
+    include: ['@match-lock/shared', 'process', 'path-browserify'],
   },
   server: {
     port: 5173,
