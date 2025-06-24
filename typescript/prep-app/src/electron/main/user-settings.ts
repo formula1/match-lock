@@ -42,8 +42,7 @@ export async function initializeUserMatchLockDirectories(mainWindow: Electron.Br
     
     // Show dialog asking user permission
     if (!mainWindow) {
-      console.log('⚠️ No main window available for dialog, creating directory without permission');
-      await fs.promises.mkdir(matchLockDir, { recursive: true });
+      console.log('⚠️ No main window available for dialog');
       return;
     }
 
