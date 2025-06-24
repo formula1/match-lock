@@ -49,7 +49,7 @@ type ErrorInfo = {
   assetType: string,
 }
 
-type AssetConfig = MatchLockEngineConfig["pieceDefinitions"][string]["assets"][string];
+type AssetConfig = MatchLockEngineConfig["pieceDefinitions"][string]["assets"][0];
 
 function validateAssetCount(
   assetConfig: AssetConfig, assetCount: number, errorInfo: ErrorInfo
