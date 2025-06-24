@@ -1,24 +1,30 @@
 import { app, dialog } from 'electron';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
+import { existsSync as fsExistsSync, } from 'fs';
+import {
+  readFile as fsReadFile,
+  mkdir as fsMkdir,
+  writeFile as fsWriteFile
+} from 'fs/promises';
+
+import { homedir as osHomedir } from 'os';
+import { join as pathJoin } from 'path';
 
 // Initialize user directories on app startup
 const USER_SETTINGS_KEY = 'user-settings.json';
 export async function initializeUserMatchLockDirectories(mainWindow: Electron.BrowserWindow) {
   try {
-    const homeDir = os.homedir();
-    const matchLockDir = path.join(homeDir, 'match-lock');
+    const homeDir = osHomedir();
+    const matchLockDir = pathJoin(homeDir, 'match-lock');
 
     // Check if the match-lock directory exists
-    if (fs.existsSync(matchLockDir)) return;
+    if (fsExistsSync(matchLockDir)) return;
 
-    const userSettingsPath = path.join(app.getPath('userData'), USER_SETTINGS_KEY);
+    const userSettingsPath = pathJoin(app.getPath('userData'), USER_SETTINGS_KEY);
     
-    if(fs.existsSync(userSettingsPath)){
-      const userSettings = JSON.parse(await fs.promises.readFile(userSettingsPath, 'utf8'));
+    if(fsExistsSync(userSettingsPath)){
+      const userSettings = JSON.parse(await fsReadFile(userSettingsPath, 'utf8'));
       if(userSettings.matchLockDir === "create"){
-        await fs.promises.mkdir(userSettings.matchLockDir, { recursive: true });
+        await fsMkdir(userSettings.matchLockDir, { recursive: true });
         console.log('✅ Created match-lock directory with user permission:', userSettings.matchLockDir);
         return;
       }
@@ -47,7 +53,7 @@ export async function initializeUserMatchLockDirectories(mainWindow: Electron.Br
 
     switch (result.response) {
       case 0: // Create Folder
-        await fs.promises.mkdir(matchLockDir, { recursive: true });
+        await fsMkdir(matchLockDir, { recursive: true });
         updateUserSettings({ matchLockDirChoice: 'create' });
         console.log('✅ Created match-lock directory with user permission:', matchLockDir);
         break;
@@ -60,7 +66,7 @@ export async function initializeUserMatchLockDirectories(mainWindow: Electron.Br
         break;
     }
     if (result.response === 0) {
-      await fs.promises.mkdir(matchLockDir, { recursive: true });
+      await fsMkdir(matchLockDir, { recursive: true });
       console.log('✅ Created match-lock directory with user permission:', matchLockDir);
     } else {
       console.log('ℹ️ User declined to create match-lock directory');
@@ -69,13 +75,17 @@ export async function initializeUserMatchLockDirectories(mainWindow: Electron.Br
     console.error('❌ Failed to initialize user directories:', error);
   }
 }
-type UserSettings = {
-  matchLockDirChoice: 'create' | 'dontAsk';
-}
 
-function updateUserSettings(newValues: Partial<UserSettings>){
-  const userSettingsPath = path.join(app.getPath('userData'), USER_SETTINGS_KEY);
-  const userSettings = JSON.parse(fs.readFileSync(userSettingsPath, 'utf8')) as UserSettings;
-  const updatedSettings = { ...userSettings, ...newValues };
-  fs.writeFileSync(userSettingsPath, JSON.stringify(updatedSettings, null, 2));
+let currentAccess = Promise.resolve();
+async function updateUserSettings(newValues: Partial<UserSettings>){
+  const previousAccess = currentAccess;
+  const toRun = Promise.resolve().then(async ()=>{
+    await previousAccess;
+    const userSettingsPath = pathJoin(app.getPath('userData'), USER_SETTINGS_KEY);
+    const userSettings = JSON.parse(await fsReadFile(userSettingsPath, 'utf8')) as UserSettings;
+    const updatedSettings = { ...userSettings, ...newValues };
+    await fsWriteFile(userSettingsPath, JSON.stringify(updatedSettings, null, 2));
+  })
+  currentAccess = toRun.finally(()=>(void 0));
+  return toRun;
 }
