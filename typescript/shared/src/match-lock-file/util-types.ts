@@ -47,6 +47,23 @@ export const Sha256Caster = CastString.withConstraint(value => {
   return true;
 });
 
+import { createHash } from "node:crypto";
+export async function createSHA256Hash(data: string){
+  return createHash("sha256")
+  .update(data, "utf8")
+  .digest("hex");
+}
+
+/*
+export async function createSHA256Hash(data: string){
+  const encoder = new TextEncoder();
+  const dataBuffer = encoder.encode(data);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+*/
+
 export type URLType = string;
 export const URLTypeCaster = CastString.withConstraint(value => {
   if(!URL.canParse(value)) return `${value} is not a valid URL`;

@@ -1,9 +1,9 @@
 
-import { createHash } from "node:crypto";
 import { MatchLockRestrictionConfig } from "../types";
 import { canonicalJSONStringify } from "../../../../utils/JSON";
+import { createSHA256Hash } from "../../../util-types";
 
-export function validateRestrictionSha(restriction: MatchLockRestrictionConfig){
+export async function validateRestrictionSha(restriction: MatchLockRestrictionConfig){
   const predictableString = canonicalJSONStringify({
     name: restriction.name,
     version: restriction.version,
@@ -12,9 +12,7 @@ export function validateRestrictionSha(restriction: MatchLockRestrictionConfig){
     engine: restriction.engine,
     pieces: restriction.pieces,
   });
-  const sha = createHash("sha256")
-    .update(predictableString, "utf8")          // feed the UTF‑8 bytes
-    .digest("hex");                 // output as hexadecimal
+  const sha = await createSHA256Hash(predictableString);
   if(sha !== restriction.sha256){
     throw new Error("Restriction's sha isn't equal to the expected")
   };

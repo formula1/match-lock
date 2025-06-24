@@ -1,9 +1,9 @@
 import { canonicalJSONStringify } from "../../../../utils/JSON";
 import { MatchLockPublishPiece } from "../types";
+import { createSHA256Hash } from "../../../util-types";
 
 
-import { createHash } from "node:crypto";
-export function validatePublishPieceSha(piece: MatchLockPublishPiece){
+export async function validatePublishPieceSha(piece: MatchLockPublishPiece){
   const predictableString = canonicalJSONStringify({
     name: piece.name,
     author: piece.author,
@@ -15,9 +15,7 @@ export function validatePublishPieceSha(piece: MatchLockPublishPiece){
     version: piece.version,
     assets: piece.assets,
   });
-  const sha = createHash("sha256")
-  .update(predictableString, "utf8")
-  .digest("hex");
+  const sha = await createSHA256Hash(predictableString);
 
   if(sha !== piece.sha256){
     throw new Error("Restriction's sha isn't equal to the expected")
