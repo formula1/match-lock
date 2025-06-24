@@ -21,11 +21,11 @@ function Form({ value, onChange }: InputProps<MatchLockEngineConfig>){
   return <>
     <div>
       <div>Engine Name</div>
-      <input type="text" value={value.name} />
+      <input type="text" value={value.name} onChange={e => onChange({ ...value, name: e.target.value })} />
     </div>
     <div>
       <div>Engine Version</div>
-      <input type="text" value={value.version} />
+      <input type="text" value={value.version} onChange={e => onChange({ ...value, name: e.target.value })} />
     </div>
     <div>
       <div>Piece Definitions</div>
