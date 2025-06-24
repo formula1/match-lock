@@ -11,6 +11,13 @@ import { join as pathJoin } from 'path';
 
 // Initialize user directories on app startup
 const USER_SETTINGS_KEY = 'user-settings.json';
+type UserSettings = {
+  matchLockDirChoice: 'create' | 'dontAsk';
+}
+const ASK_OPTIONS: Record<string, UserSettings['matchLockDirChoice']> = {
+  CREATE: 'create',
+  DONT_ASK: 'dontAsk',
+}
 export async function initializeUserMatchLockDirectories(mainWindow: Electron.BrowserWindow) {
   try {
     const homeDir = osHomedir();
@@ -23,12 +30,12 @@ export async function initializeUserMatchLockDirectories(mainWindow: Electron.Br
     
     if(fsExistsSync(userSettingsPath)){
       const userSettings = JSON.parse(await fsReadFile(userSettingsPath, 'utf8'));
-      if(userSettings.matchLockDir === "create"){
+      if(userSettings.matchLockDirChoice === ASK_OPTIONS.CREATE){
         await fsMkdir(userSettings.matchLockDir, { recursive: true });
         console.log('✅ Created match-lock directory with user permission:', userSettings.matchLockDir);
         return;
       }
-      if(userSettings.matchLockDir === "dontAsk"){
+      if(userSettings.matchLockDirChoice === ASK_OPTIONS.DONT_ASK){
         console.log('ℹ️ User chose not to be asked again, skipping match-lock directory creation');
         return;
       }
@@ -54,14 +61,14 @@ export async function initializeUserMatchLockDirectories(mainWindow: Electron.Br
     switch (result.response) {
       case 0: // Create Folder
         await fsMkdir(matchLockDir, { recursive: true });
-        updateUserSettings({ matchLockDirChoice: 'create' });
+        updateUserSettings({ matchLockDirChoice: ASK_OPTIONS.CREATE });
         console.log('✅ Created match-lock directory with user permission:', matchLockDir);
         break;
       case 1: // Ask Me Later
         console.log('ℹ️ User chose to be asked later, skipping match-lock directory creation');
         break;
       case 2: // Don't Ask Again
-        updateUserSettings({ matchLockDirChoice: 'dontAsk' });
+        updateUserSettings({ matchLockDirChoice: ASK_OPTIONS.DONT_ASK });
         console.log('ℹ️ User chose not to be asked again, skipping match-lock directory creation');
         break;
     }
