@@ -16,6 +16,7 @@ export function EditEngineConfig(){
     if(!params.enginePath) return;
     return decodeURIComponent(params.enginePath);
   }, [params.enginePath]);
+
   const { addRecentFile } = useRecentFiles();
 
   // Adds the current file to the recent files list
@@ -35,9 +36,6 @@ export function EditEngineConfig(){
       setValue(JSON.parse(str));
     });
   }, [filePath])
-
-
-
 
   if(value === null){
     return <div>Loading...</div>
