@@ -1,29 +1,19 @@
-import { Outlet, Route } from "react-router";
-import { LinkTabs } from "../../components/Tabs";
+import { Route } from "react-router";
 import { EngineConfigPaths } from "./paths";
+
+import { EngineOutlet } from "./Outlet";
 
 import { EngineRoot } from "./Root";
 import { NewEngineConfig } from "./New";
 import { EditEngineConfig } from "./Edit";
+import { relative } from "../../utils/router";
 
-function EngineOutlet(){
-  return <>
-    <LinkTabs
-      pages={[
-        { title: 'Home', href: EngineConfigPaths.root },
-        { title: 'New', href: EngineConfigPaths.new },
-        { title: 'Edit', href: EngineConfigPaths.edit, isActive: (location) => location.pathname.startsWith(EngineConfigPaths.edit) },
-      ]}
-    />
-    <Outlet />
-  </>
-
-}
+const { root: ROOT, new: NEW, edit: EDIT } = EngineConfigPaths;
 
 export const EngineRoute = (
-  <Route path={EngineConfigPaths.root} element={<EngineOutlet />}>
+  <Route path={relative("/", ROOT)} element={<EngineOutlet />}>
     <Route index element={<EngineRoot />} />
-    <Route path={EngineConfigPaths.new} element={<NewEngineConfig />} />
-    <Route path={EngineConfigPaths.edit} element={<EditEngineConfig />} />
+    <Route path={relative(ROOT, NEW)} element={<NewEngineConfig />} />
+    <Route path={relative(ROOT, EDIT)} element={<EditEngineConfig />} />
   </Route>
 )
