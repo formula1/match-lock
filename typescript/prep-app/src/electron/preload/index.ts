@@ -35,6 +35,9 @@ interface ElectronAPI {
   shellOpenExternal: (url: string) => Promise<void>;
   shellShowItemInFolder: (fullPath: string) => Promise<void>;
 
+  // User settings operations
+  initializeUserDirectories: () => Promise<void>;
+
   // Storage operations
   storage: TKeyStorage
 
@@ -79,6 +82,9 @@ const electronAPI: ElectronAPI = {
   // Shell operations
   shellOpenExternal: (url) => ipcRenderer.invoke('shell-open-external', url),
   shellShowItemInFolder: (fullPath) => ipcRenderer.invoke('shell-show-item-in-folder', fullPath),
+
+  // User settings operations
+  initializeUserDirectories: () => ipcRenderer.invoke('initialize-user-directories'),
 
   // Storage operations
   storage: keyStorage,

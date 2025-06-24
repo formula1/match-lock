@@ -61,10 +61,7 @@ const createWindow = (): BrowserWindow => {
 
 // This method will be called when Electron has finished initialization
 app.whenReady().then(async () => {
-  const mainWindow = createWindow();
-
-  // Initialize user directories after window is created
-  await initializeUserMatchLockDirectories(mainWindow);
+  createWindow();
 
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
@@ -162,6 +159,13 @@ ipcMain.handle('shell-open-external', async (_event, url: string) => {
 
 ipcMain.handle('shell-show-item-in-folder', async (_event, fullPath: string) => {
   shell.showItemInFolder(fullPath);
+});
+
+// Handle user settings initialization
+ipcMain.handle('initialize-user-directories', async () => {
+  if (mainWindow) {
+    await initializeUserMatchLockDirectories(mainWindow);
+  }
 });
 
 bindKeyStorageToIpc();
