@@ -70,12 +70,6 @@ export async function initializeUserMatchLockDirectories(mainWindow: Electron.Br
         console.log('ℹ️ User chose not to be asked again, skipping match-lock directory creation');
         break;
     }
-    if (result.response === 0) {
-      await fsMkdir(matchLockDir, { recursive: true });
-      console.log('✅ Created match-lock directory with user permission:', matchLockDir);
-    } else {
-      console.log('ℹ️ User declined to create match-lock directory');
-    }
   } catch (error) {
     console.error('❌ Failed to initialize user directories:', error);
   }
