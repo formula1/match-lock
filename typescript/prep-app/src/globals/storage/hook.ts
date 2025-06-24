@@ -6,9 +6,9 @@ import { TypedStorageService } from './typed';
  * Generic hook for storage operations
  */
 
-export function useStorage<T>(key: string, defaultValue?: T) {
+export function useStorage<T>(key: string) {
   const storageService = useMemo(() => new TypedStorageService<T>(key), [key]);
-  const [value, setValue] = useState<T | undefined>(defaultValue);
+  const [value, setValue] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,17 +19,17 @@ export function useStorage<T>(key: string, defaultValue?: T) {
         setLoading(true);
         setError(null);
         const storedValue = await storageService.get();
-        setValue(storedValue ?? defaultValue);
+        setValue(storedValue);
       } catch (err) {
         setError(err instanceof Error ? err.message : `Failed to load`);
-        setValue(defaultValue);
+        setValue(null);
       } finally {
         setLoading(false);
       }
     };
 
     loadValue();
-  }, [storageService, defaultValue]);
+  }, [storageService]);
 
   const updateValue = useCallback(async (newValue: T) => {
     try {
@@ -45,11 +45,11 @@ export function useStorage<T>(key: string, defaultValue?: T) {
     try {
       setError(null);
       await storageService.remove();
-      setValue(defaultValue);
+      setValue(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : `Failed to remove`);
     }
-  }, [storageService, defaultValue]);
+  }, [storageService]);
 
   return {
     value,
