@@ -36,7 +36,7 @@ export function bindKeyStorageToIpc(){
   ipcMain.handle('storage-keys', async () => {
     const dir = path.join(app.getPath('userData'), KEY_STORAGE_FOLDER);
     if(!fs.existsSync(dir)) return [];
-    const keys = [];
+    const keys: Array<string> = [];
     for(const file of fs.readdirSync(dir)){
       if(!isFilenameValid(file)) continue;
       keys.push(filenameToKey(file));
