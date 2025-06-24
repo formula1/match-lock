@@ -23,7 +23,7 @@ export function RecentFiles(
       </div>
     );
   }
-  if (!recentFiles) {
+  if (!recentFiles || recentFiles.length === 0) {
     return (
       <div>
         <p>No recent files</p>
@@ -33,14 +33,6 @@ export function RecentFiles(
 
 
   const displayFiles = maxDisplay ? recentFiles.slice(0, maxDisplay) : recentFiles;
-
-  if (displayFiles.length === 0) {
-    return (
-      <div>
-        <p>No recent files</p>
-      </div>
-    );
-  }
 
   return (
     <div>
