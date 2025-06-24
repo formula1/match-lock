@@ -30,8 +30,8 @@ export async function initializeUserMatchLockDirectories(mainWindow: Electron.Br
     
     if(userSettings){
       if(userSettings.matchLockDirChoice === ASK_OPTIONS.CREATE){
-        await fsMkdir(userSettings.matchLockDir, { recursive: true });
-        console.log('✅ Created match-lock directory with user permission:', userSettings.matchLockDir);
+        await fsMkdir(matchLockDir, { recursive: true });
+        console.log('✅ Created match-lock directory with user permission:', userSettings.matchLockDirChoice);
         return;
       }
       if(userSettings.matchLockDirChoice === ASK_OPTIONS.DONT_ASK){
