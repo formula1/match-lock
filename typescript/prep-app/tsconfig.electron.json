@@ -1,31 +1,27 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022", "DOM"],
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    "target": "es2024",
+    "lib": ["es2024", "DOM"],
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "noEmit": false,
     "outDir": "dist-electron",
-    "rootDir": "src/electron",
+    "rootDir": "src",
     "declaration": false,
     "sourceMap": false,
     "removeComments": true,
     
     /* Node.js specific */
     "types": ["node", "electron"],
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
     
-    /* Linting */
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src/electron/**/*"
+    "src/electron/main/index.ts"
   ],
   "exclude": [
     "node_modules",

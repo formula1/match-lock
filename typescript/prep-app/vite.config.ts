@@ -29,6 +29,10 @@ export default defineConfig({
         entryFileNames: 'assets/[name].[hash].js',
       },
     },
+    commonjsOptions: {
+      // Include the shared module for CommonJS transformation
+      include: [/node_modules/, /shared/],
+    },
   },
   server: {
     port: 5173,
