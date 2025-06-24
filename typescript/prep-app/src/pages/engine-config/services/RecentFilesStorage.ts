@@ -65,7 +65,7 @@ export const RecentFileStorage = {
 
 
 export function useRecentFiles(){
-  const storage = useStorage<RecentFile[]>(RECENT_FILES_KEY, []);
+  const storage = useStorage<RecentFile[]>(RECENT_FILES_KEY);
 
   return {
     ...storage,
