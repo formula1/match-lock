@@ -9,7 +9,7 @@
     "dev:vite": "vite",
     "dev:electron": "cross-env NODE_ENV=development electron .",
     "build": "npm run build:renderer && npm run build:electron",
-    "build:renderer": "tsc -b && vite build",
+    "build:renderer": "rimraf ./dist && tsc -b && vite build",
     "build:electron": "npm run build:main && npm run build:preload",
     "build:main": "esbuild src/electron/main/index.ts --bundle --platform=node --format=cjs --outfile=dist-electron/main.cjs --external:electron --external:electron-squirrel-startup --external:electron-reload",
     "build:preload": "esbuild src/electron/preload/index.ts --bundle --platform=node --format=cjs --outfile=dist-electron/preload.cjs --external:electron",
