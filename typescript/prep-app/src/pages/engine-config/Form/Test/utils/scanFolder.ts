@@ -2,7 +2,7 @@ import type { MatchLockEngineConfig } from "@match-lock/shared";
 import { FS } from "../../../../../globals/fs";
 import { type FileTestResult } from "./types";
 
-import { getMatchingAssetsForFile } from "./getMatchingAsset";
+import { getMatchingAssetsForFile } from "@match-lock/shared";
 
 import { updateStatistics, type TestStatistics } from "./statistics";
 import { updateViolations, updateEmptyViolations, type CountViolation } from "./validateAssetCounts";
@@ -26,9 +26,8 @@ export async function scanFolder(
       if (!walkResult.isFile) return;
 
       const matchedAssets = getMatchingAssetsForFile(
+        pieceDefinition,
         walkResult.relativePath,
-        walkResult.size,
-        pieceDefinition
       );
 
       const testResult: FileTestResult = {
