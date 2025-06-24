@@ -10,7 +10,7 @@ import { homedir as osHomedir } from 'os';
 import { join as pathJoin } from 'path';
 
 // Initialize user directories on app startup
-const USER_SETTINGS_KEY = 'user-settings.json';
+const USER_SETTINGS_FILE = 'user-settings.json';
 type UserSettings = {
   matchLockDirChoice: 'create' | 'dontAsk';
 }
@@ -26,10 +26,9 @@ export async function initializeUserMatchLockDirectories(mainWindow: Electron.Br
     // Check if the match-lock directory exists
     if (fsExistsSync(matchLockDir)) return;
 
-    const userSettingsPath = pathJoin(app.getPath('userData'), USER_SETTINGS_KEY);
+    const userSettings = await getUserSetting();
     
-    if(fsExistsSync(userSettingsPath)){
-      const userSettings = JSON.parse(await fsReadFile(userSettingsPath, 'utf8'));
+    if(userSettings){
       if(userSettings.matchLockDirChoice === ASK_OPTIONS.CREATE){
         await fsMkdir(userSettings.matchLockDir, { recursive: true });
         console.log('✅ Created match-lock directory with user permission:', userSettings.matchLockDir);
@@ -83,12 +82,19 @@ export async function initializeUserMatchLockDirectories(mainWindow: Electron.Br
   }
 }
 
+async function getUserSetting(): Promise<null | UserSettings>{
+  const userSettingsPath = pathJoin(app.getPath('userData'), USER_SETTINGS_FILE);
+  if(!fsExistsSync(userSettingsPath)) return null;
+  const userSettings: UserSettings = JSON.parse(await fsReadFile(userSettingsPath, 'utf8'));
+  return userSettings;
+}
+
 let currentAccess = Promise.resolve();
 async function updateUserSettings(newValues: Partial<UserSettings>){
   const previousAccess = currentAccess;
   const toRun = Promise.resolve().then(async ()=>{
     await previousAccess;
-    const userSettingsPath = pathJoin(app.getPath('userData'), USER_SETTINGS_KEY);
+    const userSettingsPath = pathJoin(app.getPath('userData'), USER_SETTINGS_FILE);
     const userSettings = JSON.parse(await fsReadFile(userSettingsPath, 'utf8')) as UserSettings;
     const updatedSettings = { ...userSettings, ...newValues };
     await fsWriteFile(userSettingsPath, JSON.stringify(updatedSettings, null, 2));
