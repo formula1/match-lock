@@ -1,0 +1,38 @@
+{
+  "name": "@match-lock/server",
+  "version": "0.0.0",
+  "description": "To be used to connect multiple clients",
+  "keywords": [
+    "match-lock",
+    "game"
+  ],
+  "homepage": "https://github.com/formula1/match-lock#readme",
+  "bugs": {
+    "url": "https://github.com/formula1/match-lock/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/formula1/match-lock.git"
+  },
+  "license": "JSON",
+  "author": "Sam Tobia",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "cli": "node dist/cli.js",
+    "test": "npm run build && npm run cli test",
+    "simple-test": "tsc --build && node dist/simple-test.js",
+    "standalone-test": "tsc src/standalone-test.ts --outDir dist --target es2020 --module commonjs --moduleResolution node && node dist/standalone-test.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@match-lock/shared": "file:../shared",
+    "runtypes": "^7.0.4"
+  }
+}

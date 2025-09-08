@@ -1,0 +1,38 @@
+{
+  "name": "@match-lock/client",
+  "version": "0.0.0",
+  "description": "To be used in game to ensure all peices are ready",
+  "keywords": [
+    "match-lock",
+    "game"
+  ],
+  "homepage": "https://github.com/formula1/match-lock#readme",
+  "bugs": {
+    "url": "https://github.com/formula1/match-lock/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/formula1/match-lock.git"
+  },
+  "license": "JSON",
+  "author": "Sam Tobia",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "@types/webtorrent": "^0.110.0",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@match-lock/shared": "file:../shared",
+    "fengari": "^0.1.4",
+    "node-fetch-commonjs": "^3.3.2",
+    "runtypes": "^7.0.4",
+    "tar": "^7.4.3",
+    "webtorrent": "^2.6.3"
+  }
+}
