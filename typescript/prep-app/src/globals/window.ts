@@ -1,15 +1,16 @@
 
+import { nativeAPI } from "../tauri";
 
 
 export const WINDOW = {
-  minimize: () => window.electronAPI.windowMinimize(),
-  maximize: () => window.electronAPI.windowMaximize(),
-  close: () => window.electronAPI.windowClose(),
-  toggleDevTools: () => window.electronAPI.toggleDevTools(),
-  showOpenDialog: (...args: Parameters<typeof window.electronAPI.showOpenDialog>)=>(
-    window.electronAPI.showOpenDialog(...args)
+  minimize: () => nativeAPI.nativeWindow.minimize(),
+  maximize: () => nativeAPI.nativeWindow.maximize(),
+  close: () => nativeAPI.nativeWindow.close(),
+  toggleDevTools: () => nativeAPI.toggleDevTools(),
+  showOpenDialog: (...args: Parameters<typeof nativeAPI.nativeWindow.showOpenDialog>)=>(
+    nativeAPI.nativeWindow.showOpenDialog(...args)
   ),
-  showSaveDialog: (...args: Parameters<typeof window.electronAPI.showSaveDialog>)=>(
-    window.electronAPI.showOpenDialog(...args)
+  showSaveDialog: (...args: Parameters<typeof nativeAPI.nativeWindow.showSaveDialog>)=>(
+    nativeAPI.nativeWindow.showOpenDialog(...args)
   ),
 }

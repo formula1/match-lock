@@ -1,4 +1,6 @@
-import { storageService } from '../services/storage';
+import { nativeAPI } from "../../tauri";
+import { fileMemory } from "./fileMemory";
+
 
 /**
  * Helper function to open a file dialog and automatically add to recent files
@@ -10,11 +12,11 @@ export async function openFileDialog(options: {
 }): Promise<string | null> {
   try {
     // Get the last opened directory to use as default
-    const lastDirectory = await storageService.getLastOpenDirectory();
+    const lastDirectory = await fileMemory.getLastOpenDirectory();
     
-    const result = await window.electronAPI.showOpenDialog({
+    const result = await nativeAPI.nativeWindow.showOpenDialog({
       title: options.title || 'Open File',
-      defaultPath: lastDirectory,
+      defaultPath: lastDirectory || void 0,
       properties: ['openFile'],
       filters: options.filters || [
         { name: 'All Files', extensions: ['*'] }
@@ -27,10 +29,10 @@ export async function openFileDialog(options: {
       const directory = filePath.substring(0, Math.max(filePath.lastIndexOf('/'), filePath.lastIndexOf('\\')));
       
       // Add to recent files
-      await storageService.addRecentFile(filePath, fileName, options.fileType);
+      await fileMemory.addRecentFile(filePath, fileName, options.fileType);
       
       // Update last opened directory
-      await storageService.setLastOpenDirectory(directory);
+      await fileMemory.setLastOpenDirectory(directory);
       
       return filePath;
     }
@@ -53,12 +55,12 @@ export async function saveFileDialog(options: {
 }): Promise<string | null> {
   try {
     // Get the last opened directory to use as default
-    const lastDirectory = await storageService.getLastOpenDirectory();
+    const lastDirectory = await fileMemory.getLastOpenDirectory();
     const defaultPath = lastDirectory && options.defaultName 
       ? `${lastDirectory}/${options.defaultName}`
       : options.defaultName;
     
-    const result = await window.electronAPI.showSaveDialog({
+    const result = await nativeAPI.nativeWindow.showSaveDialog({
       title: options.title || 'Save File',
       defaultPath,
       filters: options.filters || [
@@ -72,10 +74,10 @@ export async function saveFileDialog(options: {
       const directory = filePath.substring(0, Math.max(filePath.lastIndexOf('/'), filePath.lastIndexOf('\\')));
       
       // Add to recent files
-      await storageService.addRecentFile(filePath, fileName, options.fileType);
+      await fileMemory.addRecentFile(filePath, fileName, options.fileType);
       
       // Update last opened directory
-      await storageService.setLastOpenDirectory(directory);
+      await fileMemory.setLastOpenDirectory(directory);
       
       return filePath;
     }
@@ -107,7 +109,7 @@ export async function fileExists(filePath: string): Promise<boolean> {
  */
 export async function cleanupRecentFiles(): Promise<void> {
   try {
-    const recentFiles = await storageService.getRecentFiles();
+    const recentFiles = await fileMemory.getRecentFiles();
     const validFiles = [];
     
     for (const file of recentFiles) {
@@ -119,9 +121,9 @@ export async function cleanupRecentFiles(): Promise<void> {
     
     // If any files were removed, update the list
     if (validFiles.length !== recentFiles.length) {
-      await storageService.clearRecentFiles();
+      await fileMemory.clearRecentFiles();
       for (const file of validFiles) {
-        await storageService.addRecentFile(file.path, file.name, file.type);
+        await fileMemory.addRecentFile(file.path, file.name, file.type);
       }
     }
   } catch (error) {

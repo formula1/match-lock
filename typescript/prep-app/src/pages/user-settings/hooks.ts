@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { nativeAPI } from "../../tauri";
 
 interface UserSettingsState {
   state: "loading" | "expecting-input" | "ready";
@@ -15,7 +16,7 @@ export const useUserSettings = () => {
     Promise.resolve().then(async () => {
       try {
         // Initialize user directories and check if dialog should be shown
-        const result = await window.electronAPI.initializeUserDirectories();
+        const result = await nativeAPI.userSettings.initializeUserDirectories();
         
         if (result.shouldShowDialog) {
           setState({
@@ -36,7 +37,7 @@ export const useUserSettings = () => {
 
   const handleUserChoice = async (choice: 'create' | 'askLater' | 'dontAsk') => {
     try {
-      await window.electronAPI.handleUserChoice(choice, state.matchLockDir);
+      await nativeAPI.userSettings.handleUserChoice(choice, state.matchLockDir);
       setState(prev => ({ ...prev, isDialogOpen: false }));
     } catch (error) {
       console.error('Failed to handle user choice:', error);
