@@ -6,13 +6,34 @@ use fs_commands::*;
 use storage_commands::*;
 use user_settings::*;
 
+#[tauri::command]
+fn console_log(level: String, message: String) {
+    match level.as_str() {
+        "error" => eprintln!("🔴 [JS ERROR] {}", message),
+        "warn" => println!("🟡 [JS WARN] {}", message),
+        "info" => println!("🔵 [JS INFO] {}", message),
+        _ => println!("⚪ [JS LOG] {}", message),
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-  tauri::Builder::default()
+  let builder = tauri::Builder::default()
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_shell::init())
-    .plugin(tauri_plugin_os::init())
+    .plugin(tauri_plugin_os::init());
+
+  // Enable debugging features in development
+  #[cfg(debug_assertions)]
+  {
+    use std::env;
+    // Set environment variables for WebKit debugging
+    env::set_var("WEBKIT_INSPECTOR_SERVER", "127.0.0.1:9222");
+    env::set_var("WEBKIT_DISABLE_COMPOSITING_MODE", "1");
+  }
+
+  builder
     .setup(|app| {
       if cfg!(debug_assertions) {
         app.handle().plugin(
@@ -20,11 +41,29 @@ pub fn run() {
             .level(log::LevelFilter::Info)
             .build(),
         )?;
+
+        println!("🔧 Debug mode enabled");
+        println!("🔧 Console output will appear in this terminal");
+
+        // Try to enable WebKit inspector on Linux
+        #[cfg(target_os = "linux")]
+        {
+          use std::env;
+          env::set_var("WEBKIT_INSPECTOR_SERVER", "127.0.0.1:9222");
+          println!("🔧 WebKit inspector enabled on port 9222");
+          println!("🔧 Try: http://localhost:9222 in your browser");
+        }
+
+        println!("🔧 Alternative debugging:");
+        println!("🔧 1. Use console.log() - output appears in this terminal");
+        println!("🔧 2. Open http://localhost:5173 in Chrome (limited - no Tauri APIs)");
       }
 
       Ok(())
     })
     .invoke_handler(tauri::generate_handler![
+      // Console bridge
+      console_log,
       // File system operations
       fs_read_file,
       fs_write_file,
