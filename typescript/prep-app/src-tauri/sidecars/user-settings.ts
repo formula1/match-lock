@@ -71,13 +71,11 @@ async function initializeUserDirectories(): Promise<{ shouldShowDialog: boolean;
     // If user previously chose to create, create it automatically
     if (settings.matchLockDirChoice === 'create') {
       await mkdir(matchLockDir, { recursive: true });
-      console.log('✅ Created match-lock directory automatically:', matchLockDir);
       return { shouldShowDialog: false, matchLockDir };
     }
-    
+
     // If user chose don't ask, skip
     if (settings.matchLockDirChoice === 'dontAsk') {
-      console.log('ℹ️ User chose not to be asked again, skipping match-lock directory creation');
       return { shouldShowDialog: false, matchLockDir };
     }
     
@@ -95,19 +93,17 @@ async function handleUserChoice(choice: 'create' | 'askLater' | 'dontAsk', match
       case 'create':
         await mkdir(matchLockDir, { recursive: true });
         await updateUserSettings({ matchLockDirChoice: 'create' });
-        console.log('✅ Created match-lock directory with user permission:', matchLockDir);
         return true;
       case 'askLater':
-        console.log('ℹ️ User chose to be asked later, skipping match-lock directory creation');
         return true;
       case 'dontAsk':
         await updateUserSettings({ matchLockDirChoice: 'dontAsk' });
-        console.log('ℹ️ User chose not to be asked again, skipping match-lock directory creation');
         return true;
       default:
         return false;
     }
   } catch (error) {
+    // Use stderr for error logging so it doesn't interfere with JSON output
     console.error('Error handling user choice:', error);
     return false;
   }
