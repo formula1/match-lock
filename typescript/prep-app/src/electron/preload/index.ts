@@ -49,16 +49,17 @@ interface ElectronAPI {
 }
 
 // Extend the global Window interface to include our Electron APIs
-declare global {
-  interface Window {
-    electronAPI: ElectronAPI;
-    versions: {
-      node: () => string;
-      chrome: () => string;
-      electron: () => string;
-    };
-  }
-}
+// NOTE: Commented out for Tauri migration - types are now in src/tauri/index.ts
+// declare global {
+//   interface Window {
+//     electronAPI: ElectronAPI;
+//     versions: {
+//       node: () => string;
+//       chrome: () => string;
+//       electron: () => string;
+//     };
+//   }
+// }
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object

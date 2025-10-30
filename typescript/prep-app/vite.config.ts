@@ -26,12 +26,12 @@ export default defineConfig({
       },
     },
   ],
-  base: './', // Use relative paths for Electron
+  // Remove base for Tauri - it handles this automatically
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    // Optimize for Electron
-    target: 'chrome120', // Match Electron's Chromium version
+    // Optimize for Tauri
+    target: 'esnext', // Tauri uses modern web standards
     rollupOptions: {
       // Ensure assets are properly handled
       output: {
