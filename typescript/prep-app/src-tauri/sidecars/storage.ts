@@ -5,6 +5,11 @@ import { existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { homedir } from 'os';
 
+import {
+  keyToFilename as rawKeyToFilename,
+  filenameToKey as rawFilenameToKey,
+ } from './filename';
+
 // Storage operations using TypeScript instead of Rust
 const STORAGE_DIR = join(homedir(), '.matchlock-prep-app', 'storage');
 
@@ -15,15 +20,22 @@ async function ensureStorageDir() {
   }
 }
 
-// Convert key to safe filename
+const PREFIX = "store-";
 function keyToFilename(key: string): string {
-  return key.replace(/[^a-zA-Z0-9-_]/g, '_') + '.json';
+  return `${PREFIX}${rawKeyToFilename(key)}.json`;
+}
+function isFilenameValid(filename: string): boolean {
+  return filename.startsWith(PREFIX) && filename.endsWith(".json");
+}
+function filenameToKey(filename: string): string {
+  if (!isFilenameValid(filename)) {
+    throw new Error("Invalid filename format");
+  }
+
+  const name = filename.slice(PREFIX.length, -5); // remove prefix and ".json"
+  return rawFilenameToKey(name);
 }
 
-// Convert filename back to key
-function filenameToKey(filename: string): string {
-  return filename.replace(/\.json$/, '').replace(/_/g, ' ');
-}
 
 async function storageGet(key: string): Promise<any> {
   try {
@@ -76,10 +88,12 @@ async function storageRemove(key: string): Promise<boolean> {
 async function storageKeys(): Promise<string[]> {
   try {
     await ensureStorageDir();
-    const files = await readdir(STORAGE_DIR);
-    return files
-      .filter(file => file.endsWith('.json'))
-      .map(file => filenameToKey(file));
+    const keys: Array<string> = [];
+    for(const file of await readdir(STORAGE_DIR)){
+      if(!isFilenameValid(file)) continue;
+      keys.push(filenameToKey(file));
+    }
+    return keys;
   } catch (error) {
     console.error('Storage keys error:', error);
     return [];
@@ -92,9 +106,8 @@ async function storageClear(): Promise<boolean> {
     const files = await readdir(STORAGE_DIR);
     
     for (const file of files) {
-      if (file.endsWith('.json')) {
-        await unlink(join(STORAGE_DIR, file));
-      }
+      if (!isFilenameValid(file)) continue;
+      await unlink(join(STORAGE_DIR, file));
     }
     return true;
   } catch (error) {
