@@ -4,8 +4,8 @@ use tauri::AppHandle;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct InitResult {
-    pub should_show_dialog: bool,
-    pub match_lock_dir: String,
+    pub shouldShowDialog: bool,
+    pub matchLockDir: String,
 }
 
 async fn run_user_settings_sidecar(command: &str, args: &[&str]) -> Result<String, String> {
@@ -42,8 +42,8 @@ pub async fn initialize_user_directories(_app: AppHandle) -> Result<InitResult, 
 }
 
 #[tauri::command]
-pub async fn handle_user_choice(_app: AppHandle, choice: String, match_lock_dir: String) -> Result<bool, String> {
-    let result = run_user_settings_sidecar("handleChoice", &[&choice, &match_lock_dir]).await?;
+pub async fn handle_user_choice(_app: AppHandle, choice: String, matchLockDir: String) -> Result<bool, String> {
+    let result = run_user_settings_sidecar("handleChoice", &[&choice, &matchLockDir]).await?;
 
     let success: bool = serde_json::from_str(&result)
         .map_err(|e| format!("Failed to parse choice result: {}", e))?;

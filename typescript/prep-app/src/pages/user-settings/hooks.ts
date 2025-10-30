@@ -38,7 +38,7 @@ export const useUserSettings = () => {
   const handleUserChoice = async (choice: 'create' | 'askLater' | 'dontAsk') => {
     try {
       await nativeAPI.userSettings.handleUserChoice(choice, state.matchLockDir);
-      setState(prev => ({ ...prev, isDialogOpen: false }));
+      setState(prev => ({ ...prev, state: "ready" }));
     } catch (error) {
       console.error('Failed to handle user choice:', error);
     }
