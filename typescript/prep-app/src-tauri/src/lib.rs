@@ -1,9 +1,11 @@
 mod fs_commands;
 mod storage_commands;
+// mod ipc_manager;
 mod user_settings;
 
 use fs_commands::*;
 use storage_commands::*;
+// use ipc_manager::*;
 use user_settings::*;
 
 #[tauri::command]
@@ -59,8 +61,19 @@ pub fn run() {
         println!("🔧 2. Open http://localhost:5173 in Chrome (limited - no Tauri APIs)");
       }
 
+      /*
+      // Start the IPC server
+      let app_handle = app.handle().clone();
+      tauri::async_runtime::spawn(async move {
+        if let Err(e) = start_ipc_server(app_handle).await {
+          eprintln!("❌ Failed to start IPC server: {}", e);
+        }
+      });
+      */
+
       Ok(())
     })
+
     .invoke_handler(tauri::generate_handler![
       // Console bridge
       console_log,
@@ -79,7 +92,18 @@ pub fn run() {
       fs_read_dir,
       fs_stat,
       fs_start_walk_stream,
-      // Storage operations
+
+      /*
+      // IPC management
+      start_ipc_server,
+      stop_ipc_server,
+      get_ipc_socket_path,
+      ipc_request,
+      */
+
+
+      /*
+      // Storage operations (will be replaced by IPC calls)
       storage_get,
       storage_set,
       storage_remove,

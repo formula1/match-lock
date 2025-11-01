@@ -30,3 +30,11 @@ tauri-plugin-os = "2"
 tokio = { version = "1.0", features = ["full"] }
 walkdir = "2.3"
 dirs = "5.0"
+uuid = { version = "1.0", features = ["v4"] }
+regex = "1.0"
+
+# IPC dependencies (commented out for now)
+# reqwest = { version = "0.11", features = ["json"] }
+# hyper = { version = "0.14", features = ["full"] }
+# hyperlocal = "0.8"
+# futures = "0.3"
