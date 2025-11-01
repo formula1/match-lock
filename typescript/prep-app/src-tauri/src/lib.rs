@@ -1,11 +1,11 @@
 mod fs_commands;
-mod storage_commands;
 // mod ipc_manager;
+mod native_storage_commands;
 mod user_settings;
 
 use fs_commands::*;
-use storage_commands::*;
 // use ipc_manager::*;
+use native_storage_commands::*;
 use user_settings::*;
 
 #[tauri::command]
@@ -101,6 +101,12 @@ pub fn run() {
       ipc_request,
       */
 
+      // Native storage operations
+      native_storage_set,
+      native_storage_get,
+      native_storage_remove,
+      native_storage_keys,
+      native_storage_clear,
 
       /*
       // Storage operations (will be replaced by IPC calls)
