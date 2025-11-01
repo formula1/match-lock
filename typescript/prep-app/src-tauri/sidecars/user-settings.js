@@ -53,11 +53,9 @@ async function initializeUserDirectories() {
         const settings = await getUserSettings();
         if (settings.matchLockDirChoice === 'create') {
             await (0, promises_1.mkdir)(matchLockDir, { recursive: true });
-            console.log('✅ Created match-lock directory automatically:', matchLockDir);
             return { shouldShowDialog: false, matchLockDir };
         }
         if (settings.matchLockDirChoice === 'dontAsk') {
-            console.log('ℹ️ User chose not to be asked again, skipping match-lock directory creation');
             return { shouldShowDialog: false, matchLockDir };
         }
         return { shouldShowDialog: true, matchLockDir };
@@ -73,14 +71,11 @@ async function handleUserChoice(choice, matchLockDir) {
             case 'create':
                 await (0, promises_1.mkdir)(matchLockDir, { recursive: true });
                 await updateUserSettings({ matchLockDirChoice: 'create' });
-                console.log('✅ Created match-lock directory with user permission:', matchLockDir);
                 return true;
             case 'askLater':
-                console.log('ℹ️ User chose to be asked later, skipping match-lock directory creation');
                 return true;
             case 'dontAsk':
                 await updateUserSettings({ matchLockDirChoice: 'dontAsk' });
-                console.log('ℹ️ User chose not to be asked again, skipping match-lock directory creation');
                 return true;
             default:
                 return false;

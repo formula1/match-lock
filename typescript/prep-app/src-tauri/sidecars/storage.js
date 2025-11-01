@@ -5,17 +5,26 @@ const promises_1 = require("fs/promises");
 const fs_1 = require("fs");
 const path_1 = require("path");
 const os_1 = require("os");
+const filename_1 = require("./filename");
 const STORAGE_DIR = (0, path_1.join)((0, os_1.homedir)(), '.matchlock-prep-app', 'storage');
 async function ensureStorageDir() {
     if (!(0, fs_1.existsSync)(STORAGE_DIR)) {
         await (0, promises_1.mkdir)(STORAGE_DIR, { recursive: true });
     }
 }
+const PREFIX = "store-";
 function keyToFilename(key) {
-    return key.replace(/[^a-zA-Z0-9-_]/g, '_') + '.json';
+    return `${PREFIX}${(0, filename_1.keyToFilename)(key)}.json`;
+}
+function isFilenameValid(filename) {
+    return filename.startsWith(PREFIX) && filename.endsWith(".json");
 }
 function filenameToKey(filename) {
-    return filename.replace(/\.json$/, '').replace(/_/g, ' ');
+    if (!isFilenameValid(filename)) {
+        throw new Error("Invalid filename format");
+    }
+    const name = filename.slice(PREFIX.length, -5);
+    return (0, filename_1.filenameToKey)(name);
 }
 async function storageGet(key) {
     try {
@@ -64,10 +73,13 @@ async function storageRemove(key) {
 async function storageKeys() {
     try {
         await ensureStorageDir();
-        const files = await (0, promises_1.readdir)(STORAGE_DIR);
-        return files
-            .filter(file => file.endsWith('.json'))
-            .map(file => filenameToKey(file));
+        const keys = [];
+        for (const file of await (0, promises_1.readdir)(STORAGE_DIR)) {
+            if (!isFilenameValid(file))
+                continue;
+            keys.push(filenameToKey(file));
+        }
+        return keys;
     }
     catch (error) {
         console.error('Storage keys error:', error);
@@ -79,9 +91,9 @@ async function storageClear() {
         await ensureStorageDir();
         const files = await (0, promises_1.readdir)(STORAGE_DIR);
         for (const file of files) {
-            if (file.endsWith('.json')) {
-                await (0, promises_1.unlink)((0, path_1.join)(STORAGE_DIR, file));
-            }
+            if (!isFilenameValid(file))
+                continue;
+            await (0, promises_1.unlink)((0, path_1.join)(STORAGE_DIR, file));
         }
         return true;
     }
