@@ -112,25 +112,3 @@ export const nativeAPI = {
   // Platform information
   platform: getPlatform,
 };
-
-// Make it available globally for compatibility
-declare global {
-  interface Window {
-    nativeAPI: typeof nativeAPI;
-    versions: {
-      node: () => string;
-      chrome: () => string;
-      electron: () => string;
-    };
-  }
-}
-
-// Set up the global API
-if (typeof window !== 'undefined') {
-  window.nativeAPI = nativeAPI;
-  window.versions = {
-    node: () => 'N/A (Tauri)',
-    chrome: () => 'N/A (Tauri)',
-    electron: () => 'N/A (Tauri)',
-  };
-}
