@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
-import { nativeAPI } from "../../tauri";
+import { useState, useEffect, useCallback } from 'react';
+
+import { initializeUserDirectories, handleUserChoice as handleUserChoiceAPI } from "./api";
 
 interface UserSettingsState {
   state: "loading" | "expecting-input" | "ready";
@@ -16,7 +17,8 @@ export const useUserSettings = () => {
     Promise.resolve().then(async () => {
       try {
         // Initialize user directories and check if dialog should be shown
-        const result = await nativeAPI.userSettings.initializeUserDirectories();
+        const result = await initializeUserDirectories();
+        console.log("Initializing User Settings:", result);
         
         if (result.shouldShowDialog) {
           setState({
@@ -35,14 +37,15 @@ export const useUserSettings = () => {
     });
   }, []);
 
-  const handleUserChoice = async (choice: 'create' | 'askLater' | 'dontAsk') => {
+  const handleUserChoice = useCallback(async (choice: 'create' | 'askLater' | 'dontAsk') => {
     try {
-      await nativeAPI.userSettings.handleUserChoice(choice, state.matchLockDir);
+      console.log("Handling User Choice:", choice);
+      await handleUserChoiceAPI(choice, state.matchLockDir);
       setState(prev => ({ ...prev, state: "ready" }));
     } catch (error) {
       console.error('Failed to handle user choice:', error);
     }
-  };
+  }, []);
 
   return {
     state: state.state,

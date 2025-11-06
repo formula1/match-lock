@@ -8,7 +8,6 @@ import { getVersion } from '@tauri-apps/api/app';
 import { fs } from './fs';
 import { storage } from './json-storage';
 import { nativeWindow } from './window';
-import { userSettings } from './user-settings';
 
 // Console bridge - forward console messages to Rust terminal
 const bridgeConsoleToRust = () => {
@@ -109,7 +108,6 @@ export const nativeAPI = {
   nativeWindow,
   storage,
   fs,
-  userSettings,
 
   // Platform information
   platform: getPlatform,

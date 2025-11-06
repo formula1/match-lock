@@ -10,6 +10,7 @@ interface UserSettingsDialogProps {
 export const UserSettingsDialog: React.FC<UserSettingsDialogProps> = (
   { onSelect }
 ) => {
+  console.log('🔧 UserSettingsDialog component loaded - testing console.log output');
   const { state, matchLockDir, handleUserChoice } = useUserSettings();
 
   useEffect(()=>{
