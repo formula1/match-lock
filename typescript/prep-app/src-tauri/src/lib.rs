@@ -1,21 +1,19 @@
 mod fs_commands;
 // mod ipc_manager;
 mod native_storage_commands;
-mod user_settings;
 
 use fs_commands::*;
 // use ipc_manager::*;
 use native_storage_commands::*;
-use user_settings::*;
 
 #[tauri::command]
 fn console_log(level: String, message: String) {
-    match level.as_str() {
-        "error" => eprintln!("🔴 [JS ERROR] {}", message),
-        "warn" => println!("🟡 [JS WARN] {}", message),
-        "info" => println!("🔵 [JS INFO] {}", message),
-        _ => println!("⚪ [JS LOG] {}", message),
-    }
+  match level.as_str() {
+    "error" => eprintln!("🔴 [JS ERROR] {}", message),
+    "warn" => println!("🟡 [JS WARN] {}", message),
+    "info" => println!("🔵 [JS INFO] {}", message),
+    _ => println!("⚪ [JS LOG] {}", message),
+  }
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -93,6 +91,9 @@ pub fn run() {
       fs_stat,
       fs_start_walk_stream,
 
+      // File system Constants
+      fs_home_dir,
+
       /*
       // IPC management
       start_ipc_server,
@@ -115,9 +116,7 @@ pub fn run() {
       storage_remove,
       storage_keys,
       storage_clear,
-      // User settings operations
-      initialize_user_directories,
-      handle_user_choice
+      */
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

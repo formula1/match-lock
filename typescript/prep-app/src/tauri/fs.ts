@@ -31,6 +31,10 @@ export interface WalkStreamCallbacks {
 
 // File system operations
 export const fs = {
+  homeDir: async (): Promise<string> => {
+    return await invoke('fs_home_dir');
+  },
+
   readFile: async (path: string): Promise<Uint8Array> => {
     const data: number[] = await invoke('fs_read_file', { path });
     return new Uint8Array(data);
