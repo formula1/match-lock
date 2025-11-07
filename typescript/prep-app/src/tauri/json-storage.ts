@@ -2,22 +2,22 @@ import { invoke } from '@tauri-apps/api/core';
 
 export const storage = {
   get: async (key: string): Promise<any> => {
-    return await invoke('storage_get', { key });
+    return await invoke('native_storage_get', { key });
   },
 
   set: async (key: string, value: any): Promise<void> => {
-    await invoke('storage_set', { key, value });
+    await invoke('native_storage_set', { key, value });
   },
 
   remove: async (key: string): Promise<void> => {
-    await invoke('storage_remove', { key });
+    await invoke('native_storage_remove', { key });
   },
 
   keys: async (): Promise<string[]> => {
-    return await invoke('storage_keys');
+    return await invoke('native_storage_clear');
   },
 
   clear: async (): Promise<void> => {
-    await invoke('storage_clear');
+    await invoke('native_storage_clear');
   },
 };
