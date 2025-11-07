@@ -1,44 +1,79 @@
-import { useState } from "react";
+import { useState, CSSProperties } from "react";
+import "./tabs.css";
+import "./varients.css";
+import { combineClassNames } from "../../utils/react";
 
-export function PageArrayTabs({ pages }: { pages: Array<{ title: string, content: React.ReactNode }> }){
+export function PageArrayTabs({
+  pages,
+  className = '',
+  navStyle = {},
+  buttonStyle = {},
+  contentStyle = {},
+}: {
+  pages: Array<{ title: string, content: React.ReactNode }>;
+  className?: string;
+  navStyle?: CSSProperties;
+  buttonStyle?: CSSProperties;
+  contentStyle?: CSSProperties;
+}){
   const [activePage, setActivePage] = useState(0);
-  
+
   const page = pages[activePage];
   if(!page) return null;
 
   return <>
-    <nav>
+    <nav className={combineClassNames("tabs-nav", className)} style={{...navStyle}}>
       {pages.map((page, i) => (
         <button
           key={`${page.title}-${i}`}
           disabled={activePage === i}
-          className={activePage === i ? 'active' : ''}
+          style={{...buttonStyle}}
           onClick={() => setActivePage(i)}
         >{page.title}</button>
       ))}
     </nav>
-    {!page ? null : page.content}
+    <div style={{padding: '1rem 0', ...contentStyle}}>
+      {page.content}
+    </div>
   </>
 }
 
 import { Link, useLocation } from "react-router-dom";
+
 type LocalURL = { pathname: string, search: string, hash: string };
-export function LinkTabs(
-  { pages }: { pages: Array<null | { title: string, href: string, isActive?: (location: LocalURL) => boolean }> }){
+type Page = { title: string, href: string, isActive?: (location: LocalURL) => boolean };
+
+export function LinkTabs({
+  pages,
+  className = '',
+  navStyle = {},
+  linkStyle = {},
+}: {
+  pages: Array<null | Page>;
+  className?: string;
+  navStyle?: CSSProperties;
+  linkStyle?: CSSProperties;
+}){
   const location = useLocation();
+
   return (
-    <nav>
+    <nav className={combineClassNames("tabs-nav", className)} style={{...navStyle}}>
       {pages.map((page, i) => (
         !page ? null :
         <Link
+          className={isActive(page, location) ? 'active' : ''}
           key={`${page.title}-${i}`}
           to={page.href}
-          className={
-            page.isActive ? page.isActive(location) ? 'active' : "" :
-            location.pathname === page.href ? 'active' : ''
-          }
+          style={{
+            ...linkStyle
+          }}
         >{page.title}</Link>
       ))}
     </nav>
   )
+}
+
+function isActive(page: Page, location: LocalURL){
+  if(page.isActive) return page.isActive(location)
+  return location.pathname === page.href;
 }

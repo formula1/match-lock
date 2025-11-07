@@ -9,6 +9,7 @@ import { EngineTest } from "./Test";
 export function EngineConfigForm({ value, onChange }: InputProps<MatchLockEngineConfig>){
   return (
     <PageArrayTabs
+      className="tertiary"
       pages={[
         { title: 'Engine Config', content: <Form value={value} onChange={onChange} /> },
         { title: 'Test', content: <EngineTest engineConfig={value} /> },
