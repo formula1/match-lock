@@ -11,6 +11,6 @@ export const WINDOW = {
     nativeAPI.nativeWindow.showOpenDialog(...args)
   ),
   showSaveDialog: (...args: Parameters<typeof nativeAPI.nativeWindow.showSaveDialog>)=>(
-    nativeAPI.nativeWindow.showOpenDialog(...args)
+    nativeAPI.nativeWindow.showSaveDialog(...args)
   ),
 }
