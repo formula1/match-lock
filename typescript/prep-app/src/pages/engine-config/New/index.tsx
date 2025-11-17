@@ -25,15 +25,14 @@ export function NewEngineConfig(){
         onClick={async ()=>{
           const filename = keyToFilename(value.name);
           const matchlockDir = await FS.getMatchLockDir();
-          const { canceled, filePaths } = await WINDOW.showSaveDialog({
+          const { canceled, filePath } = await WINDOW.showSaveDialog({
             title: 'Save Engine Config',
-            defaultPath: pathJoin(matchlockDir,`${filename}.engine.matchlock.json`),
+            defaultPath: pathJoin(matchlockDir,`${filename}.matchlock.engine.json`),
             filters: [
               { name: 'JSON Files', extensions: ['json'] }
             ]
           })
-          if(canceled) return;
-          const filePath = filePaths[0];
+          if(canceled || !filePath) return;
 
           await FS.writeFile(filePath, new TextEncoder().encode(JSON.stringify(value, null, 2)));
           navigate(replaceParams(EngineConfigPaths.edit, { enginePath: encodeURIComponent(filePath) }))
