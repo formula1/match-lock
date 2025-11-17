@@ -42,6 +42,7 @@ export function EditEngineConfig(){
   }
 
   return <div>
+    <h1>{filePath}</h1>
     <div>
       <button
         onClick={async ()=>{
