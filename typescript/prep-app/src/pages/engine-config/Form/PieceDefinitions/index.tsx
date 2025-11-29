@@ -4,7 +4,7 @@ import type { MatchLockEngineConfig } from "@match-lock/shared";
 import { AssetDefinitionForm } from "./AssetDefintion";
 
 export function PieceDefinitions({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"]>){
-  return <div>
+  return <div className="section">
     <h2>Piece Definitions</h2>
     <PieceDefinitionCreator value={value} onChange={onChange} />
     {Object.keys(value).sort().map((pieceName) => (
@@ -20,16 +20,45 @@ export function PieceDefinitions({ value, onChange }: InputProps<MatchLockEngine
 
 function PieceDefinitionCreator({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"]>){
   const [name, setName] = useState("");
+  const [error, setError] = useState<null | string>(null);
   return (
-    <div>
+    <form
+      className="section"
+      onSubmit={(e)=>{
+        e.preventDefault();
+        try {
+          setError(null);
+          if(name === "") throw new Error("Name cannot be empty");
+          if(value[name]) throw new Error("Name already exists");
+          onChange({ ...value, [name]: { pathVariables: [], assets: [] } });
+          setName("");
+        }catch(error){
+          setError((error as Error).message);
+        }
+      }}
+    >
       <h3>Create Piece Definition</h3>
-      <div>Piece Name</div>
-      <input type="text" value={name} onChange={e => setName(e.target.value)} />
-      <button onClick={() => onChange({ ...value, [name]: { assets: [] } })}>Create</button>
-    </div>
+      <div>
+        <input
+          type="text" placeholder="Piece Name..."
+          value={name}
+          onChange={(e)=>{
+            setName(e.target.value)
+            setError(null);
+            if(value[e.target.value]) return setError("Name already exists");
+          }}
+        />
+        <button
+          disabled={!!error || name === ""}
+          type="submit"
+        >Create</button>
+      </div>
+      {error !== null && <div className="error">{error}</div>}
+    </form>
   )
 }
 
+import { PathVariablesInput } from "./PathVariablesInput";
 function PieceDefinition(
   { pieceName, value: definitions, onChange: setDefinitions }: (
     & { pieceName: string }
@@ -38,26 +67,28 @@ function PieceDefinition(
 ){
   const value = definitions[pieceName];
   const onChange = (v: typeof value) => setDefinitions({ ...definitions, [pieceName]: v });
-  return <div>
-    <h3>
-      <TitleInput
-        pieceName={pieceName}
-        value={definitions}
-        onChange={setDefinitions}
-      />
-    </h3>
+  return <div className="section">
+    <TitleInput
+      pieceName={pieceName}
+      value={definitions}
+      onChange={setDefinitions}
+    />
+    <PathVariablesInput
+      value={value.pathVariables}
+      onChange={v => onChange({ ...value, pathVariables: v })}
+    />
     <div>
       <h3>Assets</h3>
+      <AssetDefinitionCreator value={value} onChange={onChange} />
+      {value.assets.map((asset, i) => (
+        <AssetDefinitionForm
+          key={`${asset.name}-${i}`}
+          value={asset}
+          onChange={v => onChange({ ...value, assets: value.assets.map((a, j) => j === i ? v : a) })}
+          assetList={value.assets}
+        />
+      ))}
     </div>
-    <AssetDefinitionCreator value={value} onChange={onChange} />
-    {value.assets.map((asset, i) => (
-      <AssetDefinitionForm
-        key={`${asset.name}-${i}`}
-        value={asset}
-        onChange={v => onChange({ ...value, assets: value.assets.map((a, j) => j === i ? v : a) })}
-        assetList={value.assets}
-      />
-    ))}
   </div>
 }
 
@@ -68,23 +99,47 @@ function TitleInput(
   )
 ){
   const [title, setTitle] = useState(pieceName);
-  return <>
-    <input
-      type="text"
-      value={pieceName}
-      onChange={(e)=>{
-        setTitle(e.target.value);
-      }}
-    />
-    <button
-      onClick={() => {
-        const def = definitions[pieceName];
-        const oldValue = { ...definitions }
-        delete oldValue[pieceName];
-        setDefinitions({ ...oldValue, [title]: def });
-      }}
-    >Update Title</button>
-  </>
+  const [error, setError] = useState<null | string>(null);
+  return <div>
+    <div className="editable-title">
+      <input
+        type="text"
+        placeholder="Piece Title..."
+        value={title}
+        onChange={(e)=>{
+          setTitle(e.target.value);
+          setError(null);
+          if(e.target.value === pieceName) return;
+          if(e.target.value === "") return setError("Name cannot be empty");
+          if(definitions[e.target.value]) return setError("Name already exists");
+        }}
+      />
+      <button
+        disabled={title === pieceName || error !== null}
+        onClick={() => {
+          try {
+            if(title === pieceName) throw new Error("Name is the same");
+            if(title === "") throw new Error("Name cannot be empty");
+            if(definitions[title]) throw new Error("Name already exists");
+            const def = definitions[pieceName];
+            const oldValue = { ...definitions }
+            delete oldValue[pieceName];
+            setDefinitions({ ...oldValue, [title]: def });
+            setTitle(pieceName);
+          }catch(error){
+            setError((error as Error).message);
+          }
+        }}
+      >Update Title</button>
+      <button
+        onClick={() => {
+          const { [pieceName]: _, ...oldValue } = definitions;
+          setDefinitions(oldValue);
+        }}
+      >Delete</button>
+    </div>
+    {error !== null && <div className="error">{error}</div>}
+  </div>
 }
 
 function AssetDefinitionCreator({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"][string]>){
