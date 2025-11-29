@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./common.css";
 import { Router } from "./Router";
 import { Tooltip } from "react-tooltip";
 import ReactMarkdown from "react-markdown";
