@@ -1,4 +1,3 @@
-import { invoke } from '@tauri-apps/api/core';
 import { open as shellOpen } from '@tauri-apps/plugin-shell';
 import { platform } from '@tauri-apps/plugin-os';
 // import { exit } from '@tauri-apps/api/app'; // Not available in Tauri v2
@@ -9,49 +8,9 @@ import { fs } from './fs';
 import { storage } from './json-storage';
 import { nativeWindow } from './window';
 
-// Console bridge - forward console messages to Rust terminal
-const bridgeConsoleToRust = () => {
-  const originalLog = console.log;
-  const originalWarn = console.warn;
-  const originalError = console.error;
-  const originalInfo = console.info;
-
-  console.log = (...args: any[]) => {
-    originalLog(...args);
-    const message = args.map(arg =>
-      typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-    ).join(' ');
-    invoke('console_log', { level: 'log', message }).catch(() => {});
-  };
-
-  console.warn = (...args: any[]) => {
-    originalWarn(...args);
-    const message = args.map(arg =>
-      typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-    ).join(' ');
-    invoke('console_log', { level: 'warn', message }).catch(() => {});
-  };
-
-  console.error = (...args: any[]) => {
-    originalError(...args);
-    const message = args.map(arg =>
-      typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-    ).join(' ');
-    invoke('console_log', { level: 'error', message }).catch(() => {});
-  };
-
-  console.info = (...args: any[]) => {
-    originalInfo(...args);
-    const message = args.map(arg =>
-      typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
-    ).join(' ');
-    invoke('console_log', { level: 'info', message }).catch(() => {});
-  };
-};
 
 // Initialize console bridge in development
 if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
-  bridgeConsoleToRust();
   console.log('🔧 Console bridge initialized - messages will appear in terminal');
 }
 
