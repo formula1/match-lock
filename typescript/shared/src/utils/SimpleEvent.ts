@@ -21,6 +21,8 @@ export interface ISimpleEventEmitter<Args extends Array<any>> extends ISimpleEve
   on(cb: Listener<Args>): void
   off(cb: Listener<Args>): boolean
   emit(...args: Args): void
+
+  filter(filterFn: (...args: Args)=>boolean): ISimpleEventEmitter<Args>
 }
 
 export function createSimpleEmitter<Args extends Array<any>>(
@@ -45,6 +47,7 @@ export function createSimpleEmitter<Args extends Array<any>>(
   emitter.on = addListener.bind(context as ISimpleEventEmitter<Args>);
   emitter.off = removeListener.bind(context as ISimpleEventEmitter<Args>);
   emitter.emit = emitEvent.bind(context as ISimpleEventEmitter<Args>);
+  emitter.filter = filterEvent.bind(context as ISimpleEventEmitter<Args>);
 
   (context as any).on = emitter.on;
   (context as any).off = emitter.off;
@@ -96,4 +99,19 @@ function emitEvent<Args extends Array<any>>(
       // ignore
     }
   }
+}
+
+function filterEvent<Args extends Array<any>>(
+  this: ISimpleEventEmitter<Args>, filter: (...args: Args)=>boolean
+){
+  const newEmitter = createSimpleEmitter(this.config);
+  const weakRef = new WeakRef(newEmitter);
+
+  const listener = (...args: Args)=>{
+    const newEmitter = weakRef.deref();
+    if(!newEmitter) return this.off(listener);
+    if(filter(...args)) newEmitter.emit(...args);
+  }
+  this.on(listener);
+  return newEmitter;
 }

@@ -10,3 +10,4 @@ export * from "./utils/string";
 export * from "./utils/fetch";
 export * from "./utils/SimpleEvent";
 export * from "./utils/SimpleMessenger";
+export * from "./utils/Promise";

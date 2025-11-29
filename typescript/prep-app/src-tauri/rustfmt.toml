@@ -1,0 +1,3 @@
+# Rust formatting configuration
+# Use 2 spaces for indentation instead of the default 4
+tab_spaces = 2

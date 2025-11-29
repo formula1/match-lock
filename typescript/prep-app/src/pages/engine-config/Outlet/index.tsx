@@ -18,6 +18,7 @@ function EngineTabs(){
   )
   return (
     <LinkTabs
+      className="secondary"
       pages={[
         { title: 'Engine', href: EngineConfigPaths.root },
         { title: 'New', href: EngineConfigPaths.new },

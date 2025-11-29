@@ -7,6 +7,7 @@ export function GlobalOutlet(){
   return (
     <>
     <LinkTabs
+      className="primary"
       pages={[
         { title: 'Home', href: '/' },
         {
@@ -15,6 +16,11 @@ export function GlobalOutlet(){
           isActive: (location) => location.pathname.startsWith(EngineConfigPaths.root),
         },
       ]}
+      navStyle={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+      }}
     />
     <Outlet />
     </>

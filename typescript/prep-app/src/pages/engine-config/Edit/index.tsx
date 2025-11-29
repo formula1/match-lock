@@ -42,6 +42,7 @@ export function EditEngineConfig(){
   }
 
   return <div>
+    <h1>{filePath}</h1>
     <div>
       <button
         onClick={async ()=>{
@@ -52,16 +53,16 @@ export function EditEngineConfig(){
       <button
         onClick={async ()=>{
           if(!filePath) return;
-          const { canceled, filePaths } = await WINDOW.showSaveDialog({
+          const { canceled, filePath: newFilePath } = await WINDOW.showSaveDialog({
             title: 'Save Engine Config',
             defaultPath: filePath,
             filters: [
               { name: 'JSON Files', extensions: ['json'] }
             ]
           })
-          if(canceled) return;
-          const newFilePath = filePaths[0];
+          if(canceled || !newFilePath) return;
           await FS.writeFile(newFilePath, new TextEncoder().encode(JSON.stringify(value, null, 2)));
+          if(newFilePath === filePath) return;
 
           // Update the file path to the new file
           navigate(replaceParams(EngineConfigPaths.edit, { enginePath: encodeURIComponent(newFilePath) }));

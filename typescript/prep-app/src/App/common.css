@@ -1,0 +1,29 @@
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+.section {
+  padding: 1rem 1rem 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #bbb;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
+
+.editable-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  input {
+    font-size: 24px;
+    font-weight: 600;
+    padding: 4px 8px;
+  }
+  button {
+    padding: 4px 12px;
+    font-size: 14px;
+  }
+}

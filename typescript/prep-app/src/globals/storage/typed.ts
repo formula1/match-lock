@@ -1,3 +1,4 @@
+import { nativeAPI } from "../../tauri";
 
 export class TypedStorageService<T> {
   private key: string;
@@ -10,27 +11,27 @@ export class TypedStorageService<T> {
    * Generic storage methods for other data
    */
   async get(): Promise<T | null> {
-    return await window.electronAPI.storage.get(this.key) as T | null;
+    return await nativeAPI.storage.get(this.key) as T | null;
   }
 
   async set(value: T): Promise<void> {
-    await window.electronAPI.storage.set(this.key, value);
+    await nativeAPI.storage.set(this.key, value);
   }
 
   async remove(): Promise<void> {
-    await window.electronAPI.storage.remove(this.key);
+    await nativeAPI.storage.remove(this.key);
   }
 
   async exists(): Promise<boolean> {
-    const value = await window.electronAPI.storage.get(this.key);
+    const value = await nativeAPI.storage.get(this.key);
     return value !== null;
   }
 
   async keys(): Promise<string[]> {
-    return window.electronAPI.storage.keys();
+    return nativeAPI.storage.keys();
   }
 
   async clear(): Promise<void> {
-    await window.electronAPI.storage.clear();
+    await nativeAPI.storage.clear();
   }
 }

@@ -1,18 +1,32 @@
 import { MatchLockRestrictionConfig } from "@match-lock/shared";
 
 import { Room } from "../types/room";
-import { errorWrapper } from "./errorWrapper";
+import { waitForExternalError, waitForStoppedRoomHeartbeat } from "./roomErrors";
 import { handleRoomSelections } from "./handleRoomSelections";
 import { PlayerSelection } from "./steps/player-selection";
+import { ExternalUserError, MATCHLOCK_SELECTION_STATE } from "./constants";
 
 export async function handleSelection(
   room: Room,
   restriction: MatchLockRestrictionConfig,
   selection: PlayerSelection
 ){
-  await errorWrapper(
-    room,
-    handleRoomSelections(room, restriction, selection)
-  );
+  const abortController = new AbortController();
+  try {
+    await Promise.race([
+      handleRoomSelections(room, abortController.signal, restriction, selection),
+      waitForExternalError(room, abortController.signal),
+      waitForStoppedRoomHeartbeat(room, 10_000, abortController.signal),
+    ])
+  }catch(e){
+    console.log("Match To Start Failed", e);
+    if(!(e instanceof ExternalUserError) && e instanceof Error){
+      room.broadcast(MATCHLOCK_SELECTION_STATE.failure, e.message);
+    }
+    room.disconnect();
+    throw e;
+  }finally{
+    abortController.abort();
+  }
 }
 
