@@ -44,6 +44,8 @@ export default defineConfig({
       // Include the shared module for CommonJS transformation
       include: [/node_modules/, /shared/],
     },
+    sourcemap: 'inline', // or just true for separate .map files
+    minify: false, // optional: easier to read the compiled output
   },
   optimizeDeps: {
     // Force Vite to pre-bundle the shared module and polyfills

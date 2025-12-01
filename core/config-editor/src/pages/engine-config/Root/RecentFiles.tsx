@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useRecentFiles } from "../services/RecentFilesStorage";
 import { replaceParams } from "../../../utils/router";
 import { EngineConfigPaths } from "../paths";
+import { ToolTipSpan } from "../../../components/ToolTip";
 
 export function RecentFiles(
   { maxDisplay }: { maxDisplay?: number }
@@ -60,8 +61,7 @@ export function RecentFiles(
               <Link to={
                 replaceParams(EngineConfigPaths.edit, { enginePath: encodeURIComponent(file.path) })
               } >
-                <div className="file-name">{file.name}</div>
-                <div className="file-path">{file.path}</div>
+                <ToolTipSpan className="file-name" tip={file.path}>{file.name}</ToolTipSpan>
               </Link>
               <div className="file-date">
                 Last opened: {formatDate(file.lastOpened)}

@@ -13,6 +13,7 @@ export type MatchLockEngineConfig = {
   name: string,
   version: string,
   pieceDefinitions: Record<PieceType, {
+    pathVariables: Array<string>,
     assets: Array<MatchLockEngineAssetDefinition>
   }>
 }

@@ -20,24 +20,24 @@ export function EngineConfigForm({ value, onChange }: InputProps<MatchLockEngine
 
 function Form({ value, onChange }: InputProps<MatchLockEngineConfig>){
   return <>
-    <div>
-      <div>Engine Name</div>
-      <input type="text" value={value.name} onChange={e => onChange({ ...value, name: e.target.value })} />
+    <div className="section">
+      <h2>Engine Config</h2>
+      <div>
+        <div>Engine Name</div>
+        <input type="text" value={value.name} onChange={e => onChange({ ...value, name: e.target.value })} />
+      </div>
+      <div>
+        <div>Engine Version</div>
+        <input
+          type="text"
+          value={value.version}
+          onChange={e => onChange({ ...value, version: e.target.value })}
+        />
+      </div>
     </div>
-    <div>
-      <div>Engine Version</div>
-      <input
-        type="text"
-        value={value.version}
-        onChange={e => onChange({ ...value, version: e.target.value })}
-      />
-    </div>
-    <div>
-      <div>Piece Definitions</div>
-      <PieceDefinitions
-        value={value.pieceDefinitions}
-        onChange={v => onChange({ ...value, pieceDefinitions: v })}
-      />
-    </div>
+    <PieceDefinitions
+      value={value.pieceDefinitions}
+      onChange={v => onChange({ ...value, pieceDefinitions: v })}
+    />
   </>
 }
