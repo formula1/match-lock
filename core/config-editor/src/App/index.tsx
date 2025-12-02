@@ -1,9 +1,9 @@
 import { useState } from "react";
-import "./common.css";
 import { Router } from "./Router";
 import { Tooltip } from "react-tooltip";
-import ReactMarkdown from "react-markdown";
+import "./common.css";
 import { UserSettingsDialog } from "../pages/user-settings";
+import { Markdown } from "../components/Markdown";
 
 function App() {
   const [isReady, setIsReady] = useState(false);
@@ -16,8 +16,8 @@ function App() {
     <Router />
     <Tooltip
       id="global-tooltip"
-      clickable
-      render={({ content })=><ReactMarkdown>{content}</ReactMarkdown>}
+      clickable={true}
+      render={({ content })=>(<Markdown>{content}</Markdown>)}
     />
   </>
 }
