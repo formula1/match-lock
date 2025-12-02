@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import type { InputProps } from "../../../../../utils/react";
+import type { InputProps } from "../../../../../../utils/react";
 
-import { ToolTipSpan } from "../../../../../components/ToolTip";
-import { InputError } from "../../../../../components/InputError";
+import { ToolTipSpan } from "../../../../../../components/ToolTip";
+import { InputError } from "../../../../../../components/InputError";
 import ValueTT from "./ValueTT.md";
 import RangeTT from "./RangeTT.md";
 

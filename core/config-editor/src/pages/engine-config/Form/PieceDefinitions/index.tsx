@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { type InputProps } from "../../../../utils/react/input";
 import type { MatchLockEngineConfig } from "@match-lock/shared";
-import { AssetDefinitionForm } from "./AssetDefintion";
+import { AssetDefinitionCreator, AssetDefinitionForm } from "./AssetDefinition";
 
 export function PieceDefinitions({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"]>){
   return <div className="section">
@@ -77,16 +77,18 @@ function PieceDefinition(
       value={value.pathVariables}
       onChange={v => onChange({ ...value, pathVariables: v })}
     />
-    <div>
+    <div className="section">
       <h3>Assets</h3>
       <AssetDefinitionCreator value={value} onChange={onChange} />
       {value.assets.map((asset, i) => (
-        <AssetDefinitionForm
-          key={`${asset.name}-${i}`}
-          value={asset}
-          onChange={v => onChange({ ...value, assets: value.assets.map((a, j) => j === i ? v : a) })}
-          assetList={value.assets}
-        />
+        <div className="section" key={i}>
+          <AssetDefinitionForm
+            index={i}
+            value={asset}
+            onChange={v => onChange({ ...value, assets: value.assets.map((a, j) => j === i ? v : a) })}
+            assetList={value.assets}
+          />
+        </div>
       ))}
     </div>
   </div>
@@ -142,23 +144,3 @@ function TitleInput(
   </div>
 }
 
-function AssetDefinitionCreator({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"][string]>){
-  const [asset, newAsset] = useState<MatchLockEngineConfig["pieceDefinitions"][string]["assets"][number]>({
-    name: "",
-    classification: "logic",
-    count: 1,
-    glob: [],
-  });
-  return <div>
-    <h3>
-      <button
-        onClick={() => onChange({ ...value, assets: [...value.assets, asset] })}
-      >Add New Asset</button>
-    </h3>
-    <AssetDefinitionForm
-      assetList={value.assets}
-      value={asset}
-      onChange={newAsset}
-    />
-  </div>
-}

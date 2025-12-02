@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { validateGlobItem } from "@match-lock/shared";
-import { ToolTipSpan } from "../../../../../components/ToolTip";
-import { InputError } from "../../../../../components/InputError";
-import { useValidator } from "../../../../../utils/react";
-import type { InputProps } from "../../../../../utils/react";
+import { ToolTipSpan } from "../../../../../../components/ToolTip";
+import { InputError } from "../../../../../../components/InputError";
+import { useValidator } from "../../../../../../utils/react";
+import type { InputProps } from "../../../../../../utils/react";
 import GlobTT from "./GlobTT.md";
 
 export function GlobListInput({ value, onChange }: InputProps<Array<string>>){
