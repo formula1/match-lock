@@ -1,6 +1,10 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+.react-tooltip-content-wrapper a {
+  color: #90D5FF;
+}
+
 .section {
   padding: 1rem 1rem 1.5rem;
   border-radius: 0.5rem;
