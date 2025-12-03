@@ -48,6 +48,10 @@ echo "🧹 Cleaning up any existing processes on port 5173..."
 lsof -ti:5173 | xargs -r kill -9 2>/dev/null || true
 sleep 1
 
+# Clean Vite cache
+echo "🗑️  Clearing Vite cache..."
+rm -rf node_modules/.vite 2>/dev/null || true
+
 # Start Vite dev server in background
 echo "🌐 Starting Vite dev server..."
 npm run dev:vite &
