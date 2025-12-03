@@ -1,33 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { InputProps } from "../../../../../../utils/react";
+
+import { MatchLockEngineAssetDefinition, validateRange } from "@match-lock/shared";
 
 import { ToolTipSpan } from "../../../../../../components/ToolTip";
 import { InputError } from "../../../../../../components/InputError";
-import ValueTT from "./ValueTT.md";
-import RangeTT from "./RangeTT.md";
+import explainTT from "./explain.md";
 
-type Count = number | "*" | [number, number | "*"];
+type Count = MatchLockEngineAssetDefinition["count"];
 
 export function CountUnknownInput({ value, onChange }: InputProps<Count>){
   const [valueOrRange, setValueOrRange] = useState<"value" | "range">("value");
   return <>
-    <div>
-      <h3>Count</h3>
-      <div>
-        <label><ToolTipSpan tip={ValueTT}>Value</ToolTipSpan></label>
+    <h3><ToolTipSpan tip={explainTT} clickable>Count</ToolTipSpan></h3>
+    <div style={{ display: "flex", gap: "1rem" }}>
+      <label>
         <input type="radio" checked={valueOrRange === "value"} onChange={()=> setValueOrRange("value")} />
-      </div>
-      <div>
-        <label><ToolTipSpan tip={RangeTT}>Range</ToolTipSpan></label>
+        {" Value"}
+      </label>
+      <label>
         <input type="radio" checked={valueOrRange === "range"} onChange={()=> setValueOrRange("range")} />
-      </div>
-      {valueOrRange === "value" ? (
-        <ValueInput value={value} onChange={onChange} />
-      ) : (
-        <RangeInput value={value} onChange={onChange} />
-      )}
-
+        {" Range"}
+      </label>
     </div>
+    {valueOrRange === "value" ? (
+      <ValueInput value={value} onChange={(onChange)} />
+    ) : (
+      <RangeInput value={value} onChange={onChange} />
+    )}
   </>
 }
 
@@ -48,7 +48,9 @@ function ValueInput({ value: countValue, onChange }: InputProps<Count>){
         onChange={(e)=>{
           try {
             setError(null);
-            onChange(validateNumberOrStar(e.target.value));
+            const validValue = validateNumberOrStar(e.target.value);
+            validateRange(validValue)
+            onChange(validValue);
           }catch(error){
             setError((error as Error).message);
             setInvalidValue(e.target.value);
@@ -82,7 +84,9 @@ function RangeInput({ value: countValue, onChange }: InputProps<Count>){
           onChange={(e)=>{
             try {
               setMinError(null);
-              onChange([validateCount(e.target.value), value[1]]);
+              const newValues: [number, number | "*"] = [validateCount(e.target.value), value[1]];
+              validateRange(newValues);
+              onChange(newValues);
             }catch(error){
               setMinError((error as Error).message);
               setMinInvalidValue(e.target.value);
@@ -99,12 +103,11 @@ function RangeInput({ value: countValue, onChange }: InputProps<Count>){
           onChange={(e)=>{
             try {
               setMaxError(null);
-              const newMax = validateNumberOrStar(e.target.value);
-              if(newMax !== "*" && newMax < value[0]){
-                throw new Error("Max must be greater than or equal to min");
-              }
-              onChange([value[0], newMax]);
+              const newValues: [number, number | "*"] = [value[0], validateNumberOrStar(e.target.value)];
+              validateRange(newValues);
+              onChange(newValues);
             }catch(error){
+              console.error(error);
               setMaxError((error as Error).message);
               setMaxInvalidValue(e.target.value);
             }
@@ -118,31 +121,36 @@ function RangeInput({ value: countValue, onChange }: InputProps<Count>){
 }
 
 function valueToNumber(value: Count): number | "*" {
-  if(Array.isArray(value)) return value[0];
-  return value;
+  if(!Array.isArray(value)) return value;
+  if(value[0] === 0) return value[1]
+  return value[0];
 }
 
 function valueToArray(value: Count): [number, number | "*"]{
   if(Array.isArray(value)) return value;
-  if(value === "*" ) return [0, 1];
-  return [value, value];
+  if(value === "*" ) return [0, "*"];
+  return [value, value + 1];
 }
 
 function validateCount(value: string): number {
   const num = Number.parseInt(value);
   if(Number.isNaN(num)){
-    throw new Error("Exepcting a number");
-  }
-  if(num <= 0){
-    throw new Error("Exepcting a number greater than or equal to 0");
+    throw new Error("Expecting a number");
   }
   if(Math.round(num) !== num){
-    throw new Error("Exepcting a whole number");
+    throw new Error("Expecting a whole number");
   }
   return num;
 }
 
 function validateNumberOrStar(value: string): number | "*"{
   if(value === "*") return value;
-  return validateCount(value);
+  const num = Number.parseInt(value);
+  if(Number.isNaN(num)){
+    throw new Error("Expecting a number or *");
+  }
+  if(Math.round(num) !== num){
+    throw new Error("Expecting a whole number or *");
+  }
+  return num;
 }
