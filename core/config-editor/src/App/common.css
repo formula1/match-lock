@@ -1,8 +1,17 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+.react-tooltip-content-wrapper {
+  max-width: 75vw;
+}
+
 .react-tooltip-content-wrapper a {
   color: #90D5FF;
+}
+
+.react-tooltip-content-wrapper code {
+  color: #F77
+
 }
 
 .section {
