@@ -1,42 +1,26 @@
-import type { ValidInputProps } from "../../../../../utils/react/input";
-import type { MatchLockEngineConfig } from "@match-lock/shared";
-import { AssetNameInput } from "./AssetName";
-import { AssetClassificationInput } from "./Classification";
-import { CountUnknownInput } from "./CountUnknown/Input";
-import { GlobListInput } from "./Glob";
 
-export { AssetDefinitionCreator } from "./Creation";
+import { InputProps } from "../../../../../utils/react";
+import { ToolTipSpan } from "../../../../../components/ToolTip";
+import { AssetDefinitionCreator } from "./Creation";
+import { AssetDefinitionForm } from "./AssetItem";
+import { MatchLockEngineConfig } from "@match-lock/shared";
 
-type AssetDefinition = MatchLockEngineConfig["pieceDefinitions"][string]["assets"][number];
+import tooltip from "./tooltip.md";
 
-export function AssetDefinitionForm(
-  { value, onChange, assetList, index }: (
-    & ValidInputProps<AssetDefinition>
-    & { index: number }
-    & { assetList: Array<AssetDefinition> }
-)){
+export function AssetsInput({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"][string]>){
   return <>
-    <h3>
-      <AssetNameInput
-        value={value.name}
-        onChange={v => onChange({...value, name: v})}
-        index={index}
-        assetList={assetList}
-      />
-    </h3>
-    <div className="section">
-      <AssetClassificationInput
-        value={value.classification}
-        onChange={v => onChange({...value, classification: v})}
-      />
-    </div>
-    <CountUnknownInput
-      value={value.count}
-      onChange={v => onChange({...value, count: v})}
-    />
-    <GlobListInput
-      value={value.glob}
-      onChange={v => onChange({...value, glob: v})}
-    />
-  </>
+    <h3><ToolTipSpan tip={tooltip} clickable>Assets</ToolTipSpan></h3>
+    <AssetDefinitionCreator value={value} onChange={onChange} />
+    {value.assets.map((asset, i) => (
+      <div className="section" key={i}>
+        <AssetDefinitionForm
+          index={i}
+          value={asset}
+          onChange={v => onChange({ ...value, assets: value.assets.map((a, j) => j === i ? v : a) })}
+          onDelete={() => onChange({ ...value, assets: value.assets.filter((_, j) => j !== i) })}
+          assetList={value.assets}
+        />
+      </div>
+    ))}
+  </>;
 }

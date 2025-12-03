@@ -35,7 +35,7 @@ export function AssetDefinitionCreator({ value, onChange }: InputProps<MatchLock
         }
       }}
     >
-    <h3><ToolTipSpan tip="">Create Asset</ToolTipSpan></h3>
+    <h3>Create Asset</h3>
     <div>
       <input
         type="text" placeholder="Asset Name..."
@@ -53,7 +53,7 @@ export function AssetDefinitionCreator({ value, onChange }: InputProps<MatchLock
       <button
         disabled={!!error || name === ""}
         type="submit"
-      >Create</button>
+      >Add</button>
     </div>
     {error !== null && <div className="error">{error}</div>}
   </form>

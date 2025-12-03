@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { type InputProps } from "../../../../utils/react/input";
 import type { MatchLockEngineConfig } from "@match-lock/shared";
-import { AssetDefinitionCreator, AssetDefinitionForm } from "./AssetDefinition";
 
 export function PieceDefinitions({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"]>){
   return <div className="section">
@@ -59,6 +58,7 @@ function PieceDefinitionCreator({ value, onChange }: InputProps<MatchLockEngineC
 }
 
 import { PathVariablesInput } from "./PathVariablesInput";
+import { AssetsInput } from "./AssetDefinition";
 function PieceDefinition(
   { pieceName, value: definitions, onChange: setDefinitions }: (
     & { pieceName: string }
@@ -73,23 +73,17 @@ function PieceDefinition(
       value={definitions}
       onChange={setDefinitions}
     />
-    <PathVariablesInput
-      value={value.pathVariables}
-      onChange={v => onChange({ ...value, pathVariables: v })}
-    />
     <div className="section">
-      <h3>Assets</h3>
-      <AssetDefinitionCreator value={value} onChange={onChange} />
-      {value.assets.map((asset, i) => (
-        <div className="section" key={i}>
-          <AssetDefinitionForm
-            index={i}
-            value={asset}
-            onChange={v => onChange({ ...value, assets: value.assets.map((a, j) => j === i ? v : a) })}
-            assetList={value.assets}
-          />
-        </div>
-      ))}
+      <PathVariablesInput
+        value={value.pathVariables}
+        onChange={v => onChange({ ...value, pathVariables: v })}
+      />
+    </div>
+    <div className="section">
+      <AssetsInput
+        value={value}
+        onChange={onChange}
+      />
     </div>
   </div>
 }
