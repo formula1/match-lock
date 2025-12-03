@@ -12,16 +12,30 @@ import {
   Union as CastUnion,
   String as CastString,
 } from "runtypes"
-import { MatchLockEngineConfig } from "./types";
+import { MatchLockEngineAssetDefinition, MatchLockEngineConfig } from "./types";
 
+
+import { validateRange, validateGlobItem } from "./validate";
 
 export const MatchLockEngineCaster = CastObject({
   name: CastString,
   version: CastString,
   pieceDefinitions: CastRecord(CastString, CastObject({
+    pathVariables: CastArray(CastString),
     assets: CastArray(CastObject({
       name: CastString,
-      glob: CastArray(CastString),
+      glob: CastArray(CastString).withConstraint((value) => {
+        try {
+          if(value.length === 0) throw new Error("Glob list is empty");
+          if(new Set(value).size !== value.length) throw new Error("Duplicate globs");
+          for(const g of value){
+            validateGlobItem(g);
+          }
+          return true;
+        }catch(e){
+          return (e as Error).message;
+        }
+      }),
       classification: CastUnion(Literal("logic"), Literal("media"), Literal("doc")),
       count: CastUnion(
         CountCaster,
@@ -29,16 +43,12 @@ export const MatchLockEngineCaster = CastObject({
         CastTuple(CountCaster, CountCaster),
         CastTuple(CountCaster, Literal("*")),
       ).withConstraint((value) => {
-        if(!Array.isArray(value)){
-          if(value === "*") return true;
-          if(value < 0) return "Count is negative";
+        try {
+          validateRange(value);
           return true;
+        }catch(e){
+          return (e as Error).message;
         }
-        if(value[0] < 0) return "Count range min is negative";
-        if(value[1] === "*") return true;
-        const [min, max] = value;
-        if(min > max) return "Count range min is greater than max";
-        return true;
       })
     }))
   })),
