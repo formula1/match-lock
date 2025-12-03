@@ -5,6 +5,7 @@ interface ISimpleEventEmitterContext<Args extends Array<any>> {
   config: {
     allowDuplicateCallback: boolean,
     maximumListeners: number,
+    suppressErrors: boolean,
   }
   listeners: Array<Listener<Args>>
 }
@@ -13,6 +14,7 @@ export interface ISimpleEventEmitter<Args extends Array<any>> extends ISimpleEve
   config: {
     allowDuplicateCallback: boolean,
     maximumListeners: number,
+    suppressErrors: boolean,
   }
   listeners: Array<Listener<Args>>
   (cb: Listener<Args>): ()=>boolean
@@ -29,6 +31,7 @@ export function createSimpleEmitter<Args extends Array<any>>(
   config = {
     allowDuplicateCallback: false,
     maximumListeners: Number.POSITIVE_INFINITY,
+    suppressErrors: true,
   }
 ): ISimpleEventEmitter<Args>{
 
@@ -96,7 +99,7 @@ function emitEvent<Args extends Array<any>>(
     try {
       listener(...args);
     }catch(e){
-      // ignore
+      if(!this.config.suppressErrors) throw e;
     }
   }
 }
