@@ -6,7 +6,7 @@ import PathVariablesTT from "./explain.md";
 
 export function PathVariablesInput({ value, onChange }: InputProps<Array<string>>){
   return <>
-    <h3><ToolTipSpan tip={PathVariablesTT}>Path Variables</ToolTipSpan></h3>
+    <h3><ToolTipSpan tip={PathVariablesTT} clickable>Path Variables</ToolTipSpan></h3>
     <PathVariableCreator value={value} onChange={onChange} />
     <div className="section">
       {value.map((variable, i) => (

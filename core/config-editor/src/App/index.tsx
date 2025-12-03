@@ -15,8 +15,13 @@ function App() {
   return <>
     <Router />
     <Tooltip
-      id="global-tooltip"
+      id="global-tooltip-clickable"
       clickable={true}
+      render={({ content })=>(<Markdown>{content}</Markdown>)}
+    />
+    <Tooltip
+      id="global-tooltip-non-clickable"
+      clickable={false}
       render={({ content })=>(<Markdown>{content}</Markdown>)}
     />
   </>

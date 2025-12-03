@@ -9,7 +9,7 @@ type AssetDefinition = MatchLockEngineConfig["pieceDefinitions"][string]["assets
 export function AssetClassificationInput({ value, onChange }: InputProps<AssetDefinition["classification"]>){
   return (
     <>
-      <h3><ToolTipSpan tip={ClassificationTT} >Classification</ToolTipSpan></h3>
+      <h3><ToolTipSpan tip={ClassificationTT} clickable >Classification</ToolTipSpan></h3>
       <div>
         <input
           type="radio"
