@@ -1,0 +1,51 @@
+import { useState } from "react";
+
+export function TitleInput(
+  { placeholder, originalValue, existingNames, validate, onSubmit, onDelete }: (
+    & { placeholder: string }
+    & { originalValue: string, existingNames: Array<string> }
+    & {
+      validate: (name: string)=>unknown
+      onSubmit: (newName: string)=>unknown
+      onDelete: ()=>unknown
+    }
+  )
+){
+  const [title, setTitle] = useState(originalValue);
+  const [error, setError] = useState<null | string>(null);
+  return <div>
+    <div className="editable-title">
+      <input
+        type="text"
+        placeholder={placeholder}
+        value={title}
+        onChange={(e)=>{
+          try {
+            setTitle(e.target.value);
+            setError(null);
+            if(e.target.value === originalValue) return;
+            if(e.target.value === "") throw new Error("Cannot be empty");
+            if(existingNames.includes(e.target.value)) throw new Error("Name already exists");
+            validate(e.target.value);
+          }catch(error){
+            setError((error as Error).message);
+          }
+        }}
+      />
+      <button
+        disabled={title === originalValue || error !== null}
+        onClick={() => {
+          try {
+            validate(title);
+            onSubmit(title);
+          }catch(error){
+            setError((error as Error).message);
+          }
+        }}
+      >Update</button>
+      <button onClick={() =>onDelete()} >Delete</button>
+    </div>
+    {error !== null && <div className="error">{error}</div>}
+  </div>
+}
+

@@ -68,7 +68,7 @@ function PieceDefinition(
   const value = definitions[pieceName];
   const onChange = (v: typeof value) => setDefinitions({ ...definitions, [pieceName]: v });
   return <div className="section">
-    <TitleInput
+    <PieceTitleInput
       pieceName={pieceName}
       value={definitions}
       onChange={setDefinitions}
@@ -94,53 +94,28 @@ function PieceDefinition(
   </div>
 }
 
-function TitleInput(
+import { TitleInput } from "../../../../components/TitleInput";
+function PieceTitleInput(
   { pieceName, value: definitions, onChange: setDefinitions }: (
     & { pieceName: string }
     & InputProps<MatchLockEngineConfig["pieceDefinitions"]>
   )
 ){
-  const [title, setTitle] = useState(pieceName);
-  const [error, setError] = useState<null | string>(null);
-  return <div>
-    <div className="editable-title">
-      <input
-        type="text"
-        placeholder="Piece Title..."
-        value={title}
-        onChange={(e)=>{
-          setTitle(e.target.value);
-          setError(null);
-          if(e.target.value === pieceName) return;
-          if(e.target.value === "") return setError("Name cannot be empty");
-          if(definitions[e.target.value]) return setError("Name already exists");
-        }}
-      />
-      <button
-        disabled={title === pieceName || error !== null}
-        onClick={() => {
-          try {
-            if(title === pieceName) throw new Error("Name is the same");
-            if(title === "") throw new Error("Name cannot be empty");
-            if(definitions[title]) throw new Error("Name already exists");
-            const def = definitions[pieceName];
-            const oldValue = { ...definitions }
-            delete oldValue[pieceName];
-            setDefinitions({ ...oldValue, [title]: def });
-            setTitle(pieceName);
-          }catch(error){
-            setError((error as Error).message);
-          }
-        }}
-      >Update Title</button>
-      <button
-        onClick={() => {
-          const { [pieceName]: _, ...oldValue } = definitions;
-          setDefinitions(oldValue);
-        }}
-      >Delete</button>
-    </div>
-    {error !== null && <div className="error">{error}</div>}
-  </div>
+  return <TitleInput
+    placeholder="Piece Title..."
+    originalValue={pieceName}
+    existingNames={Object.keys(definitions)}
+    validate={name => {}}
+    onSubmit={name => {
+      const def = definitions[pieceName];
+      const oldValue = { ...definitions }
+      delete oldValue[pieceName];
+      setDefinitions({ ...oldValue, [name]: def });
+    }}
+    onDelete={() => {
+      const { [pieceName]: _, ...oldValue } = definitions;
+      setDefinitions(oldValue);
+    }}
+  />
 }
 
