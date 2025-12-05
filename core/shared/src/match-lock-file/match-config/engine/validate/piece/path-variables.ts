@@ -4,14 +4,17 @@ export function validatePathVariables(variables: Array<string>){
     throw new Error(`Duplicate path variables`);
   }
   for(const variable of variables){
-    validatePathVariable(variable);
+    validatePathVariableName(variable);
   }
 }
 
 const INVALID_PATH_VARIABLE_CHARS = /[^a-zA-Z0-9_]/;
-export function validatePathVariable(variable: string){
+export function validatePathVariableName(variable: string){
   if(variable.length === 0){
     throw new Error(`Path variable is empty`);
+  }
+  if(variable.length > 64){
+    throw new Error(`Path variable ${variable} is too long`);
   }
   const match = variable.match(INVALID_PATH_VARIABLE_CHARS)
   if(match){
