@@ -15,12 +15,16 @@ export function validateAssets(pieceType: string, definition: MatchLockEngineCon
     }
     names.add(pieceAssetDefinition.name);
     validateRange(pieceAssetDefinition.count)
-    validateGlobList(pieceType, pieceAssetDefinition)
+    validateGlobList(pieceType, pieceAssetDefinition, definition.pathVariables);
   }
 }
 
-import { validateGlobItem } from "./glob";
-function validateGlobList(pieceType: string, { name, glob }: MatchLockEngineAssetDefinition){
+import { validatePathVariablesInGlob, validateGlobItem } from "./glob";
+function validateGlobList(
+  pieceType: string,
+  { name, glob }: MatchLockEngineAssetDefinition,
+  pathVariables: Array<string>
+){
   if(glob.length === 0){
     throw new Error(`Piece ${pieceType} asset ${name} has no globs`);
   }
@@ -28,8 +32,9 @@ function validateGlobList(pieceType: string, { name, glob }: MatchLockEngineAsse
     throw new Error(`Piece ${pieceType} asset ${name} has duplicate globs`);
   }
   for(const g of glob){
+    validatePathVariablesInGlob(g, pathVariables);
     validateGlobItem(g);
   }
 }
 
-export { validateRange, validateGlobItem };
+export { validatePathVariablesInGlob, validateRange, validateGlobItem };
