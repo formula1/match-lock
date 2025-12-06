@@ -42,13 +42,7 @@ export type MatchLockPublishPiece = {
   },
   sources: MatchLockResolvable[],
 
-  pieceDefinition: PieceType,
-  version: {
-    logic: Sha256,
-    media: Sha256,
-  },
-  assets: Record<FilePath, MatchLockAsset>,
-}
+} & MatchLockScanPiece
 
 
 export type MatchLockScanPiece = {
