@@ -51,5 +51,6 @@ export type MatchLockScanPiece = {
     logic: Sha256,
     media: Sha256,
   }
+  pathVariables: Record<string, string>,
   assets: Record<FilePath, MatchLockAsset>,
 }
