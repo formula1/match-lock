@@ -1,8 +1,8 @@
 
-import { validatePieceDefinitions } from "./definition";
+import { validatePieceDefinitions } from "./piece";
 import { MatchLockEngineConfig } from "../types";
 
-export * from "./definition";
+export * from "./piece";
 
 export function validateEngineConfig(engine: MatchLockEngineConfig){
   validatePieceDefinitions(engine);

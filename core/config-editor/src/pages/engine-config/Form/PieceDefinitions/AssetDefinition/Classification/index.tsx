@@ -1,5 +1,5 @@
-import type { InputProps } from "../../../../../utils/react/input";
-import { ToolTipSpan } from "../../../../../components/ToolTip";
+import type { InputProps } from "../../../../../../utils/react/input";
+import { ToolTipSpan } from "../../../../../../components/ToolTip";
 import type { MatchLockEngineConfig } from "@match-lock/shared";
 
 import ClassificationTT from "./ClassificationTT.md";
@@ -8,8 +8,8 @@ type AssetDefinition = MatchLockEngineConfig["pieceDefinitions"][string]["assets
 
 export function AssetClassificationInput({ value, onChange }: InputProps<AssetDefinition["classification"]>){
   return (
-    <div>
-      <h3><ToolTipSpan tip={ClassificationTT} >Classification</ToolTipSpan></h3>
+    <>
+      <h3><ToolTipSpan tip={ClassificationTT} clickable >Classification</ToolTipSpan></h3>
       <div>
         <input
           type="radio"
@@ -34,6 +34,6 @@ export function AssetClassificationInput({ value, onChange }: InputProps<AssetDe
         />
         <span>Document</span>
       </div>
-    </div>
+    </>
   );
 }
