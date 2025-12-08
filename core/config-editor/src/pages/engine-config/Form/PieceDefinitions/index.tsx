@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { type InputProps } from "../../../../utils/react/input";
 import type { MatchLockEngineConfig } from "@match-lock/shared";
+import { ToolTipSpan } from "../../../../components/ToolTip";
+import tooltip from "./piecett.md";
 
 export function PieceDefinitions({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"]>){
   return <div className="section">
-    <h2>Piece Definitions</h2>
+    <h2><ToolTipSpan tip={tooltip} clickable>Piece Definitions</ToolTipSpan></h2>
     <PieceDefinitionCreator value={value} onChange={onChange} />
     {Object.keys(value).sort().map((pieceName) => (
       <PieceDefinition
