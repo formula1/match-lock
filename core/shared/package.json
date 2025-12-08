@@ -20,7 +20,8 @@
   "types": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf ./dist && tsc"
+    "build": "rimraf ./dist && tsc",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@types/is-glob": "^4.0.4",
