@@ -8,23 +8,28 @@ import { MatchLockEngineConfig } from "@match-lock/shared";
 import tooltip from "./tooltip.md";
 
 export function AssetsInput(
-  { value, onChange }: (
-    & InputProps<MatchLockEngineConfig["pieceDefinitions"][string]>
+  { value, onChange, pathVariables }: (
+    & InputProps<MatchLockEngineConfig["pieceDefinitions"][string]["assets"]>
     & { pathVariables: MatchLockEngineConfig["pieceDefinitions"][string]["pathVariables"] }
   )
 ){
   return <>
     <h3><ToolTipSpan tip={tooltip} clickable>Assets</ToolTipSpan></h3>
-    <AssetDefinitionCreator value={value} onChange={onChange} />
-    {value.assets.map((asset, i) => (
+    <AssetDefinitionCreator
+      validate={(v)=>{
+        if(value.some((a) => a.name === v)) throw new Error("Name already exists")
+      }}
+      onSubmit={(v) => onChange([...value, v])}
+    />
+    {value.map((asset, i) => (
       <div className="section" key={i}>
         <AssetDefinitionForm
           index={i}
           value={asset}
-          onChange={v => onChange({ ...value, assets: value.assets.map((a, j) => j === i ? v : a) })}
-          onDelete={() => onChange({ ...value, assets: value.assets.filter((_, j) => j !== i) })}
-          items={value.assets}
-          pathVariables={value.pathVariables}
+          onChange={v => onChange(value.map((a, j) => j === i ? v : a))}
+          onDelete={() => onChange(value.filter((_, j) => j !== i))}
+          items={value}
+          pathVariables={pathVariables}
         />
       </div>
     ))}

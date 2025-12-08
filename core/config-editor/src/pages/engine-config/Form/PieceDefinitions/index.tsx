@@ -81,8 +81,8 @@ function PieceDefinition(
     </div>
     <div className="section">
       <AssetsInput
-        value={value}
-        onChange={onChange}
+        value={value.assets}
+        onChange={v => onChange({ ...value, assets: v })}
         pathVariables={value.pathVariables}
       />
     </div>

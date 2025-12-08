@@ -1,33 +1,27 @@
 import { useState } from "react";
-import { type InputProps } from "../../../../../../utils/react/input";
 import type { MatchLockEngineConfig } from "@match-lock/shared";
-import { ToolTipSpan } from "../../../../../../components/ToolTip";
 
-export function AssetDefinitionCreator({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"][string]>){
+export function AssetDefinitionCreator(
+  { validate, onSubmit }: {
+    validate: (v: string)=>unknown,
+    onSubmit: (v: MatchLockEngineConfig["pieceDefinitions"][string]["assets"][number])=>unknown,
+  }
+){
   const [name, setName] = useState("");
-  const [asset, newAsset] = useState<MatchLockEngineConfig["pieceDefinitions"][string]["assets"][number]>({
-    name: "",
-    classification: "logic",
-    count: 1,
-    glob: [],
-  });
   const [error, setError] = useState<null | string>(null);
   return <form
       className="section"
       onSubmit={(e)=>{
         e.preventDefault();
         try {
-          setError(null);
+          if(error !== null) return;
           if(name === "") throw new Error("Name cannot be empty");
-          if(value.assets.some((a) => a.name === name)) throw new Error("Name already exists");
-          onChange({
-            ...value,
-            assets: [...value.assets, {
-              name,
-              classification: "logic",
-              count: 1,
-              glob: [],
-            }]
+          validate(name);
+          onSubmit({
+            name,
+            classification: "logic",
+            count: 1,
+            glob: [],
           });
           setName("");
         }catch(error){
@@ -44,7 +38,7 @@ export function AssetDefinitionCreator({ value, onChange }: InputProps<MatchLock
           try {
             setName(e.target.value)
             setError(null);
-            if(value.assets.some((a) => a.name === name)) throw new Error("Name already exists");
+            validate(e.target.value);
           }catch(error){
             setError((error as Error).message);
           }
