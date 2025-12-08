@@ -101,7 +101,7 @@ export const fs = {
   },
 
   startWalkStream: async (path: string, callbacks: WalkStreamCallbacks): Promise<void> => {
-    const streamId = `walk-${Date.now()}-${Math.random()}`;
+    const streamId = `walk-${Date.now().toString(32)}-${Math.random().toString(32).substring(2)}`;
     
     // Set up event listeners
     const unlistenData = await listen(`fs-walk-stream-data-${streamId}`, (event) => {
