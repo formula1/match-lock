@@ -1,5 +1,5 @@
 {
-  "name": "prep-app",
+  "name": "@match-lock/config-editor",
   "private": true,
   "version": "0.0.0",
   "type": "commonjs",
