@@ -8,7 +8,7 @@ import { GlobHighlightInput } from "./GlobHighlightInput";
 
 export function GlobListInput(
   { value, onChange, pathVariables }: (
-    & InputProps<Array<string>>
+    & InputProps<MatchLockEngineConfig["pieceDefinitions"][string]["assets"][number]["glob"]>
     & { pathVariables: MatchLockEngineConfig["pieceDefinitions"][string]["pathVariables"] }
   )
 ){
