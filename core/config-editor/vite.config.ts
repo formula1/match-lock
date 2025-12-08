@@ -12,6 +12,8 @@ export default defineConfig({
       'crypto': require.resolve('crypto-browserify'),
       'path': require.resolve('path-browserify'),
       'process': require.resolve('process/browser'),
+      // magnet-uri only has "import" in exports, no "require" - point directly to the file
+      'magnet-uri': require.resolve('@match-lock/shared/node_modules/magnet-uri/index.js'),
     },
   },
   plugins: [
@@ -50,6 +52,7 @@ export default defineConfig({
   optimizeDeps: {
     // Force Vite to pre-bundle the shared module and polyfills
     include: ['@match-lock/shared', 'process', 'path-browserify'],
+    exclude: ['magnet-uri'],
   },
   server: {
     port: 5173,
