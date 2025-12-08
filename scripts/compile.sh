@@ -14,5 +14,5 @@ packages=(
 set -e
 for package in "${packages[@]}"; do
   echo ":: Installing $package"
-  cd "core/$package" && npm install && cd ../..
+  cd "core/$package" && npm install && npm run build && cd ../..
 done
