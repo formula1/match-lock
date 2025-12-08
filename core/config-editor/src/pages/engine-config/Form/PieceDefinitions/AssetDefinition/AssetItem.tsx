@@ -1,4 +1,4 @@
-import type { ValidInputProps } from "../../../../../utils/react/input";
+import type { ValidInputProps, ListItemProps } from "../../../../../utils/react/input";
 import type { MatchLockEngineConfig } from "@match-lock/shared";
 import { AssetNameInput } from "./AssetName";
 import { AssetClassificationInput } from "./Classification";
@@ -8,19 +8,18 @@ import { GlobListInput } from "./Glob";
 type AssetDefinition = MatchLockEngineConfig["pieceDefinitions"][string]["assets"][number];
 
 export function AssetDefinitionForm(
-  { value, onChange, onDelete, assetList, index }: (
+  { value, onChange, index, items, onDelete }: (
     & ValidInputProps<AssetDefinition>
-    & { index: number }
-    & { assetList: Array<AssetDefinition> }
-    & { onDelete: ()=>unknown }
+    & ListItemProps<AssetDefinition>
 )){
   return <>
     <h3>
       <AssetNameInput
         value={value.name}
         onChange={v => onChange({...value, name: v})}
+        index={index}
         onDelete={onDelete}
-        assetList={assetList}
+        items={items}
       />
     </h3>
     <div className="section">
@@ -35,9 +34,11 @@ export function AssetDefinitionForm(
         onChange={v => onChange({...value, count: v})}
       />
     </div>
-    <GlobListInput
-      value={value.glob}
-      onChange={v => onChange({...value, glob: v})}
-    />
+    <div className="section">
+      <GlobListInput
+        value={value.glob}
+        onChange={v => onChange({...value, glob: v})}
+      />
+    </div>
   </>
 }

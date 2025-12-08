@@ -18,7 +18,7 @@ export function AssetsInput({ value, onChange }: InputProps<MatchLockEngineConfi
           value={asset}
           onChange={v => onChange({ ...value, assets: value.assets.map((a, j) => j === i ? v : a) })}
           onDelete={() => onChange({ ...value, assets: value.assets.filter((_, j) => j !== i) })}
-          assetList={value.assets}
+          items={value.assets}
         />
       </div>
     ))}

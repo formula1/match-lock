@@ -1,22 +1,39 @@
 import { useState } from "react";
-import type { InputProps } from "../../../../../utils/react/input";
-import { validatePathVariable } from "@match-lock/shared";
+import type { InputProps, ListItemProps } from "../../../../../utils/react/input";
+import { validatePathVariableName } from "@match-lock/shared";
 
 import PathVariablesTT from "./explain.md";
 
 export function PathVariablesInput({ value, onChange }: InputProps<Array<string>>){
   return <>
     <h3><ToolTipSpan tip={PathVariablesTT} clickable>Path Variables</ToolTipSpan></h3>
-    <PathVariableCreator value={value} onChange={onChange} />
+    <PathVariableCreator
+      validate={(v) =>{
+        validatePathVariableName(v);
+        if(value.includes(v)) throw new Error("Variable already exists");
+      }}
+      onSubmit={(v) => onChange([...value, v])}
+    />
     <div className="section">
-      {value.map((variable, i) => (
-        <PathVariableItem key={`${variable}-${i}`} index={i} value={value} onChange={onChange} />
+      {value.map((variable, index) => (
+        <PathVariableItem
+          key={`${variable}-${index}`}
+          value={variable}
+          onChange={(v) => onChange(value.map((oldVariable, i) => i !== index ? oldVariable : v))}
+
+          index={index}
+          items={value}
+          onDelete={() => onChange(value.filter((_, i) => i !== index))}
+        />
       ))}
     </div>
   </>
 }
 
-function PathVariableCreator({ value, onChange }: InputProps<Array<string>>){
+function PathVariableCreator({ validate, onSubmit }: {
+  validate: (v: string)=>unknown,
+  onSubmit: (v: string)=>unknown,
+}){
   const [newVariable, setNewVariable] = useState("");
   const [error, setError] = useState<null | string>(null);
   return <div className="section">
@@ -24,7 +41,7 @@ function PathVariableCreator({ value, onChange }: InputProps<Array<string>>){
         try {
           e.preventDefault();
           if(error !== null) return;
-          onChange([...value, newVariable]);
+          onSubmit(newVariable);
           setNewVariable("");
         }catch(error){
           setError((error as Error).message);
@@ -37,38 +54,34 @@ function PathVariableCreator({ value, onChange }: InputProps<Array<string>>){
           try {
             setNewVariable(e.target.value)
             setError(null);
-            if(value.includes(e.target.value)) throw new Error("Variable already exists");
-            validatePathVariable(e.target.value);
+            validate(e.target.value);
           }catch(error){
             setError((error as Error).message);
           }
         }}
       />
-      <button type="submit">Add</button>
+      <button
+        disabled={newVariable === "" || error !== null}
+        type="submit"
+      >Add</button>
     </form>
     {error !== null && <div className="error">{error}</div>}
   </div>;
 }
 
 import { ToolTipSpan } from "../../../../../components/ToolTip";
-function PathVariableItem({ index, value: variableList, onChange: setVariableList }: (
-  & { index: number }
-  & InputProps<Array<string>>
+function PathVariableItem({ value, onDelete }: (
+  & InputProps<string>
+  & ListItemProps<string>
 )){
-  const value = variableList[index];
-  const [error, setError] = useState<null | string>(null);
-  const onChange = (newVariable: string)=>(setVariableList(
-    variableList.map((oldVariable, i) => i !== index ? oldVariable : newVariable)
-  ));
   return <div style={{ borderTop: "1px solid #ccc", borderBottom: "1px solid #ccc", padding: "0.5rem 0" }}>
     <div>
       <ToolTipSpan
         tip={`You can use this variable in the asset glob paths using \${${value}}`}
       >{value}</ToolTipSpan>
       <button
-        onClick={()=> setVariableList(variableList.filter((_, i) => i !== index))}
+        onClick={()=> onDelete()}
       >Remove</button>
     </div>
-    {error !== null && <div className="error">{error}</div>}
   </div>;
 }

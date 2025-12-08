@@ -1,20 +1,19 @@
 import type { MatchLockEngineConfig } from "@match-lock/shared";
-import { type InputProps } from "../../../../../utils/react";
+import { ListItemProps, type InputProps } from "../../../../../utils/react";
 
 type AssetDefinition = MatchLockEngineConfig["pieceDefinitions"][string]["assets"][number];
 
 import { TitleInput } from "../../../../../components/TitleInput";
 
-export function AssetNameInput({ value, onChange, onDelete, assetList }: (
+export function AssetNameInput({ value, onChange, onDelete, items }: (
   & InputProps<string>
-  & { assetList: Array<AssetDefinition> }
-  & { onDelete: ()=>unknown }
+  & ListItemProps<AssetDefinition>
 )){
 
   return <TitleInput
     placeholder="Asset Name..."
     originalValue={value}
-    existingNames={assetList.map((a) => a.name)}
+    existingNames={items.map((a) => a.name)}
     validate={name => {}}
     onSubmit={onChange}
     onDelete={onDelete}
