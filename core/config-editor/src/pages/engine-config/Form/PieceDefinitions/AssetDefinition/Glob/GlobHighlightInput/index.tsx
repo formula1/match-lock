@@ -83,7 +83,7 @@ export function GlobHighlightInput({
           whiteSpace: "pre",
           overflow: "hidden",
           pointerEvents: "none",
-          color: "transparent",
+          zIndex: 1,
         }}
       >
         {tokens.map((token, i) => (
@@ -118,13 +118,14 @@ export function GlobHighlightInput({
           position: "relative",
           background: "transparent",
           color: "transparent",
-          caretColor: "white",
+          caretColor: "#7AA2F7",
           fontFamily: "monospace",
           fontSize: "inherit",
           width: "100%",
           border: "1px solid #444",
           borderRadius: "4px",
           padding: "1px 2px",
+          zIndex: 2,
         }}
       />
     </div>
