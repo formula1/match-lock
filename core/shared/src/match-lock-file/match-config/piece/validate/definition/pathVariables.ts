@@ -1,15 +1,18 @@
 import { MatchLockEngineConfig } from "../../../engine";
 import { MatchLockScanPiece } from "../../types";
 
-export function validatePathVariables(
+export function validatePathVariableValues(
   pieceConfig: MatchLockEngineConfig["pieceDefinitions"][string],
-  pathVariables: MatchLockScanPiece["pathVariables"]
+  pathVariableValues: MatchLockScanPiece["pathVariables"]
 ){
+  if(Object.keys(pathVariableValues).length !== pieceConfig.pathVariables.length){
+    throw new Error(`Piece has incorrect number of path variables`);
+  }
   for(const variableName of pieceConfig.pathVariables){
-    if(!(variableName in pathVariables)){
+    if(!(variableName in pathVariableValues)){
       throw new Error(`Piece is missing value for path variable ${variableName}`);
     }
-    const value = pathVariables[variableName];
+    const value = pathVariableValues[variableName];
     validatePathVariableValue(value);
   }
 }

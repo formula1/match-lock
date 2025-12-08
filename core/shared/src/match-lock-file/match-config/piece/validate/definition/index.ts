@@ -2,9 +2,11 @@ import { MatchLockEngineConfig } from "../../../engine";
 import { MatchLockScanPiece } from "../../types";
 
 import { getPieceId } from "../../utils";
-import { validatePathVariables } from "./pathVariables";
+import { validatePathVariableValues } from "./pathVariables";
 import { validateAssetType } from "./assetType";
 import { validateAssetCount } from "./assetCount";
+
+export * from "./pathVariables";
 
 export function validatePieceMatchesEngineDefinition(
   engine: MatchLockEngineConfig, piece: MatchLockScanPiece
@@ -14,7 +16,7 @@ export function validatePieceMatchesEngineDefinition(
   if(!pieceConfig){
     throw new Error(`Piece ${pieceId} is of type ${piece.pieceDefinition} which is not in the engine config`);
   }
-  validatePathVariables(pieceConfig, piece.pathVariables);
+  validatePathVariableValues(pieceConfig, piece.pathVariables);
   const counts = new Map<string, number>();
   for(const [filePath, assetInfo] of Object.entries(piece.assets)){
     const assetType = validateAssetType(pieceConfig, pieceId, filePath, assetInfo);
