@@ -9,15 +9,32 @@ import {
 } from "./utils";
 import { ToolTipSpan } from "../../../../components/ToolTip";
 
-export function EngineTest({ engineConfig }: { engineConfig: MatchLockEngineConfig }){
+import { PathVariablesInput } from "./PathVariablesInput";
+
+import { useCurrentFile } from "../../Outlet/CurrentFile";
+export function EngineTest(){
+  const currentFile = useCurrentFile();
   const [folder, setFolder] = useState<string | null>(null);
   const [pieceName, setPieceName] = useState<string | null>(null);
+  const [pathVariables, setPathVariables] = useState<Record<string, string>>({});
+
   const [isScanning, setIsScanning] = useState(false);
   const [results, setResults] = useState<FileTestResult[]>([]);
   const [statistics, setStatistics] = useState<TestStatistics>({ ...DEFAULT_TEST_STATISTICS });
   const [countViolations, setCountViolations] = useState<Record<string, CountViolation>>({});
 
+
+  if(!currentFile.activeFile){
+    return <div>No active file</div>
+  }
+  if(currentFile.state !== "ready"){
+    return <div>Loading...</div>
+  }
+
+  const { config: engineConfig } = currentFile;
+
   const pieceNames = Object.keys(engineConfig.pieceDefinitions);
+  const pieceDef = pieceName && engineConfig.pieceDefinitions[pieceName];
 
   // Set default piece name if none selected
   useEffect(() => {
@@ -67,6 +84,14 @@ export function EngineTest({ engineConfig }: { engineConfig: MatchLockEngineConf
       </label>
     </div>
 
+    {pieceDef && pieceDef.pathVariables.length > 0 && (
+      <PathVariablesInput
+        value={pathVariables}
+        onChange={v => setPathVariables(v)}
+        pathVariables={pieceDef.pathVariables}
+      />
+    )}
+
     {folder && pieceName && (
       <div>
         <button
@@ -75,7 +100,7 @@ export function EngineTest({ engineConfig }: { engineConfig: MatchLockEngineConf
 
             try {
               await scanFolder(
-                folder, pieceName, engineConfig,
+                folder, pieceName, engineConfig, pathVariables,
                 setResults,
                 setStatistics,
                 setCountViolations,

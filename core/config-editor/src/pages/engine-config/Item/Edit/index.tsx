@@ -1,17 +1,19 @@
 
 import { useEffect, useMemo, useState } from "react";
-import { EngineConfigForm } from "../Form";
-import { useRecentFiles } from "../services/RecentFilesStorage";
+import { EngineConfigForm } from "../../Form";
+import { useRecentFiles } from "../../services/RecentFilesStorage";
 import { useNavigate, useParams } from "react-router";
-import type { MatchLockEngineConfig } from "@match-lock/shared";
-import { FS } from "../../../globals/fs";
-import { WINDOW } from "../../../globals/window";
-import { EngineConfigPaths } from "../paths";
-import { replaceParams } from "../../../utils/router";
+import { WINDOW } from "../../../../globals/window";
+import { EngineConfigPaths } from "../../paths";
+import { replaceParams } from "../../../../utils/router";
+
+import { useCurrentFile } from "../../Outlet/CurrentFile";
 
 export function EditEngineConfig(){
   const navigate = useNavigate();
   const params = useParams();
+  const currentFile = useCurrentFile();
+
   const filePath = useMemo(() => {
     if(!params.enginePath) return;
     return decodeURIComponent(params.enginePath);
@@ -24,21 +26,16 @@ export function EditEngineConfig(){
     if(filePath) addRecentFile(filePath);
   }, [filePath])
 
-  const [value, setValue] = useState<null | MatchLockEngineConfig>(null);
+  if(!currentFile.activeFile){
+    return <div>No active file</div>
+  }
 
-  // Loads the file from disk if not already loaded
-  useEffect(()=>{
-    if(!filePath) return;
-    if(value !== null) return;
-    Promise.resolve().then(async ()=>{
-      const contents = await FS.readFile(filePath);
-      const str = new TextDecoder().decode(contents);
-      setValue(JSON.parse(str));
-    });
-  }, [filePath])
-
-  if(value === null){
+  if(currentFile.state === "loading"){
     return <div>Loading...</div>
+  }
+
+  if(currentFile.state === "failed"){
+    return <div>Failed</div>
   }
 
   return <div>
@@ -46,8 +43,7 @@ export function EditEngineConfig(){
     <div>
       <button
         onClick={async ()=>{
-          if(!filePath) return;
-          await FS.writeFile(filePath, new TextEncoder().encode(JSON.stringify(value, null, 2)));
+          await currentFile.save();
         }}
       >Save</button>
       <button
@@ -61,7 +57,7 @@ export function EditEngineConfig(){
             ]
           })
           if(canceled || !newFilePath) return;
-          await FS.writeFile(newFilePath, new TextEncoder().encode(JSON.stringify(value, null, 2)));
+          await currentFile.saveAs(newFilePath);
           if(newFilePath === filePath) return;
 
           // Update the file path to the new file
@@ -69,6 +65,9 @@ export function EditEngineConfig(){
         }}
       >Save As...</button>
     </div>
-    <EngineConfigForm value={value} onChange={setValue} />
+    <EngineConfigForm
+      value={currentFile.config}
+      onChange={currentFile.update}
+    />
   </div>;
 }

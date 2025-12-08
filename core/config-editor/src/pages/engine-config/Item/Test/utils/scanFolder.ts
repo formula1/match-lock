@@ -11,6 +11,7 @@ export async function scanFolder(
   folderPath: string,
   pieceName: string,
   engineConfig: MatchLockEngineConfig,
+  pathVariables: Record<string, string>,
   setResults: (updater: (prev: FileTestResult[]) => FileTestResult[]) => void,
   setStatistics: (updater: (prev: TestStatistics) => TestStatistics) => void,
   setCountViolations: (updater: (prev: Record<string, CountViolation>) => Record<string, CountViolation>) => void,
@@ -22,11 +23,13 @@ export async function scanFolder(
 
   await FS.startWalkStream(folderPath, {
     onData: (walkResult) => {
+      console.log("Walk Result", walkResult);
       // Only process files, skip directories
       if (!walkResult.isFile) return;
 
       const matchedAssets = getMatchingAssetsForFile(
         pieceDefinition,
+        pathVariables,
         walkResult.relativePath,
       );
 
