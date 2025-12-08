@@ -83,6 +83,7 @@ function PieceDefinition(
       <AssetsInput
         value={value}
         onChange={onChange}
+        pathVariables={value.pathVariables}
       />
     </div>
   </div>

@@ -77,7 +77,7 @@ function PathVariableItem({ value, onDelete }: (
   return <div style={{ borderTop: "1px solid #ccc", borderBottom: "1px solid #ccc", padding: "0.5rem 0" }}>
     <div>
       <ToolTipSpan
-        tip={`You can use this variable in the asset glob paths using \${${value}}`}
+        tip={`You can use this variable in the asset glob paths using \`<${value}>\``}
       >{value}</ToolTipSpan>
       <button
         onClick={()=> onDelete()}

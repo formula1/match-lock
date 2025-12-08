@@ -14,3 +14,7 @@ You can learn more about globs
 - [Quick refernce](https://code.visualstudio.com/docs/editor/glob-patterns)
 - [Beginner's guide](https://www.malikbrowne.com/blog/a-beginners-guide-glob-patterns/)
 - [Wiki](https://en.wikipedia.org/wiki/Glob_(programming)).
+
+Something unique to **Roster Lock** is that we allow path variables in the glob.
+For example, if you have a path variable named `characterName`, you can use it in the glob like so: `<characterName>.sff`.
+This will match all files that start with the value of the `characterName` variable and end with `.sff`.

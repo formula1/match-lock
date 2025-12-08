@@ -7,7 +7,12 @@ import { MatchLockEngineConfig } from "@match-lock/shared";
 
 import tooltip from "./tooltip.md";
 
-export function AssetsInput({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"][string]>){
+export function AssetsInput(
+  { value, onChange }: (
+    & InputProps<MatchLockEngineConfig["pieceDefinitions"][string]>
+    & { pathVariables: MatchLockEngineConfig["pieceDefinitions"][string]["pathVariables"] }
+  )
+){
   return <>
     <h3><ToolTipSpan tip={tooltip} clickable>Assets</ToolTipSpan></h3>
     <AssetDefinitionCreator value={value} onChange={onChange} />
@@ -19,6 +24,7 @@ export function AssetsInput({ value, onChange }: InputProps<MatchLockEngineConfi
           onChange={v => onChange({ ...value, assets: value.assets.map((a, j) => j === i ? v : a) })}
           onDelete={() => onChange({ ...value, assets: value.assets.filter((_, j) => j !== i) })}
           items={value.assets}
+          pathVariables={value.pathVariables}
         />
       </div>
     ))}

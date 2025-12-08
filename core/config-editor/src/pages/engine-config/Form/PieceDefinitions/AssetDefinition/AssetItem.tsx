@@ -8,9 +8,10 @@ import { GlobListInput } from "./Glob";
 type AssetDefinition = MatchLockEngineConfig["pieceDefinitions"][string]["assets"][number];
 
 export function AssetDefinitionForm(
-  { value, onChange, index, items, onDelete }: (
+  { value, onChange, index, items, onDelete, pathVariables }: (
     & ValidInputProps<AssetDefinition>
     & ListItemProps<AssetDefinition>
+    & { pathVariables: MatchLockEngineConfig["pieceDefinitions"][string]["pathVariables"] }
 )){
   return <>
     <h3>
@@ -38,6 +39,7 @@ export function AssetDefinitionForm(
       <GlobListInput
         value={value.glob}
         onChange={v => onChange({...value, glob: v})}
+        pathVariables={pathVariables}
       />
     </div>
   </>
