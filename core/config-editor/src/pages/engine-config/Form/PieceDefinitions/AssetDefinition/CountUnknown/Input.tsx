@@ -10,7 +10,7 @@ import explainTT from "./explain.md";
 type Count = MatchLockEngineAssetDefinition["count"];
 
 export function CountUnknownInput({ value, onChange }: InputProps<Count>){
-  const [valueOrRange, setValueOrRange] = useState<"value" | "range">("value");
+  const [valueOrRange, setValueOrRange] = useState<"value" | "range">(Array.isArray(value) ? "range" : "value");
   return <>
     <h3><ToolTipSpan tip={explainTT} clickable>Count</ToolTipSpan></h3>
     <div style={{ display: "flex", gap: "1rem" }}>
