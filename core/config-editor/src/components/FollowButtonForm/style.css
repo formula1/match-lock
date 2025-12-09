@@ -1,0 +1,33 @@
+
+.follow-button-container {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.follow-button-container > .form-container {
+  flex: 1;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.follow-button-container > .action-container {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  text-align: center;
+}
+
+.follow-button-container > .action-container > * {
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid #bbb;
+}
+
+.follow-button-container > .action-container > * > .button-list > li {
+  text-align: left;
+  margin-left: 2rem;
+}
+
