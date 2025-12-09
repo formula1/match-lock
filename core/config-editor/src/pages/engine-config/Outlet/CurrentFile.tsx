@@ -1,6 +1,7 @@
 import {
   createContext, useContext, useMemo, type PropsWithChildren,
-  useEffect, useState, useCallback
+  useEffect, useState, useCallback,
+  SetStateAction
 } from "react";
 import { useParams } from "react-router";
 import { FS } from "../../../globals/fs";
@@ -24,7 +25,7 @@ type CurrentFileContextType = (
     activeFile: string;
     state: "ready",
     config: MatchLockEngineConfig;
-    update: (config: MatchLockEngineConfig) => void;
+    update: (config: SetStateAction<MatchLockEngineConfig>) => void;
     save: () => Promise<void>;
     saveAs: (newPath: string) => Promise<void>;
   }
@@ -45,9 +46,7 @@ export function CurrentFileProvider({ children }: PropsWithChildren) {
   }, [params.enginePath]);
 
   const loadFile = useCallback(async (filePath: string) => {
-    const contents = await FS.readFile(filePath);
-    const str = new TextDecoder().decode(contents);
-    const json = JSON.parse(str);
+    const json = await FS.readJSON(filePath);
     const engine = MatchLockEngineCaster.check(json);
     return engine;
   }, [])
@@ -58,14 +57,19 @@ export function CurrentFileProvider({ children }: PropsWithChildren) {
     return engine;
   }, [activeFile])
 
-  const [config, setConfig] = useState<null | MatchLockEngineConfig>(null);
+  const [config, setConfig] = useState<MatchLockEngineConfig>({
+    name: "",
+    version: "",
+    pieceDefinitions: {},
+  });
+
   useEffect(()=>{
     if(memoResult.status === "success"){
       setConfig(memoResult.value);
     }
   }, [memoResult])
 
-  const props = useMemo<CurrentFileContextType>(() => {
+  const props: CurrentFileContextType = (() => {
     if(!config || !activeFile) return { activeFile: null };
     if(memoResult.status === "pending") return { activeFile, state: "loading" };
     if(memoResult.status === "failed") return { activeFile, state: "failed", error: memoResult.error };
@@ -73,19 +77,16 @@ export function CurrentFileProvider({ children }: PropsWithChildren) {
       activeFile,
       state: "ready",
       config: config,
-      update: (config: MatchLockEngineConfig) => {
-        setConfig(config);
-      },
+      update: setConfig,
       save: async () => {
         if(!activeFile) return;
-        await FS.writeFile(activeFile, new TextEncoder().encode(JSON.stringify(config, null, 2)));
+        await FS.writeJSON(activeFile, config);
       },
       saveAs: async (newPath: string) => {
-        if(!activeFile) return;
-        await FS.writeFile(newPath, new TextEncoder().encode(JSON.stringify(config, null, 2)));
+        await FS.writeJSON(newPath, config);
       }
     };
-  }, [activeFile, memoResult]);
+  })();
   return (
     <CurrentFileContext.Provider value={props} >
       { children }
