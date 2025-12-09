@@ -1,29 +1,24 @@
 
 import { type FileTestResult } from "./types";
 
-
+type StatisticsGroup = {
+  files: number;
+  bytes: number;
+}
 export type TestStatistics = {
-  totalFiles: number;
-  logicFiles: number;
-  mediaFiles: number;
-  docFiles: number;
-  unmatchedFiles: number;
-  totalBytes: number;
-  logicBytes: number;
-  mediaBytes: number;
-  docBytes: number;
+  total: StatisticsGroup
+  logic: StatisticsGroup;
+  media: StatisticsGroup;
+  doc: StatisticsGroup;
+  unmatched: StatisticsGroup;
 };
 
 export const DEFAULT_TEST_STATISTICS: TestStatistics = {
-  totalFiles: 0,
-  logicFiles: 0,
-  mediaFiles: 0,
-  docFiles: 0,
-  unmatchedFiles: 0,
-  totalBytes: 0,
-  logicBytes: 0,
-  mediaBytes: 0,
-  docBytes: 0,
+  total: { files: 0, bytes: 0 },
+  logic: { files: 0, bytes: 0 },
+  media: { files: 0, bytes: 0 },
+  doc: { files: 0, bytes: 0 },
+  unmatched: { files: 0, bytes: 0 },
 };
 
 /**
@@ -31,15 +26,11 @@ export const DEFAULT_TEST_STATISTICS: TestStatistics = {
  */
 export function calculateStatistics(results: FileTestResult[]): TestStatistics {
   const stats: TestStatistics = {
-    totalFiles: 0,
-    logicFiles: 0,
-    mediaFiles: 0,
-    docFiles: 0,
-    unmatchedFiles: 0,
-    totalBytes: 0,
-    logicBytes: 0,
-    mediaBytes: 0,
-    docBytes: 0,
+    total: { files: 0, bytes: 0 },
+    logic: { files: 0, bytes: 0 },
+    media: { files: 0, bytes: 0 },
+    doc: { files: 0, bytes: 0 },
+    unmatched: { files: 0, bytes: 0 },
   };
   
   for (const result of results) {
@@ -57,27 +48,28 @@ export function updateStatistics(
   newResult: FileTestResult
 ): TestStatistics {
   
-  currentStats.totalFiles++;
-  currentStats.totalBytes += newResult.fileSize;
+  currentStats.total.files++;
+  currentStats.total.bytes += newResult.fileSize;
 
   if(newResult.matchedAssets.length === 0) {
-    currentStats.unmatchedFiles++;
+    currentStats.unmatched.files++;
+    currentStats.unmatched.bytes += newResult.fileSize;
     return currentStats;
   }
 
   const activeAsset = newResult.matchedAssets[0];
   switch(activeAsset.classification) {
     case 'logic':
-      currentStats.logicFiles++;
-      currentStats.logicBytes += newResult.fileSize;
+      currentStats.logic.files++;
+      currentStats.logic.bytes += newResult.fileSize;
       break;
     case 'media':
-      currentStats.mediaFiles++;
-      currentStats.mediaBytes += newResult.fileSize;
+      currentStats.media.files++;
+      currentStats.media.bytes += newResult.fileSize;
       break;
     case 'doc':
-      currentStats.docFiles++;
-      currentStats.docBytes += newResult.fileSize;
+      currentStats.doc.files++;
+      currentStats.doc.bytes += newResult.fileSize;
       break;
   }
   

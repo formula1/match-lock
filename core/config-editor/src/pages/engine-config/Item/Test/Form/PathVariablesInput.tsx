@@ -1,5 +1,5 @@
 import { MatchLockEngineConfig } from "@match-lock/shared";
-import { InputProps } from "../../../../utils/react";
+import { InputProps } from "../../../../../utils/react";
 import { useEffect, useState } from "react";
 
 

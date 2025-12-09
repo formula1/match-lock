@@ -1,28 +1,56 @@
-import { useState, useEffect } from "react";
-import type { MatchLockEngineAssetDefinition, MatchLockEngineConfig } from "@match-lock/shared";
-import { WINDOW } from "../../../../globals/window";
+import { useEffect, useRef, useState } from "react";
+import type { MatchLockEngineAssetDefinition } from "@match-lock/shared";
 import {
-  type FileTestResult,
-  type TestStatistics, DEFAULT_TEST_STATISTICS,
-  type CountViolation,
+  DEFAULT_TEST_STATISTICS,
   scanFolder,
+  ScanUpdateType,
 } from "./utils";
 import { ToolTipSpan } from "../../../../components/ToolTip";
 
-import { PathVariablesInput } from "./PathVariablesInput";
+import { TestForm, TestFormValue, valueIsReady as testFormValueIsReady } from "./Form";
 
 import { useCurrentFile } from "../../Outlet/CurrentFile";
 export function EngineTest(){
   const currentFile = useCurrentFile();
-  const [folder, setFolder] = useState<string | null>(null);
-  const [pieceName, setPieceName] = useState<string | null>(null);
-  const [pathVariables, setPathVariables] = useState<Record<string, string>>({});
+  const [formValue, setFormValue] = useState<TestFormValue>({
+    folderPath: "",
+    pieceName: "",
+    pathVariables: {},
+  });
 
+  const currentScan = useRef(-1);
   const [isScanning, setIsScanning] = useState(false);
-  const [results, setResults] = useState<FileTestResult[]>([]);
-  const [statistics, setStatistics] = useState<TestStatistics>({ ...DEFAULT_TEST_STATISTICS });
-  const [countViolations, setCountViolations] = useState<Record<string, CountViolation>>({});
+  const [scanUpdate, setScanUpdate] = useState<ScanUpdateType>({
+    results: [],
+    statistics: { ...DEFAULT_TEST_STATISTICS },
+    countViolations: {},
+  });
 
+  useEffect(() => {
+    setScanUpdate({
+      results: [],
+      statistics: { ...DEFAULT_TEST_STATISTICS },
+      countViolations: {},
+    });
+    if(!currentFile.activeFile) return;
+    if(currentFile.state !== "ready") return;
+    if(!testFormValueIsReady(formValue, currentFile.config)) return;
+    const activeId = Date.now();
+    currentScan.current = activeId;
+    Promise.resolve().then(async function(){
+      setIsScanning(true);
+      await scanFolder(
+        formValue,
+        currentFile.config,
+        (newUpdate)=>{
+          if(currentScan.current !== activeId) return;
+          setScanUpdate(newUpdate);
+        },
+      )
+      if(currentScan.current !== activeId) return;
+      setIsScanning(false);
+    })
+  }, [formValue]);
 
   if(!currentFile.activeFile){
     return <div>No active file</div>
@@ -31,111 +59,59 @@ export function EngineTest(){
     return <div>Loading...</div>
   }
 
-  const { config: engineConfig } = currentFile;
-
-  const pieceNames = Object.keys(engineConfig.pieceDefinitions);
-  const pieceDef = pieceName && engineConfig.pieceDefinitions[pieceName];
-
-  // Set default piece name if none selected
-  useEffect(() => {
-    if (!pieceName && pieceNames.length > 0) {
-      setPieceName(pieceNames[0]);
-    }
-  }, [pieceName, pieceNames]);
+  const engineConfig = currentFile.config;
+  const { results, statistics, countViolations } = scanUpdate;
 
   return <div>
     <h1>Engine Test</h1>
 
-    <div>
-      <button
-        onClick={async ()=>{
-          const { canceled, filePaths } = await WINDOW.showOpenDialog({
-            title: 'Select Folder to Test',
-            properties: ['openDirectory'],
-            filters: []
-          })
-          if(canceled) return;
-          if(filePaths.length === 0) return;
-          const folderPath = filePaths[0];
-          setFolder(folderPath);
-          setResults([]);
-          setStatistics({ ...DEFAULT_TEST_STATISTICS });
-          setCountViolations({});
-        }}
-        disabled={isScanning}
-      >
-        {folder ? 'Change Folder...' : 'Select Folder...'}
-      </button>
-      {folder && <div>Selected: {folder}</div>}
-    </div>
-
-    <div>
-      <label>
-        Piece Type:
-        <select
-          value={pieceName || ''}
-          onChange={(e)=>(setPieceName(e.target.value))}
-          disabled={isScanning}
-        >
-          {pieceNames.map((name)=>(
-            <option key={name} value={name}>{name}</option>
-          ))}
-        </select>
-      </label>
-    </div>
-
-    {pieceDef && pieceDef.pathVariables.length > 0 && (
-      <PathVariablesInput
-        value={pathVariables}
-        onChange={v => setPathVariables(v)}
-        pathVariables={pieceDef.pathVariables}
-      />
-    )}
-
-    {folder && pieceName && (
-      <div>
-        <button
-          onClick={async () =>{
-            setIsScanning(true);
-
-            try {
-              await scanFolder(
-                folder, pieceName, engineConfig, pathVariables,
-                setResults,
-                setStatistics,
-                setCountViolations,
-              )
-            } catch (error) {
-              console.error('Error during scan:', error);
-              alert(`Error during scan: ${error instanceof Error ? error.message : 'Unknown error'}`);
-            } finally {
-              setIsScanning(false);
-            }
-
-          }}
-          disabled={isScanning}
-        >
-          {isScanning ? 'Scanning...' : 'Start Test'}
-        </button>
-      </div>
-    )}
+    <TestForm
+      value={formValue}
+      onChange={v => setFormValue(v)}
+      engineConfig={engineConfig}
+    />
 
     {isScanning && <div>Scanning folder...</div>}
 
     {results.length > 0 && (
       <div>
         <h2>Statistics</h2>
-        <div>
-          <div>Total Files: {statistics.totalFiles}</div>
-          <div>Logic Files: {statistics.logicFiles}</div>
-          <div>Media Files: {statistics.mediaFiles}</div>
-          <div>Doc Files: {statistics.docFiles}</div>
-          <div>Unmatched Files: {statistics.unmatchedFiles}</div>
-          <div>Total Size: {formatBytes(statistics.totalBytes)}</div>
-          <div>Logic Size: {formatBytes(statistics.logicBytes)}</div>
-          <div>Media Size: {formatBytes(statistics.mediaBytes)}</div>
-          <div>Doc Size: {formatBytes(statistics.docBytes)}</div>
-        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Classification</th>
+              <th>Number of Files</th>
+              <th>Total Size</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Total</td>
+              <td>{statistics.total.files}</td>
+              <td>{formatBytes(statistics.total.bytes)}</td>
+            </tr>
+            <tr>
+              <td>Logic</td>
+              <td>{statistics.logic.files}</td>
+              <td>{formatBytes(statistics.logic.bytes)}</td>
+            </tr>
+            <tr>
+              <td>Media</td>
+              <td>{statistics.media.files}</td>
+              <td>{formatBytes(statistics.media.bytes)}</td>
+            </tr>
+            <tr>
+              <td>Doc</td>
+              <td>{statistics.doc.files}</td>
+              <td>{formatBytes(statistics.doc.bytes)}</td>
+            </tr>
+            <tr>
+              <td>Unmatched</td>
+              <td>{statistics.unmatched.files}</td>
+              <td>{formatBytes(statistics.unmatched.bytes)}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     )}
 
