@@ -10,6 +10,8 @@ import { replaceParams } from "../../../../utils/router";
 
 import { useCurrentFile } from "../../Outlet/CurrentFile";
 
+import { FollowButtonForm } from "../../../../components/FollowButtonForm";
+
 export function EditEngineConfig(){
   const navigate = useNavigate();
   const params = useParams();
@@ -39,50 +41,58 @@ export function EditEngineConfig(){
     return <div>Failed</div>
   }
 
-  return <div style={!currentFile.isDirty ? {} : DIRTY_STYLES}>
+  return <div style={{ overflow: "hidden", flexGrow: 1, ...(!currentFile.isDirty ? {}  : DIRTY_STYLES) }}>
     <h1>{filePath}</h1>
-    <div>
-      <button
-        onClick={async ()=>{
-          await currentFile.save();
-        }}
-        disabled={!currentFile.isDirty}
-      >Save</button>
-      <button
-        onClick={async ()=>{
-          if(!filePath) return;
-          const { canceled, filePath: newFilePath } = await WINDOW.showSaveDialog({
-            title: 'Save Engine Config',
-            defaultPath: filePath,
-            filters: [
-              { name: 'JSON Files', extensions: ['json'] }
-            ]
-          })
-          if(canceled || !newFilePath) return;
-          await currentFile.saveAs(newFilePath);
-          if(newFilePath === filePath) return;
-
-          // Update the file path to the new file
-          navigate(replaceParams(EngineConfigPaths.edit, { enginePath: encodeURIComponent(newFilePath) }));
-        }}
-      >Save As...</button>
-
-      {currentFile.isDirty && (
-        <>
-          <button
-            onClick={() => currentFile.reset()}
-          >Reset</button>
+    <FollowButtonForm
+      info={{
+        title: "Engine Config",
+        note: !currentFile.isDirty ? null : (
           <span className="error">You have unsaved changes</span>
-        </>
-      )}
-    </div>
-    <EngineConfigForm
-      value={currentFile.config}
-      onChange={currentFile.update}
-    />
-  </div>;
+        ),
+      }}
+      buttons={[
+        {
+          label: "Save",
+          onClick: async ()=>{
+            await currentFile.save();
+          },
+          disabled: !currentFile.isDirty,
+        },
+        {
+          label: "Save As...",
+          onClick: async ()=>{
+            if(!filePath) return;
+            const { canceled, filePath: newFilePath } = await WINDOW.showSaveDialog({
+              title: 'Save Engine Config',
+              defaultPath: filePath,
+              filters: [
+                { name: 'JSON Files', extensions: ['json'] }
+              ]
+            })
+            if(canceled || !newFilePath) return;
+            await currentFile.saveAs(newFilePath);
+            if(newFilePath === filePath) return;
+
+            // Update the file path to the new file
+            navigate(replaceParams(EngineConfigPaths.edit, { enginePath: encodeURIComponent(newFilePath) }));
+          },
+        },
+        {
+          label: "Reset Changes ",
+          onClick: () => currentFile.reset(),
+          disabled: !currentFile.isDirty,
+        },
+      ]}
+    >
+      <EngineConfigForm
+        value={currentFile.config}
+        onChange={currentFile.update}
+      />
+    </FollowButtonForm>
+  </div>
 }
 
 const DIRTY_STYLES: React.CSSProperties = {
   backgroundColor: "#FFC",
 };
+
