@@ -39,13 +39,14 @@ export function EditEngineConfig(){
     return <div>Failed</div>
   }
 
-  return <div>
+  return <div style={!currentFile.isDirty ? {} : DIRTY_STYLES}>
     <h1>{filePath}</h1>
     <div>
       <button
         onClick={async ()=>{
           await currentFile.save();
         }}
+        disabled={!currentFile.isDirty}
       >Save</button>
       <button
         onClick={async ()=>{
@@ -65,6 +66,7 @@ export function EditEngineConfig(){
           navigate(replaceParams(EngineConfigPaths.edit, { enginePath: encodeURIComponent(newFilePath) }));
         }}
       >Save As...</button>
+      {currentFile.isDirty && <span className="error">You have unsaved changes</span>}
     </div>
     <EngineConfigForm
       value={currentFile.config}
@@ -72,3 +74,7 @@ export function EditEngineConfig(){
     />
   </div>;
 }
+
+const DIRTY_STYLES: React.CSSProperties = {
+  backgroundColor: "#FFC",
+};
