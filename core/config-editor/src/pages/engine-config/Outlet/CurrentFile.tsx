@@ -6,7 +6,9 @@ import {
 import { useParams } from "react-router";
 import { FS } from "../../../globals/fs";
 import { usePromisedMemo } from "../../../utils/react/promised-memo";
-import { MatchLockEngineCaster, MatchLockEngineConfig } from "@match-lock/shared";
+import { cloneJSON, MatchLockEngineCaster, MatchLockEngineConfig } from "@match-lock/shared";
+
+import { diff } from 'json-diff-ts';
 
 type CurrentFileContextType = (
   | {
@@ -24,6 +26,7 @@ type CurrentFileContextType = (
   | {
     activeFile: string;
     state: "ready",
+    isDirty: boolean,
     config: MatchLockEngineConfig;
     update: (config: SetStateAction<MatchLockEngineConfig>) => void;
     save: () => Promise<void>;
@@ -57,6 +60,12 @@ export function CurrentFileProvider({ children }: PropsWithChildren) {
     return engine;
   }, [activeFile])
 
+  const [originalConfig, setOriginalConfig] = useState<MatchLockEngineConfig>({
+    name: "",
+    version: "",
+    pieceDefinitions: {},
+  });
+
   const [config, setConfig] = useState<MatchLockEngineConfig>({
     name: "",
     version: "",
@@ -65,7 +74,8 @@ export function CurrentFileProvider({ children }: PropsWithChildren) {
 
   useEffect(()=>{
     if(memoResult.status === "success"){
-      setConfig(memoResult.value);
+      setOriginalConfig(cloneJSON(memoResult.value));
+      setConfig(cloneJSON(memoResult.value));
     }
   }, [memoResult])
 
@@ -78,12 +88,15 @@ export function CurrentFileProvider({ children }: PropsWithChildren) {
       state: "ready",
       config: config,
       update: setConfig,
+      isDirty: diff(originalConfig, config).length > 0,
       save: async () => {
         if(!activeFile) return;
         await FS.writeJSON(activeFile, config);
+        setOriginalConfig(cloneJSON(config));
       },
       saveAs: async (newPath: string) => {
         await FS.writeJSON(newPath, config);
+        setOriginalConfig(cloneJSON(config));
       }
     };
   })();
