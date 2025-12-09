@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function TitleInput(
   { placeholder, originalValue, existingNames, validate, onSubmit, onDelete }: (
@@ -13,6 +13,13 @@ export function TitleInput(
 ){
   const [title, setTitle] = useState(originalValue);
   const [error, setError] = useState<null | string>(null);
+
+  useEffect(()=>{
+    if(originalValue !== title){
+      setTitle(originalValue);
+    }
+  },[originalValue])
+
   return <div>
     <div className="editable-title">
       <input
