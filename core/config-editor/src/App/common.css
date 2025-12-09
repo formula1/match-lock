@@ -14,7 +14,7 @@
 
 }
 
-.alternate-list > *:nth-child(odd) {
+.alternate-list > *:nth-child(even) {
   background-color: #fff;
 }
 
