@@ -29,6 +29,7 @@ type CurrentFileContextType = (
     isDirty: boolean,
     config: MatchLockEngineConfig;
     update: (config: SetStateAction<MatchLockEngineConfig>) => void;
+    reset: () => void;
     save: () => Promise<void>;
     saveAs: (newPath: string) => Promise<void>;
   }
@@ -89,6 +90,7 @@ export function CurrentFileProvider({ children }: PropsWithChildren) {
       config: config,
       update: setConfig,
       isDirty: diff(originalConfig, config).length > 0,
+      reset: () => setConfig(cloneJSON(originalConfig)),
       save: async () => {
         if(!activeFile) return;
         await FS.writeJSON(activeFile, config);

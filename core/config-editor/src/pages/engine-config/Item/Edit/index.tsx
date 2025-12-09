@@ -66,7 +66,15 @@ export function EditEngineConfig(){
           navigate(replaceParams(EngineConfigPaths.edit, { enginePath: encodeURIComponent(newFilePath) }));
         }}
       >Save As...</button>
-      {currentFile.isDirty && <span className="error">You have unsaved changes</span>}
+
+      {currentFile.isDirty && (
+        <>
+          <button
+            onClick={() => currentFile.reset()}
+          >Reset</button>
+          <span className="error">You have unsaved changes</span>
+        </>
+      )}
     </div>
     <EngineConfigForm
       value={currentFile.config}
