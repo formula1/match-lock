@@ -1,7 +1,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { EngineConfigForm } from "../../Form";
-import { useRecentFiles } from "../../services/RecentFilesStorage";
+import { useRecentFiles } from "../../../../globals/recent-files";
+import { RECENT_ENGINE_FILES_KEY } from "../../constants";
 import { useNavigate, useParams } from "react-router";
 import { WINDOW } from "../../../../globals/window";
 import { EngineConfigPaths } from "../../paths";
@@ -19,7 +20,7 @@ export function EditEngineConfig(){
     return decodeURIComponent(params.enginePath);
   }, [params.enginePath]);
 
-  const { addRecentFile } = useRecentFiles();
+  const { addRecentFile } = useRecentFiles(RECENT_ENGINE_FILES_KEY);
 
   // Adds the current file to the recent files list
   useEffect(()=>{

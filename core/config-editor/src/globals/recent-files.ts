@@ -3,7 +3,7 @@
  * Uses Electron's user data directory for persistent storage
  */
 
-import { TypedStorageService, useStorage } from "../../../globals/storage";
+import { TypedStorageService, useStorage } from "./storage";
 
 export interface RecentFile {
   path: string;
@@ -12,17 +12,18 @@ export interface RecentFile {
   type?: string; // file type or category
 }
 
-const RECENT_FILES_KEY = "recent-engine-files";
-const RECENT_FILES_STORAGE = new TypedStorageService<RecentFile[]>(RECENT_FILES_KEY);
-
-export const RecentFileStorage = {
+export class RecentFileStorage {
+  public storage: TypedStorageService<RecentFile[]>;
+  constructor(public key: string, public maxFiles: number = 10){
+    this.storage = new TypedStorageService<RecentFile[]>(key);
+  }
 /**
    * Get all recent files
    */
   async getRecentFiles(): Promise<RecentFile[]> {
-    const files = await RECENT_FILES_STORAGE.get();
+    const files = await this.storage.get();
     return Array.isArray(files) ? files : [];
-  },
+  }
 
   /**
    * Add a file to recent files list
@@ -43,8 +44,8 @@ export const RecentFileStorage = {
     // Remove existing entry if it exists
     const filteredFiles = recentFiles.filter(file => file.path !== filePath);
     
-    await RECENT_FILES_STORAGE.set([newFile, ...filteredFiles]);
-  },
+    await this.storage.set([newFile, ...filteredFiles].slice(0, this.maxFiles));
+  }
 
   /**
    * Remove a file from recent files list
@@ -52,20 +53,20 @@ export const RecentFileStorage = {
   async removeRecentFile(filePath: string): Promise<void> {
     const recentFiles = await this.getRecentFiles();
     const filteredFiles = recentFiles.filter(file => file.path !== filePath);
-    await RECENT_FILES_STORAGE.set(filteredFiles);
-  },
+    await this.storage.set(filteredFiles);
+  }
 
   /**
    * Clear all recent files
    */
   async clearRecentFiles(): Promise<void> {
-    await RECENT_FILES_STORAGE.set([]);
+    await this.storage.set([]);
   }
 }
 
 
-export function useRecentFiles(){
-  const storage = useStorage<RecentFile[]>(RECENT_FILES_KEY);
+export function useRecentFiles(key: string, maxFiles: number = 10){
+  const storage = useStorage<RecentFile[]>(key);
 
   return {
     ...storage,
@@ -85,7 +86,7 @@ export function useRecentFiles(){
       // Remove existing entry if it exists
       const filteredFiles = recentFiles.filter(file => file.path !== filePath);
       
-      await storage.setValue([newFile, ...filteredFiles]);
+      await storage.setValue([newFile, ...filteredFiles].slice(0, maxFiles));
     },
     removeRecentFile: async (filePath: string) => {
       const recentFiles = storage.value || [];
