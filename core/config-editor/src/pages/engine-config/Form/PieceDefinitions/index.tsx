@@ -8,14 +8,17 @@ export function PieceDefinitions({ value, onChange }: InputProps<MatchLockEngine
   return <div className="section">
     <h2><ToolTipSpan tip={tooltip} clickable>Piece Definitions</ToolTipSpan></h2>
     <PieceDefinitionCreator value={value} onChange={onChange} />
+    <div className="alternate-list">
     {Object.keys(value).sort().map((pieceName) => (
-      <PieceDefinition
-        key={pieceName}
-        pieceName={pieceName}
-        value={value}
-        onChange={onChange}
-      />
+      <div key={pieceName} className="section" >
+        <PieceDefinition
+          pieceName={pieceName}
+          value={value}
+          onChange={onChange}
+        />
+      </div>
     ))}
+    </div>
   </div>
 }
 
@@ -69,7 +72,7 @@ function PieceDefinition(
 ){
   const value = definitions[pieceName];
   const onChange = (v: typeof value) => setDefinitions({ ...definitions, [pieceName]: v });
-  return <div className="section">
+  return <>
     <PieceTitleInput
       pieceName={pieceName}
       value={definitions}
@@ -88,7 +91,7 @@ function PieceDefinition(
         pathVariables={value.pathVariables}
       />
     </div>
-  </div>
+  </>
 }
 
 import { TitleInput } from "../../../../components/TitleInput";
