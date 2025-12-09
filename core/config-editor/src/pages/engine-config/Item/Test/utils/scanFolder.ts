@@ -9,6 +9,14 @@ import { updateViolations, updateEmptyViolations, type CountViolation } from "./
 
 import { TestFormValue } from "../Form";
 
+import { cloneJSON } from "@match-lock/shared";
+
+export const DEFAULT_SCAN_UPDATE: ScanUpdateType = {
+  results: [],
+  statistics: DEFAULT_TEST_STATISTICS,
+  countViolations: {},
+};
+
 export type ScanUpdateType = {
   results: FileTestResult[];
   statistics: TestStatistics;
@@ -24,11 +32,7 @@ export async function scanFolder(
     throw new Error(`Piece definition not found: ${pieceName}`);
   }
 
-  const readState: ScanUpdateType = {
-    results: [],
-    statistics: JSON.parse(JSON.stringify(DEFAULT_TEST_STATISTICS)),
-    countViolations: {},
-  }
+  const readState = cloneJSON(DEFAULT_SCAN_UPDATE);
 
   await FS.startWalkStream(folderPath, {
     onData: (walkResult) => {

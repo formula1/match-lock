@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import type { MatchLockEngineAssetDefinition } from "@match-lock/shared";
+import { cloneJSON, type MatchLockEngineAssetDefinition } from "@match-lock/shared";
 import {
-  DEFAULT_TEST_STATISTICS,
+  DEFAULT_SCAN_UPDATE,
   scanFolder,
   ScanUpdateType,
 } from "./utils";
@@ -20,18 +20,10 @@ export function EngineTest(){
 
   const currentScan = useRef(-1);
   const [isScanning, setIsScanning] = useState(false);
-  const [scanUpdate, setScanUpdate] = useState<ScanUpdateType>({
-    results: [],
-    statistics: { ...DEFAULT_TEST_STATISTICS },
-    countViolations: {},
-  });
+  const [scanUpdate, setScanUpdate] = useState<ScanUpdateType>(cloneJSON(DEFAULT_SCAN_UPDATE));
 
   useEffect(() => {
-    setScanUpdate({
-      results: [],
-      statistics: { ...DEFAULT_TEST_STATISTICS },
-      countViolations: {},
-    });
+    setScanUpdate(cloneJSON(DEFAULT_SCAN_UPDATE));
     if(!currentFile.activeFile) return;
     if(currentFile.state !== "ready") return;
     if(!testFormValueIsReady(formValue, currentFile.config)) return;
