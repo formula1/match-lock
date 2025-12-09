@@ -14,6 +14,14 @@
 
 }
 
+.alternate-list > *:nth-child(odd) {
+  background-color: #fff;
+}
+
+.alternate-list > *:nth-child(odd) {
+  background-color: #eee;
+}
+
 .section {
   padding: 1rem 1rem 1.5rem;
   border-radius: 0.5rem;
