@@ -1,4 +1,5 @@
 import type { ValidInputProps, ListItemProps } from "../../../../../utils/react/input";
+import { MoveButtons } from "../../../../../components/MoveButtons";
 import type { MatchLockEngineConfig } from "@match-lock/shared";
 import { AssetNameInput } from "./AssetName";
 import { AssetClassificationInput } from "./Classification";
@@ -8,19 +9,25 @@ import { GlobListInput } from "./Glob";
 type AssetDefinition = MatchLockEngineConfig["pieceDefinitions"][string]["assets"][number];
 
 export function AssetDefinitionForm(
-  { value, onChange, index, items, onDelete, pathVariables }: (
+  { value, onChange, index, items, onDelete, onMove, pathVariables }: (
     & ValidInputProps<AssetDefinition>
     & ListItemProps<AssetDefinition>
+    & { onMove: (newIndex: number)=>unknown }
     & { pathVariables: MatchLockEngineConfig["pieceDefinitions"][string]["pathVariables"] }
 )){
   return <>
-    <h3>
+    <h3 style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
       <AssetNameInput
         value={value.name}
         onChange={v => onChange({...value, name: v})}
         index={index}
         onDelete={onDelete}
         items={items}
+      />
+      <MoveButtons
+        index={index}
+        items={items}
+        onMove={onMove}
       />
     </h3>
     <div className="section">

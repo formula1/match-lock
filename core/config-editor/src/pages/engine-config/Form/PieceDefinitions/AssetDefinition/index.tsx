@@ -44,6 +44,10 @@ export function AssetsInput(
             value={asset}
             onChange={v => onChange(value.map((a, j) => j === i ? v : a))}
             onDelete={() => onChange(value.filter((_, j) => j !== i))}
+            onMove={(newIndex: number)=>{
+              if(newIndex === i) return;
+              onChange(moveItem(value, i, newIndex));
+            }}
             items={value}
             pathVariables={pathVariables}
           />
@@ -55,4 +59,12 @@ export function AssetsInput(
 
 function assetElementId(assetName: string){
   return `engine-piece-asset-${assetName}`;
+}
+
+function moveItem(list: Array<any>, oldIndex: number, newIndex: number){
+  if(newIndex === oldIndex) return list;
+  const v = list[oldIndex];
+  const newList = list.filter((_, j) => j !== oldIndex);
+  newList.splice(newIndex, 0, v);
+  return newList;
 }
