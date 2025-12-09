@@ -23,6 +23,7 @@ const TOKEN_COLORS: Record<TokenType, string> = {
 type GlobHighlightInputProps = {
   value: string;
   onChange: (value: string) => void;
+  onBlur?: () => void;
   placeholder?: string;
   style?: CSSProperties;
   className?: string;
@@ -33,6 +34,7 @@ type GlobHighlightInputProps = {
 export function GlobHighlightInput({
   value,
   onChange,
+  onBlur,
   placeholder,
   style,
   className,
@@ -113,6 +115,7 @@ export function GlobHighlightInput({
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onBlur={onBlur}
         placeholder=""
         style={{
           position: "relative",

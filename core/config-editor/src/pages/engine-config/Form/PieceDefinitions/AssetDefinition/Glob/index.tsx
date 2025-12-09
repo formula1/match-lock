@@ -22,7 +22,7 @@ export function GlobListInput(
       />
       {value.map((glob, index) => (
         <GlobItem
-          key={`${index}`}
+          key={`${index}-${glob}`}
           value={value[index]}
           onChange={v => onChange(value.map((oldGlob, i) => i !== index ? oldGlob : v))}
           validator={(v) => validateGlob(v, pathVariables, index, value)}
@@ -93,11 +93,6 @@ function GlobItem({ value, onChange, onDelete, validator, pathVariables }: (
   const [newGlob, setNewGlob] = useState(value);
   const [error, setError] = useState<null | string>(null);
 
-  useEffect(()=>{
-    if(error) return;
-    onChange(newGlob);
-  },[newGlob])
-
   return <>
     <div >
       <GlobHighlightInput
@@ -110,6 +105,10 @@ function GlobItem({ value, onChange, onDelete, validator, pathVariables }: (
           }catch(error){
             setError((error as Error).message);
           }
+        }}
+        onBlur={() => {
+          if(error !== null) return;
+          onChange(newGlob);
         }}
         className="glob-highlight-input"
         pathVariables={pathVariables}
