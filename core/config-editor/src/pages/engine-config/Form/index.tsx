@@ -30,6 +30,7 @@ function Form({ value, onChange }: InputProps<MatchLockEngineConfig>){
     <PieceDefinitions
       value={value.pieceDefinitions}
       onChange={v => onChange({ ...value, pieceDefinitions: v })}
+      engineConfig={value}
     />
   </>
 }

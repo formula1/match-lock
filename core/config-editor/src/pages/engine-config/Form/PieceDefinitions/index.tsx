@@ -6,7 +6,12 @@ import tooltip from "./piecett.md";
 
 import { ENGINECONFIG_ID } from "../../paths";
 
-export function PieceDefinitions({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"]>){
+export function PieceDefinitions(
+  { value, onChange, engineConfig }: (
+    & InputProps<MatchLockEngineConfig["pieceDefinitions"]>
+    & { engineConfig: MatchLockEngineConfig }
+  )
+){
   return <div className="section">
     <h2><ToolTipSpan tip={tooltip} clickable>Piece Definitions</ToolTipSpan></h2>
     <PieceDefinitionCreator value={value} onChange={onChange} />
@@ -17,6 +22,7 @@ export function PieceDefinitions({ value, onChange }: InputProps<MatchLockEngine
           pieceName={pieceName}
           value={value}
           onChange={onChange}
+          engineConfig={engineConfig}
         />
       </div>
     ))}
@@ -64,12 +70,14 @@ function PieceDefinitionCreator({ value, onChange }: InputProps<MatchLockEngineC
   )
 }
 
+import { SelectionStrategyInput } from "./SelectionStrategyInput";
+import { RequiresInput } from "./RequiresInput";
 import { PathVariablesInput } from "./PathVariablesInput";
 import { AssetsInput } from "./AssetDefinition";
 function PieceDefinition(
-  { pieceName, value: definitions, onChange: setDefinitions }: (
-    & { pieceName: string }
+  { pieceName, engineConfig, value: definitions, onChange: setDefinitions }: (
     & InputProps<MatchLockEngineConfig["pieceDefinitions"]>
+    & { pieceName: string, engineConfig: MatchLockEngineConfig }
   )
 ){
   const value = definitions[pieceName];
@@ -80,6 +88,20 @@ function PieceDefinition(
       value={definitions}
       onChange={setDefinitions}
     />
+    <div className="section">
+      <SelectionStrategyInput
+        value={value.selectionStrategy}
+        onChange={v => onChange({ ...value, selectionStrategy: v })}
+      />
+    </div>
+    <div className="section">
+      <RequiresInput
+        value={value.requires}
+        onChange={v => onChange({ ...value, requires: v })}
+        pieceName={pieceName}
+        engineConfig={engineConfig}
+      />
+    </div>
     <div className="section">
       <PathVariablesInput
         value={value.pathVariables}
