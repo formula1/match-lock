@@ -7,6 +7,7 @@ import { MatchLockEngineConfig } from "@match-lock/shared";
 
 import tooltip from "./tooltip.md";
 import { useEffect, useState } from "react";
+import { ENGINECONFIG_ID } from "../../../paths";
 
 export function AssetsInput(
   { value, onChange, pathVariables }: (
@@ -33,12 +34,12 @@ export function AssetsInput(
       }}
     />
     {newAsset !== null && <div className="error">
-      <a href={`#${assetElementId(newAsset)}`}>New asset created: {newAsset}</a>
+      <a href={`#${ENGINECONFIG_ID.assetId(newAsset)}`}>New asset created: {newAsset}</a>
     </div>}
 
     <div className="alternate-list">
       {value.map((asset, i) => (
-        <div className="section" key={i} id={assetElementId(asset.name)}>
+        <div className="section" key={i} id={ENGINECONFIG_ID.assetId(asset.name)}>
           <AssetDefinitionForm
             index={i}
             value={asset}
@@ -57,9 +58,6 @@ export function AssetsInput(
   </>;
 }
 
-function assetElementId(assetName: string){
-  return `engine-piece-asset-${assetName}`;
-}
 
 function moveItem(list: Array<any>, oldIndex: number, newIndex: number){
   if(newIndex === oldIndex) return list;

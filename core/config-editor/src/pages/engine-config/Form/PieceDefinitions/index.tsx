@@ -4,13 +4,15 @@ import type { MatchLockEngineConfig } from "@match-lock/shared";
 import { ToolTipSpan } from "../../../../components/ToolTip";
 import tooltip from "./piecett.md";
 
+import { ENGINECONFIG_ID } from "../../paths";
+
 export function PieceDefinitions({ value, onChange }: InputProps<MatchLockEngineConfig["pieceDefinitions"]>){
   return <div className="section">
     <h2><ToolTipSpan tip={tooltip} clickable>Piece Definitions</ToolTipSpan></h2>
     <PieceDefinitionCreator value={value} onChange={onChange} />
     <div className="alternate-list">
     {Object.keys(value).sort().map((pieceName) => (
-      <div key={pieceName} className="section" >
+      <div key={pieceName} className="section" id={ENGINECONFIG_ID.pieceId(pieceName)} >
         <PieceDefinition
           pieceName={pieceName}
           value={value}
