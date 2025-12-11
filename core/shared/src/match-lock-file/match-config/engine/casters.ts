@@ -19,6 +19,13 @@ export const MatchLockEngineCaster = CastObject({
   name: CastString,
   version: CastString,
   pieceDefinitions: CastRecord(CastString, CastObject({
+    selectionStrategy: CastUnion(
+      Literal("mandatory"),
+      Literal("personal"),
+      Literal("shared"),
+      Literal("on demand"),
+    ),
+    requires: CastArray(CastString),
     pathVariables: CastArray(CastString),
     assets: CastArray(CastObject({
       name: CastString,

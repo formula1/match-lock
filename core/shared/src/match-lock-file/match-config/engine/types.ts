@@ -15,6 +15,9 @@ export type MatchLockEngineConfig = {
   pieceDefinitions: Record<PieceType, {
     pathVariables: Array<string>,
     assets: Array<MatchLockEngineAssetDefinition>
+
+    selectionStrategy: MatchLockEngineSelectionStrategy,
+    requires: Array<PieceType>
   }>
 }
 
@@ -24,3 +27,10 @@ export type MatchLockEngineAssetDefinition = {
   count: Count | "*" | [Count, Count | "*"]
   glob: Array<string>,
 }
+
+export type MatchLockEngineSelectionStrategy = (
+  | "mandatory"
+  | "personal"
+  | "shared"
+  | "on demand"
+)
