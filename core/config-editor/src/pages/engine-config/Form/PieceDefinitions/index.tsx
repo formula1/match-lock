@@ -42,7 +42,15 @@ function PieceDefinitionCreator({ value, onChange }: InputProps<MatchLockEngineC
           setError(null);
           if(name === "") throw new Error("Name cannot be empty");
           if(value[name]) throw new Error("Name already exists");
-          onChange({ ...value, [name]: { pathVariables: [], assets: [] } });
+          onChange({
+            ...value,
+            [name]: {
+              selectionStrategy: "personal",
+              requires: [],
+              pathVariables: [],
+              assets: []
+            }
+          });
           setName("");
         }catch(error){
           setError((error as Error).message);
