@@ -7,7 +7,6 @@ import {
   Count,
 } from "../../util-types";
 
-export type AssetClassification = "logic" | "media" | "doc";
 
 export type MatchLockEngineConfig = {
   name: string,
@@ -21,6 +20,7 @@ export type MatchLockEngineConfig = {
   }>
 }
 
+export type AssetClassification = "logic" | "media" | "doc";
 export type MatchLockEngineAssetDefinition = {
   name: string,
   classification: AssetClassification,
