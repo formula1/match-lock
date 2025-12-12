@@ -21,7 +21,9 @@ function getCombinedAssetSha(
   const pieceId = getPieceId(piece);
   const assetShas: Array<string> = [];
   for(const [filepath, asset] of Object.entries(piece.assets)){
-    const assetByFilename = getAssetByGlob(engine.pieceDefinitions[piece.pieceDefinition], filepath);
+    const assetByFilename = getAssetByGlob(
+      engine.pieceDefinitions[piece.pieceDefinition], piece.pathVariables, filepath
+    );
     const assetByName = getAssetByName(engine.pieceDefinitions[piece.pieceDefinition], assetByFilename.name);
     if(assetByFilename.name !== assetByName.name){
       throw new Error(`Asset Name Mismatch for ${pieceId}`);
@@ -45,8 +47,12 @@ function getCombinedAssetSha(
 }
 
 import { getMatchingAssetsForFile } from "../../engine";
-function getAssetByGlob(pieceDefinition: MatchLockEngineConfig["pieceDefinitions"][string], filepath: string){
-  const assets = getMatchingAssetsForFile(pieceDefinition, filepath);
+function getAssetByGlob(
+  pieceDefinition: MatchLockEngineConfig["pieceDefinitions"][string],
+  pathVariables: Record<string, string>,
+  filepath: string
+){
+  const assets = getMatchingAssetsForFile(pieceDefinition, pathVariables, filepath);
   if(assets.length === 0){
     throw new Error(`No matching asset for ${filepath}`);
   }

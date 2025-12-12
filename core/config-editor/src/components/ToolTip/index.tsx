@@ -1,15 +1,16 @@
 import toolttipIcon from "./icons8-info.svg";
 
 export function ToolTipSpan(
-  { children, tip, className, style }: {
-    tip: string,
+  { children, tip, clickable = false, className, style }: {
     children: React.ReactNode,
+    tip: string,
+    clickable?: boolean,
     className?: string,
     style?: React.CSSProperties
   }
 ){
   return <span
-    data-tooltip-id="global-tooltip"
+    data-tooltip-id={clickable ? "global-tooltip-clickable" : "global-tooltip-non-clickable"}
     data-tooltip-content={tip}
     style={{ display: "inline-flex", alignItems: "center", gap: "0.25em", ...style }}
     className={className}

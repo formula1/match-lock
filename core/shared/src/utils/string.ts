@@ -2,9 +2,9 @@
 let ID_COUNTER = 0;
 export function uniqueId(){
   return [
-    padString(Date.now().toString(36), 8),
-    padString((ID_COUNTER++).toString(36), 8),
-    padString(Math.random().toString(36).substring(2, 10), 8),
+    padString(Date.now().toString(32), 8),
+    padString((ID_COUNTER++).toString(32), 8),
+    padString(Math.random().toString(32).substring(2, 10), 8),
   ].join("-");
 }
 

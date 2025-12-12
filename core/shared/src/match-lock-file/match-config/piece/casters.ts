@@ -55,13 +55,32 @@ const ResolvableCaster = CastUnion(
   }),
 ).conform<MatchLockResolvable>();
 
-
+import { validatePathVariableName } from "../engine";
+import { validatePathVariableValue } from "./validate/definition/pathVariables";
 const AssetScanCaster = {
   pieceDefinition: CastString,
   version: CastObject({
     logic: Sha256Caster,
     media: Sha256Caster,
   }),
+  pathVariables: CastRecord(
+    CastString.withConstraint((variableName)=>{
+      try {
+        validatePathVariableName(variableName);
+        return true;
+      }catch(e){
+        return (e as Error).message;
+      }
+    }),
+    CastString.withConstraint((variableValue)=>{
+      try {
+        validatePathVariableValue(variableValue);
+        return true;
+      }catch(e){
+        return (e as Error).message;
+      }
+    })
+  ),
   assets: CastRecord(CastString, CastObject({
     assetType: CastString,
     sha256: Sha256Caster,

@@ -7,26 +7,44 @@ import { CurrentFileProvider, useCurrentFile } from "./CurrentFile";
 export function EngineOutlet(){
   return <CurrentFileProvider>
     <EngineTabs />
-    <Outlet />
+    <FileErrorOrOutlet />
   </CurrentFileProvider>
 }
 
 function EngineTabs(){
-  const { activeFile } = useCurrentFile();
-  const activeFileLocation = (
-    !activeFile ? null : replaceParams(EngineConfigPaths.edit, { enginePath: encodeURIComponent(activeFile) })
-  )
+  const currentFile = useCurrentFile();
+  const fileReady = currentFile.activeFile && currentFile.state === "ready";
   return (
     <LinkTabs
       className="secondary"
       pages={[
         { title: 'Engine', href: EngineConfigPaths.root },
         { title: 'New', href: EngineConfigPaths.new },
-        !activeFileLocation ? null :
+        !fileReady ? null :
         {
-          title: 'Edit', href: activeFileLocation,
+          title: 'Edit', href: replaceParams(
+            EngineConfigPaths.edit, { enginePath: encodeURIComponent(currentFile.activeFile) }
+          ),
+        },
+        !fileReady ? null :
+        {
+          title: 'Test', href: replaceParams(
+            EngineConfigPaths.test, { enginePath: encodeURIComponent(currentFile.activeFile) }
+          ),
         },
       ]}
     />
   )
+}
+
+function FileErrorOrOutlet(){
+  const currentFile = useCurrentFile();
+
+  if(!currentFile.activeFile) return <Outlet />;
+  if(currentFile.state !== "failed") return <Outlet />;
+
+  return <div>
+    <h1>Failed to load file</h1>
+    <pre>{JSON.stringify(currentFile.error, null, 2)}</pre>
+  </div>
 }

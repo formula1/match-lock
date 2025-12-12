@@ -5,6 +5,14 @@ export type JSON_Object = { [key: string]: JSON_Primitive | JSON_Array | JSON_Ob
 export type JSON_Unknown = JSON_Primitive | JSON_Array | JSON_Object;
 
 
+export function cloneJSON<T extends JSON_Unknown>(value: T): T {
+  return JSON.parse(JSON.stringify(value));
+}
+
+export function compareJSON(a: JSON_Unknown, b: JSON_Unknown): boolean {
+  return canonicalJSONStringify(a) === canonicalJSONStringify(b);
+}
+
 // Stringifies JSON in a predictable way for signing
 export function canonicalJSONStringify(value: any): string {
   // Early exit if value is not an object

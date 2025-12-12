@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "MatchLock Prep App",
+  "productName": "MatchLock Config Editor",
   "version": "0.0.0",
   "identifier": "com.matchlock.prep-app",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "MatchLock Prep App",
+        "title": "MatchLock Config Editor",
         "width": 1024,
         "height": 768,
         "resizable": true,
@@ -21,7 +21,21 @@
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "capabilities": [
+        {
+          "identifier": "main-capability",
+          "windows": ["main"],
+          "permissions": [
+            "shell:allow-open",
+            "dialog:allow-open",
+            "dialog:allow-save",
+            "dialog:default",
+            "core:event:allow-listen",
+            "core:event:default"
+          ]
+        }
+      ]
     },
     "withGlobalTauri": false
   },

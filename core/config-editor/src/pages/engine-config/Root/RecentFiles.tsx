@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
-import { useRecentFiles } from "../services/RecentFilesStorage";
+import { useRecentFiles } from "../../../globals/recent-files";
 import { replaceParams } from "../../../utils/router";
 import { EngineConfigPaths } from "../paths";
 import { ToolTipSpan } from "../../../components/ToolTip";
+
+import { RECENT_ENGINE_FILES_KEY } from "../constants";
 
 export function RecentFiles(
   { maxDisplay }: { maxDisplay?: number }
@@ -11,7 +13,7 @@ export function RecentFiles(
     value: recentFiles, loading, error,
     removeRecentFile,
     clearRecentFiles,
-  } = useRecentFiles();
+  } = useRecentFiles(RECENT_ENGINE_FILES_KEY);
 
   if (loading) {
     return <div>Loading recent files...</div>;
