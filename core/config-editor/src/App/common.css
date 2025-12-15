@@ -1,6 +1,8 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+ul > li { margin-left: 32px; }
+
 .react-tooltip-content-wrapper {
   max-width: 75vw;
 }
