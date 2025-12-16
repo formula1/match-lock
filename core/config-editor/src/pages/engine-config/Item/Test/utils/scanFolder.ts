@@ -36,7 +36,6 @@ export async function scanFolder(
 
   await FS.startWalkStream(folderPath, {
     onData: (walkResult) => {
-      console.log("Walk Result", walkResult);
       // Only process files, skip directories
       if (!walkResult.is_file) return;
 
