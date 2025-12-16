@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 export function TitleInput(
-  { placeholder, originalValue, existingNames, validate, onSubmit, onDelete }: (
+  { placeholder, originalValue, validate, onSubmit, onDelete }: (
     & { placeholder: string }
-    & { originalValue: string, existingNames: Array<string> }
+    & { originalValue: string }
     & {
       validate: (name: string)=>unknown
       onSubmit: (newName: string)=>unknown
@@ -32,7 +32,6 @@ export function TitleInput(
             setError(null);
             if(e.target.value === originalValue) return;
             if(e.target.value === "") throw new Error("Cannot be empty");
-            if(existingNames.includes(e.target.value)) throw new Error("Name already exists");
             validate(e.target.value);
           }catch(error){
             setError((error as Error).message);

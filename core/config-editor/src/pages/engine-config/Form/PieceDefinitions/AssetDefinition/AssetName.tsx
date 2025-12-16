@@ -13,8 +13,9 @@ export function AssetNameInput({ value, onChange, onDelete, items }: (
   return <TitleInput
     placeholder="Asset Name..."
     originalValue={value}
-    existingNames={items.map((a) => a.name)}
-    validate={name => {}}
+    validate={(name) => {
+      if(items.find((a) => a.name === name)) throw new Error("Name already exists");
+    }}
     onSubmit={onChange}
     onDelete={onDelete}
   />

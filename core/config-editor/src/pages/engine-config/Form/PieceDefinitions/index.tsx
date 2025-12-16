@@ -136,8 +136,9 @@ function PieceTitleInput(
   return <TitleInput
     placeholder="Piece Title..."
     originalValue={pieceName}
-    existingNames={Object.keys(definitions)}
-    validate={name => {}}
+    validate={name => {
+      if(Object.keys(definitions).includes(name)) throw new Error("Name already exists");
+    }}
     onSubmit={name => {
       const def = definitions[pieceName];
       const oldValue = { ...definitions }
