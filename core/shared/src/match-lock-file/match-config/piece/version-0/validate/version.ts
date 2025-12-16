@@ -1,5 +1,5 @@
 import { MatchLockEngineConfig, AssetClassification } from "../../engine";
-import { MatchLockScanPiece } from "../types";
+import { MatchLockScanPiece } from "../version-0/types";
 
 import { getPieceId } from "../utils";
 

@@ -1,4 +1,4 @@
-import { MatchLockScanPiece } from "./types";
+import { MatchLockScanPiece } from "./version-0/types";
 
 export function getPieceId(piece: MatchLockScanPiece){
   if("id" in piece && typeof piece.id === "string"){

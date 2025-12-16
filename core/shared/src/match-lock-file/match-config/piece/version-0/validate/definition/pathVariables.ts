@@ -1,20 +1,14 @@
-import { MatchLockEngineConfig } from "../../../engine";
-import { MatchLockScanPiece } from "../../types";
-import { PATH_VARIABLE_VALUE_VALIDATION } from "../../../engine/validate/piece/assets/glob/pathvariables";
+import { MatchLockEngineConfig } from "../../../../engine";
+import { PATH_VARIABLE_VALUE_VALIDATION } from "../../../../engine/validate/piece/assets/glob/pathvariables";
 
-export function validatePathVariableValues(
+export function validateAllExpectedPathVariableNamesSet(
+  pathVariableValues: pathVariables
   pieceConfig: MatchLockEngineConfig["pieceDefinitions"][string],
-  pathVariableValues: MatchLockScanPiece["pathVariables"]
 ){
-  if(Object.keys(pathVariableValues).length !== pieceConfig.pathVariables.length){
-    throw new Error(`Piece has incorrect number of path variables`);
-  }
   for(const variableName of pieceConfig.pathVariables){
     if(!(variableName in pathVariableValues)){
       throw new Error(`Piece is missing value for path variable ${variableName}`);
     }
-    const value = pathVariableValues[variableName];
-    validatePathVariableValue(value);
   }
 }
 
@@ -32,5 +26,14 @@ export function validatePathVariableValue(
   const charsetRegex = new RegExp(`^[${PATH_VARIABLE_VALUE_VALIDATION.charset}]+$`);
   if (!charsetRegex.test(variableValue)) {
     throw new Error(`Path variable value contains invalid characters`);
+  }
+}
+
+export function validatePathVariableNameIsExpected(
+  variableName: string,
+  pieceConfig: MatchLockEngineConfig["pieceDefinitions"][string],
+){
+  if(!pieceConfig.pathVariables.includes(variableName)){
+    throw new Error(`Piece does not have path variable ${variableName}`);
   }
 }

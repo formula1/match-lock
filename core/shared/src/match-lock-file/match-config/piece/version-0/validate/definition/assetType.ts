@@ -1,6 +1,6 @@
-import { parseFilePath } from "../../../../util-types";
+import { parseFilePath } from "../../../../util-types/runtypes";
 import { MatchLockEngineConfig } from "../../../engine";
-import { MatchLockScanPiece } from "../../types";
+import { MatchLockScanPiece } from "../../version-0/types";
 
 export function validateAssetType(
   pieceConfig: MatchLockEngineConfig["pieceDefinitions"][string],

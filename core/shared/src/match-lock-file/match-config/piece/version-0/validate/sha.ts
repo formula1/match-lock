@@ -1,6 +1,6 @@
-import { canonicalJSONStringify } from "../../../../utils/JSON";
+import { canonicalJSONStringify } from "../../../../../utils/JSON";
 import { MatchLockPublishPiece } from "../types";
-import { createSHA256Hash } from "../../../util-types";
+import { createSHA256Hash } from "../../../../util-types/runtypes";
 
 
 export async function validatePublishPieceSha(piece: MatchLockPublishPiece){

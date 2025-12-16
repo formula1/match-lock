@@ -1,4 +1,3 @@
-
 import {
   DateTimeCaster,
   SemVerCaster,
@@ -6,7 +5,7 @@ import {
   URLTypeCaster,
   MagnetURICaster,
   CountCaster,
-} from "../../util-types";
+} from "./util-casters";
 
 import {
   Record as CastRecord,
@@ -23,7 +22,7 @@ import {
   MatchLockAsset,
   MatchLockPublishPiece,
   MatchLockScanPiece,
-} from "./types";
+} from "../types";
 
 
 const OwnableIdentificationCaster = {
@@ -55,8 +54,8 @@ const ResolvableCaster = CastUnion(
   }),
 ).conform<MatchLockResolvable>();
 
-import { validatePathVariableName } from "../engine";
-import { validatePathVariableValue } from "./validate/definition/pathVariables";
+import { validatePathVariableName } from "../../../engine";
+import { validatePathVariableValue } from "../validate/definition/pathVariables";
 const AssetScanCaster = {
   pieceDefinition: CastString,
   version: CastObject({

@@ -1,9 +1,7 @@
 
 import {
-  CollectionId,
-  PieceType, PieceId,
-  AssetType, AssetId,
-} from "../../config-types";
+  PieceType,
+} from "../../../config-types";
 import {
   DateTime,
   Sha256,
@@ -12,7 +10,7 @@ import {
   Count,
   FilePath,
   SignedContent,
-} from "../../util-types";
+} from "./caster-runtypes/util-casters";
 
 export type MatchLockResolvable = (
   | { type: "http"; url: URLType }
@@ -30,11 +28,6 @@ export type MatchLockAsset = {
 export type MatchLockPublishPiece = {
   name: string,
   author: string,
-  published: DateTime,
-
-  sha256: Sha256,
-  signature: SignedContent,
-  signatureVerificationUrl: URLType,
 
   preview: {
     image: URLType,
