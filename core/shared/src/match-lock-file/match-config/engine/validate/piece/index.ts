@@ -22,7 +22,13 @@ export function validatePieceDefinition(
     validatePathVariableName(variable);
   }
   for(const asset of definition.assets){
-    validateAsset(asset, definition);
+    try {
+      validateAsset(asset, definition);
+    }catch(e){
+      const eTyped = ValidationErrorPath.convertError(e);
+      eTyped.addPathPrefix(`assets/${asset.name}`);
+      throw e;
+    }
   }
   validatePieceInCycles(pieceType, engine);
 }
