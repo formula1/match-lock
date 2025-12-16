@@ -1,10 +1,9 @@
 
-import {
-  Sha256,
-  URLType,
-} from "../../../util-types";
+type Sha256 = string;
+type URLType = string;
 
 import { MatchLockEngineConfig } from "../../engine";
+export { MatchLockEngineConfig };
 export type RosterLockEngineWithRoster = {
   engine: MatchLockEngineConfig,
   pieces: Record<string, Array<RosterLockPiece>>,
