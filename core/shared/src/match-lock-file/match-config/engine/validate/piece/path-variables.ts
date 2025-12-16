@@ -3,9 +3,6 @@ export function validatePathVariables(variables: Array<string>){
   if(new Set(variables).size !== variables.length){
     throw new Error(`Duplicate path variables`);
   }
-  for(const variable of variables){
-    validatePathVariableName(variable);
-  }
 }
 
 const INVALID_PATH_VARIABLE_CHARS = /[^a-zA-Z0-9_]/;

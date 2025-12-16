@@ -3,16 +3,27 @@ import { MatchLockEngineConfig, MatchLockEngineAssetDefinition } from "../../typ
 export * from "./requirements";
 export * from "./path-variables";
 export * from "./assets";
-import { validatePathVariables } from "./path-variables";
-import { validateAssets } from "./assets";
-import { validatePieceInCycles, validatePieceRequirementsIsResolved } from "./requirements";
+import { validatePathVariableName, validatePathVariables } from "./path-variables";
+import { validateAsset } from "./assets";
+import {
+  validatePieceInCycles, validatePieceRequirementList, validatePieceRequirementIsResolved
+} from "./requirements";
+import { ValidationErrorPath } from "../error";
 
 export function validatePieceDefinition(
   pieceType: string, definition: MatchLockEngineConfig["pieceDefinitions"][string], engine: MatchLockEngineConfig
 ){
-  validatePieceRequirementsIsResolved(pieceType, definition.requires, engine);
+  validatePieceRequirementList(definition.requires);
+  for(const requiredPieceType of definition.requires){
+    validatePieceRequirementIsResolved(requiredPieceType, engine);
+  }
   validatePathVariables(definition.pathVariables);
-  validateAssets(pieceType, definition);
+  for(const variable of definition.pathVariables){
+    validatePathVariableName(variable);
+  }
+  for(const asset of definition.assets){
+    validateAsset(asset, definition);
+  }
   validatePieceInCycles(pieceType, engine);
 }
 

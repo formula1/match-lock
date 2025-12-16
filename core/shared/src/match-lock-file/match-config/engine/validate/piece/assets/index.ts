@@ -1,39 +1,43 @@
 import { MatchLockEngineAssetDefinition, MatchLockEngineConfig } from "../../../types";
 
 import { validateRange } from "./range";
-export function validateAssets(pieceType: string, definition: MatchLockEngineConfig["pieceDefinitions"][string]){
-  const names = new Set<string>();
-  for(const pieceAssetDefinition of definition.assets){
-    if(pieceAssetDefinition.name === ""){
-      throw new Error(`Piece ${pieceType} has empty asset name`);
-    }
-    if(names.has(pieceAssetDefinition.name)){
-      throw new Error(`Piece ${pieceType} has duplicate asset name ${pieceAssetDefinition.name}`);
-    }
-    if(pieceAssetDefinition.name !== pieceAssetDefinition.name.trim()){
-      throw new Error(`Piece ${pieceType} asset name ${pieceAssetDefinition.name} contains a trailing or leading space`);
-    }
-    names.add(pieceAssetDefinition.name);
-    validateRange(pieceAssetDefinition.count)
-    validateGlobList(pieceType, pieceAssetDefinition, definition.pathVariables);
+
+export function validateAsset(
+  pieceAssetDefinition: MatchLockEngineConfig["pieceDefinitions"][string]["assets"][0],
+  definition: MatchLockEngineConfig["pieceDefinitions"][string]
+){
+  validateAssetName(pieceAssetDefinition.name, definition.assets);
+  validateRange(pieceAssetDefinition.count)
+  validateGlobList(pieceAssetDefinition.glob);
+  for(const g of pieceAssetDefinition.glob){
+    validatePathVariablesInGlob(g, definition.pathVariables);
+    validateGlobItem(g);
+  }
+}
+
+export function validateAssetName(
+  name: MatchLockEngineAssetDefinition["name"], assets: MatchLockEngineConfig["pieceDefinitions"][string]["assets"]
+){
+  if(name === ""){
+    throw new Error(`Name is empty`);
+  }
+  if(name !== name.trim()){
+    throw new Error(`Name contains a trailing or leading space`);
+  }
+  if(assets.find((a) => a.name === name)){
+    throw new Error(`Duplicate name`);
   }
 }
 
 import { validatePathVariablesInGlob, validateGlobItem } from "./glob";
-function validateGlobList(
-  pieceType: string,
-  { name, glob }: MatchLockEngineAssetDefinition,
-  pathVariables: Array<string>
+export function validateGlobList(
+  glob: MatchLockEngineAssetDefinition["glob"],
 ){
   if(glob.length === 0){
-    throw new Error(`Piece ${pieceType} asset ${name} has no globs`);
+    throw new Error(`Expecting at least 1 glob`);
   }
   if(new Set(glob).size !== glob.length){
-    throw new Error(`Piece ${pieceType} asset ${name} has duplicate globs`);
-  }
-  for(const g of glob){
-    validatePathVariablesInGlob(g, pathVariables);
-    validateGlobItem(g);
+    throw new Error(`Has duplicate globs`);
   }
 }
 

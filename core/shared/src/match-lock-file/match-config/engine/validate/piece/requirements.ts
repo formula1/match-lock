@@ -1,13 +1,5 @@
 import { findAllCycles, getCyclesUsingKey } from "../../../../../utils/tree";
-import { MatchLockEngineConfig, MatchLockEngineAssetDefinition } from "../../types";
-
-export function validatePieceRequirements(engine: MatchLockEngineConfig){
-  for(const pieceType of Object.keys(engine.pieceDefinitions)){
-    const definition = engine.pieceDefinitions[pieceType];
-    validatePieceRequirementsIsResolved(pieceType, definition.requires, engine);
-  }
-  validatePieceRequirementCycles(engine);
-}
+import { MatchLockEngineConfig } from "../../types";
 
 
 export class CycleError extends Error {
@@ -34,21 +26,24 @@ export function validatePieceInCycles(pieceType: string, engine: MatchLockEngine
   throw new CycleError(pieceCycles);
 }
 
-export function validatePieceRequirementsIsResolved(
-  pieceType: string, requires: Array<string>, engine: MatchLockEngineConfig
+export function validatePieceRequirementList(
+  requires: Array<string>
 ){
   if(requires.length === 0) return;
   if(new Set(requires).size !== requires.length)
-    throw new Error(`Piece ${pieceType} has duplicate requires`);
+    throw new Error(`Duplicate requires`);
+}
 
-  for(const requiredPieceType of requires){
-    const requiredDefinition = engine.pieceDefinitions[requiredPieceType];
-    if(!requiredDefinition){
-      throw new Error(`Piece ${pieceType} requires non-existant piece ${requiredPieceType}`);
-    }
-    if(requiredDefinition.selectionStrategy !== "on demand"){
-      throw new Error(`Piece ${pieceType} requires non on-demand piece ${requiredPieceType}`);
-    }
+export function validatePieceRequirementIsResolved(
+  requiredPieceType: MatchLockEngineConfig["pieceDefinitions"][string]["requires"][0],
+  engine: MatchLockEngineConfig
+){
+  const requiredDefinition = engine.pieceDefinitions[requiredPieceType];
+  if(!requiredDefinition){
+    throw new Error(`Non-existant piece ${requiredPieceType} required`);
+  }
+  if(requiredDefinition.selectionStrategy !== "on demand"){
+    throw new Error(`Non on-demand piece ${requiredPieceType} required`);
   }
 }
 
