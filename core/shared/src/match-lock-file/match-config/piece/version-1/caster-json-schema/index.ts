@@ -16,16 +16,6 @@ import {
   requiredPieceTypeSchemaValidator,
 } from "./requiresPieces";
 
-export const rosterLockPieceKeywords = [
-  sha256SchemaValidator,
-  urlSchemaValidator,
-  downloadableSourceSchemaValidator,
-  pathVariableNameSchemaValidator,
-  pathVariableValueSchemaValidator,
-  allPathVariableNameSetSchemaValidator,
-  requiredPieceValueSchemaValidator,
-  requiredPieceTypeSchemaValidator,
-]
 
 export const rosterLockPiece: JSONSchemaType<RosterLockPiece> = {
   type: "object",
@@ -48,3 +38,29 @@ export const rosterLockPiecesSchema: JSONSchemaType<RosterLockEngineWithRosterCo
     items: rosterLockPiece,
   },
 }
+
+
+
+import { engineSchema } from "../../../engine";
+export const rosterLockEngineWithRosterSchema: JSONSchemaType<RosterLockEngineWithRosterConfig> = {
+  type: "object",
+  required: ["engine", "pieces"],
+  additionalProperties: false,
+  properties: {
+    engine: engineSchema,
+    pieces: rosterLockPiecesSchema,
+  },
+}
+
+
+
+export const rosterLockPieceKeywords = [
+  sha256SchemaValidator,
+  urlSchemaValidator,
+  downloadableSourceSchemaValidator,
+  pathVariableNameSchemaValidator,
+  pathVariableValueSchemaValidator,
+  allPathVariableNameSetSchemaValidator,
+  requiredPieceValueSchemaValidator,
+  requiredPieceTypeSchemaValidator,
+]

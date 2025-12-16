@@ -45,11 +45,11 @@ export const allPathVariableNameSetSchemaValidator = defineKeyword({
 
 export const pathVariablesSchema: JSONSchemaType<RosterLockPiece["pathVariables"]> = {
   type: "object",
+  [allPathVariableNameSetSchemaValidator.keyword]: true,
   required: [],
   additionalProperties: {
     type: "string",
     [pathVariableNameSchemaValidator.keyword]: true,
     [pathVariableValueSchemaValidator.keyword]: true,
   },
-  [allPathVariableNameSetSchemaValidator.keyword]: true,
 }

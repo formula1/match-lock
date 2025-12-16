@@ -19,7 +19,7 @@ export const humanInfoSchema: JSONSchemaType<RosterLockPiece["humanInfo"]> = {
     name: { type: "string" },
     author: { type: "string" },
     url: { type: "string", [urlSchemaValidator.keyword]: true },
-    image: { type: "string", nullable: true, [urlSchemaValidator.keyword]: true },
+    image: { type: "string", [urlSchemaValidator.keyword]: true, nullable: true },
   },
 }
 
