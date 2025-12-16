@@ -30,7 +30,7 @@ export function RequiresInput(
     const newValues = value.filter((pieceType)=>{
       const def = engineConfig.pieceDefinitions[pieceType];
       if(!def) return false;
-      if(def.selectionStrategy === "on demand") return false;
+      if(def.selectionStrategy !== "on demand") return false;
       return true;
     });
 
