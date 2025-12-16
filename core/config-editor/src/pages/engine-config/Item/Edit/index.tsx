@@ -1,6 +1,6 @@
 
 import { useEffect, useMemo, useState } from "react";
-import { EngineConfigForm } from "../../Form";
+import { EngineConfigForm, EngineLegend } from "../../Form";
 import { useRecentFiles } from "../../../../globals/recent-files";
 import { RECENT_ENGINE_FILES_KEY } from "../../constants";
 import { useNavigate, useParams } from "react-router";
@@ -46,8 +46,11 @@ export function EditEngineConfig(){
     <FollowButtonForm
       info={{
         title: "Engine Config",
-        note: !currentFile.isDirty ? null : (
-          <span className="error">You have unsaved changes</span>
+        note: (
+          <>
+            {!currentFile.isDirty ? null : <div className="error">You have unsaved changes</div>}
+            <EngineLegend engineConfig={currentFile.config} />
+          </>
         ),
       }}
       buttons={[

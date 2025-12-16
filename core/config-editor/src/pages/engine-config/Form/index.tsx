@@ -4,7 +4,7 @@ import { PageArrayTabs } from "../../../components/Tabs";
 import type { MatchLockEngineConfig } from "@match-lock/shared";
 import type { InputProps } from "../../../utils/react/input";
 import { PieceDefinitions } from "./PieceDefinitions";
-import { EngineTest } from "../Item/Test";
+export { EngineLegend } from "./Legend";
 
 export function EngineConfigForm({ value, onChange }: InputProps<MatchLockEngineConfig>){
   return <Form value={value} onChange={onChange} />;

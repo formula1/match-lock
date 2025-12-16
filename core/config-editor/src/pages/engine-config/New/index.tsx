@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { EngineConfigForm } from "../Form";
+import { EngineConfigForm, EngineLegend } from "../Form";
 import type { MatchLockEngineConfig } from "@match-lock/shared";
 import { FS } from "../../../globals/fs";
 import { WINDOW } from "../../../globals/window";
@@ -25,7 +25,7 @@ export function NewEngineConfig(){
     <FollowButtonForm
       info={{
         title: "New Engine Config",
-        note: null,
+        note: <EngineLegend engineConfig={value} />,
       }}
       buttons={[
         {
