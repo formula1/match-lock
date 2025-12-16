@@ -31,15 +31,26 @@ unset SNAP_DESKTOP_RUNTIME
 unset SNAP_INSTANCE_NAME
 unset SNAP_INSTANCE_KEY
 
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 echo "🚀 Starting MatchLock Prep App Development Environment"
 echo "📦 Cleaned environment variables"
 echo "🔧 Using PATH: $PATH"
 echo "📚 Using LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
+echo "📁 Working directory: $SCRIPT_DIR"
+
+# Change to script directory
+cd "$SCRIPT_DIR" || exit 1
 
 # Kill any existing processes on port 5173
 echo "🧹 Cleaning up any existing processes on port 5173..."
 lsof -ti:5173 | xargs -r kill -9 2>/dev/null || true
 sleep 1
+
+# Clean Vite cache
+echo "🗑️  Clearing Vite cache..."
+rm -rf node_modules/.vite 2>/dev/null || true
 
 # Start Vite dev server in background
 echo "🌐 Starting Vite dev server..."

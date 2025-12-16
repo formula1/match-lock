@@ -1,0 +1,13 @@
+.glob-highlight-input {
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.glob-highlight-input input {
+  outline: none;
+}
+
+.glob-highlight-input input:focus {
+  border-color: #7AA2F7;
+}
+

@@ -4,18 +4,10 @@ import { PageArrayTabs } from "../../../components/Tabs";
 import type { MatchLockEngineConfig } from "@match-lock/shared";
 import type { InputProps } from "../../../utils/react/input";
 import { PieceDefinitions } from "./PieceDefinitions";
-import { EngineTest } from "./Test";
+export { EngineLegend } from "./Legend";
 
 export function EngineConfigForm({ value, onChange }: InputProps<MatchLockEngineConfig>){
-  return (
-    <PageArrayTabs
-      className="tertiary"
-      pages={[
-        { title: 'Engine Config', content: <Form value={value} onChange={onChange} /> },
-        { title: 'Test', content: <EngineTest engineConfig={value} /> },
-      ]}
-    />
-  )
+  return <Form value={value} onChange={onChange} />;
 }
 
 function Form({ value, onChange }: InputProps<MatchLockEngineConfig>){
@@ -38,6 +30,7 @@ function Form({ value, onChange }: InputProps<MatchLockEngineConfig>){
     <PieceDefinitions
       value={value.pieceDefinitions}
       onChange={v => onChange({ ...value, pieceDefinitions: v })}
+      engineConfig={value}
     />
   </>
 }

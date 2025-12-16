@@ -5,7 +5,7 @@ import { EngineConfigPaths } from "../pages/engine-config/paths";
 
 export function GlobalOutlet(){
   return (
-    <>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
     <LinkTabs
       className="primary"
       pages={[
@@ -16,13 +16,8 @@ export function GlobalOutlet(){
           isActive: (location) => location.pathname.startsWith(EngineConfigPaths.root),
         },
       ]}
-      navStyle={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-      }}
     />
     <Outlet />
-    </>
+    </div>
   )
 }

@@ -3,23 +3,23 @@ import { listen } from '@tauri-apps/api/event';
 // Types matching the Electron API
 export interface DirEntry {
   name: string;
-  isDirectory: boolean;
-  isFile: boolean;
+  is_directory: boolean;
+  is_file: boolean;
 }
 
 export interface FileStat {
   size: number;
-  isDirectory: boolean;
-  isFile: boolean;
+  is_directory: boolean;
+  is_file: boolean;
   mtime: string;
   ctime: string;
 }
 
 export interface WalkResult {
   path: string;
-  relativePath: string;
-  isDirectory: boolean;
-  isFile: boolean;
+  relative_path: string;
+  is_directory: boolean;
+  is_file: boolean;
   size: number;
 }
 
@@ -101,7 +101,7 @@ export const fs = {
   },
 
   startWalkStream: async (path: string, callbacks: WalkStreamCallbacks): Promise<void> => {
-    const streamId = `walk-${Date.now()}-${Math.random()}`;
+    const streamId = `walk-${Date.now().toString(32)}-${Math.random().toString(32).substring(2)}`;
     
     // Set up event listeners
     const unlistenData = await listen(`fs-walk-stream-data-${streamId}`, (event) => {

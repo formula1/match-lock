@@ -1,4 +1,8 @@
 /* Global CSS Reset and Base Styles */
+:root {
+  --sticky-top: 0px;
+}
+
 * {
   box-sizing: border-box;
 }
