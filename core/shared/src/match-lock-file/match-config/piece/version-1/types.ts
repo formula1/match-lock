@@ -4,7 +4,7 @@ type URLType = string;
 
 import { MatchLockEngineConfig } from "../../engine";
 export { MatchLockEngineConfig };
-export type RosterLockEngineWithRoster = {
+export type RosterLockEngineWithRosterConfig = {
   engine: MatchLockEngineConfig,
   pieces: Record<string, Array<RosterLockPiece>>,
 }

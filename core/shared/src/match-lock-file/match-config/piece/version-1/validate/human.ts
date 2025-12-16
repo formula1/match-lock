@@ -1,9 +1,9 @@
-import { RosterLockEngineWithRoster } from "../types";
+import { RosterLockEngineWithRosterConfig } from "../types";
 import { validateURL } from "./utils";
 
 
 export function validateHumanInfo(
-  humanInfo: RosterLockEngineWithRoster["pieces"][string][0]["humanInfo"]
+  humanInfo: RosterLockEngineWithRosterConfig["pieces"][string][0]["humanInfo"]
 ){
   if(!humanInfo.name.trim()) throw new Error("Human Info Name is required");
   if(!humanInfo.author.trim()) throw new Error("Human Info Author is required");

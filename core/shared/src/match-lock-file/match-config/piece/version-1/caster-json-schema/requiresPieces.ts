@@ -1,6 +1,6 @@
 import { JSONSchemaType } from "ajv";
 import { sha256SchemaValidator } from "./version";
-import { RosterLockEngineWithRoster, RosterLockPiece } from "../types";
+import { RosterLockEngineWithRosterConfig, RosterLockPiece } from "../types";
 import { defineKeyword } from "../../../../util-types/json-schema";
 import {
   validateAllExpectedRequiredPieceTypesSet,
@@ -12,7 +12,7 @@ export const allRequiredPieceTypesSetSchemaValidator = defineKeyword({
   keyword: "allRequiredPieceTypesSet",
   type: "object",
   // config/pieces/pieceType/pieceIndex/requiredPieces/index
-  validate: function (requiredPieces, { engine }: RosterLockEngineWithRoster, path){
+  validate: function (requiredPieces, { engine }: RosterLockEngineWithRosterConfig, path){
     const pathParts = path.split("/");
     const pieceType = pathParts[2];
     const pieceDefinition = engine.pieceDefinitions[pieceType];
@@ -24,7 +24,7 @@ export const requiredPieceValueSchemaValidator = defineKeyword({
   keyword: "requiredPieceValue",
   type: "string",
   // config/pieces/pieceType/pieceIndex/requiredPieces/pieceType/index
-  validate: function (requiredPiece: string, { engine, pieces }: RosterLockEngineWithRoster, path){
+  validate: function (requiredPiece: string, { engine, pieces }: RosterLockEngineWithRosterConfig, path){
     const pathParts = path.split("/");
     pathParts.pop();
     const pieceType = pathParts[2];
@@ -37,7 +37,7 @@ export const requiredPieceTypeSchemaValidator = defineKeyword({
   keyword: "requiredPieceType",
   type: "array",
   // config/pieces/pieceType/pieceIndex/requiredPieces/pieceType
-  validate: function (requiredPiece: string, { engine, pieces }: RosterLockEngineWithRoster, path){
+  validate: function (requiredPiece: string, { engine, pieces }: RosterLockEngineWithRosterConfig, path){
     const pathParts = path.split("/");
     const pieceType = pathParts.at(-1);
     if(!pieceType) throw new Error("Invalid path");

@@ -1,5 +1,5 @@
 import { JSONSchemaType } from "ajv";
-import { RosterLockEngineWithRoster, RosterLockPiece } from "../types";
+import { RosterLockEngineWithRosterConfig, RosterLockPiece } from "../types";
 
 import { versionSchema, sha256SchemaValidator } from "./version";
 import { humanInfoSchema, urlSchemaValidator } from "./human";
@@ -40,7 +40,7 @@ export const rosterLockPiece: JSONSchemaType<RosterLockPiece> = {
   },
 }
 
-export const rosterLockPiecesSchema: JSONSchemaType<RosterLockEngineWithRoster["pieces"]> = {
+export const rosterLockPiecesSchema: JSONSchemaType<RosterLockEngineWithRosterConfig["pieces"]> = {
   type: "object",
   required: [],
   additionalProperties: {

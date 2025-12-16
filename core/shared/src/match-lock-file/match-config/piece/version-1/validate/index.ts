@@ -1,4 +1,4 @@
-import { RosterLockEngineWithRoster } from "../types";
+import { RosterLockEngineWithRosterConfig } from "../types";
 
 export * from "./downloadable-source";
 export * from "./path-variables";
@@ -19,7 +19,7 @@ import {
   validateRequiredPieceValue,
 } from "./required-pieces";
 export function validateRosterLockPieces(
-  { engine, pieces }: RosterLockEngineWithRoster
+  { engine, pieces }: RosterLockEngineWithRosterConfig
 ){
   for(const [pieceType, pieceList] of Object.entries(pieces)){
     for(const piece of pieceList){
