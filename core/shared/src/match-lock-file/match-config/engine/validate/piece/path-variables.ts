@@ -5,6 +5,7 @@ export function validatePathVariables(variables: Array<string>){
   }
 }
 
+// Note: [^CHARS] specifies we're looking for characters that are NOT in the set
 const INVALID_PATH_VARIABLE_CHARS = /[^a-zA-Z0-9_]/;
 export function validatePathVariableName(variable: string){
   if(variable.length === 0){
