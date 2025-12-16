@@ -1,10 +1,9 @@
 
-const VARIABLE_VALUE_CHARSET = 'a-zA-Z0-9_\\- '; // alphanumeric, underscore, hyphen, space
-const VARIABLE_VALUE_MIN_LENGTH = 1;
-const VARIABLE_VALUE_MAX_LENGTH = 64;
-
-// For glob validation, we'll use a character class
-const VARIABLE_GLOB_PATTERN = `[${VARIABLE_VALUE_CHARSET}]+`;
+export const PATH_VARIABLE_VALUE_VALIDATION = {
+  minLength: 1,
+  maxLength: 64,
+  charset: 'a-zA-Z0-9_\\- ',
+};
 
 export function validatePathVariablesInGlob(
   glob: string, pathVariables: Array<string>
@@ -24,6 +23,6 @@ export function replacePathVariablesWithGlob(
 ){
   return glob.replaceAll(
     /<([a-zA-Z0-9_\\-]+)>/g,
-    `[${VARIABLE_GLOB_PATTERN}]{${VARIABLE_VALUE_MIN_LENGTH},${VARIABLE_VALUE_MAX_LENGTH}}` 
+    `[[${PATH_VARIABLE_VALUE_VALIDATION.charset}]+]{${PATH_VARIABLE_VALUE_VALIDATION.minLength},${PATH_VARIABLE_VALUE_VALIDATION.maxLength}}` 
   );
 }

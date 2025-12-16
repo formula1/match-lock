@@ -1,5 +1,6 @@
 import { MatchLockEngineConfig } from "../../../engine";
 import { MatchLockScanPiece } from "../../types";
+import { PATH_VARIABLE_VALUE_VALIDATION } from "../../../engine/validate/piece/assets/glob/pathvariables";
 
 export function validatePathVariableValues(
   pieceConfig: MatchLockEngineConfig["pieceDefinitions"][string],
@@ -24,21 +25,16 @@ type VariableConstraints = {
 }
 export function validatePathVariableValue(
   variableValue: string,
-  constraints: VariableConstraints = {
-    minLength: 1,
-    maxLength: 64,
-    charset: 'a-zA-Z0-9_\\- ',
-  }
 ){
-  if (variableValue.length < constraints.minLength) {
+  if (variableValue.length < PATH_VARIABLE_VALUE_VALIDATION.minLength) {
     throw new Error(`Path variable value is too short`);
   }
   
-  if (variableValue.length > constraints.maxLength) {
+  if (variableValue.length > PATH_VARIABLE_VALUE_VALIDATION.maxLength) {
     throw new Error(`Path variable value is too long`);
   }
   
-  const charsetRegex = new RegExp(`^[${constraints.charset}]+$`);
+  const charsetRegex = new RegExp(`^[${PATH_VARIABLE_VALUE_VALIDATION.charset}]+$`);
   if (!charsetRegex.test(variableValue)) {
     throw new Error(`Path variable value contains invalid characters`);
   }
