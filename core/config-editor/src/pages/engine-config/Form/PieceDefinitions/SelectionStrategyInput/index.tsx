@@ -35,7 +35,7 @@ export function SelectionStrategyInput(
               type="radio"
               checked={value === strategy.value}
             />
-            <ToolTipSpan tip={strategy.tooltip} clickable>{strategy.title}</ToolTipSpan>
+            <ToolTipSpan tip={strategy.tooltip}>{strategy.title}</ToolTipSpan>
           </label>
         </li>
       ))}
