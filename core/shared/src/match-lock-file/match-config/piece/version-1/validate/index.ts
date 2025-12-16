@@ -7,7 +7,10 @@ export * from "./utils";
 
 import { validateVersions } from "./version";
 import { validateHumanInfo } from "./human";
-import { validateDownloadableSource } from "./downloadable-source";
+import {
+  validateDownloadableSourceList,
+  validateDownloadableSource
+} from "./downloadable-source";
 import {
   validateAllExpectedPathVariableNamesSet,
   validatePathVariableNameIsExpected,
@@ -29,6 +32,7 @@ export function validateRosterLockPieces(
       validateVersions(piece.version);
       validateHumanInfo(piece.humanInfo);
       // Download Sources
+      validateDownloadableSourceList(piece.downloadSources);
       for(const downloadSource of piece.downloadSources){
         validateDownloadableSource(downloadSource);
       }
