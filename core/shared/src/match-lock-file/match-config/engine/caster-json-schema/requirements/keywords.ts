@@ -1,4 +1,5 @@
-import { defineKeyword } from "../util";
+import { defineKeyword } from "../../../../util-types/json-schema";
+import { MatchLockEngineConfig } from "../../types";
 
 import { validatePieceRequirementList } from "../../validate/piece/requirements";
 export const requirementListSchemaValidator = defineKeyword({
@@ -11,7 +12,7 @@ import { validatePieceInCycles } from "../../validate/piece/requirements";
 export const requirementCycleSchemaValidator = defineKeyword({
   keyword: "requirementCycle",
   type: "array",
-  validate: function(item: string, engine, path){
+  validate: function(item: string, engine: MatchLockEngineConfig, path){
     const parts = path.split("/");
     parts.pop();
     const pieceType = parts.at(-1);
@@ -25,7 +26,7 @@ import { validatePieceRequirementIsResolved } from "../../validate/piece/require
 export const requirementItemSchemaValidator = defineKeyword({
   keyword: "requirementResolved",
   type: "string",
-  validate: function(item: string, engine, path){
+  validate: function(item: string, engine: MatchLockEngineConfig, path){
     validatePieceRequirementIsResolved(item, engine);
   }
 })

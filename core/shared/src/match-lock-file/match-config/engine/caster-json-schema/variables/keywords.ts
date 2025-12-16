@@ -1,4 +1,4 @@
-import { defineKeyword } from "../util";
+import { defineKeyword } from "../../../../util-types/json-schema";
 
 import { validatePathVariables, validatePathVariableName } from "../../validate/piece/path-variables";
 export const pathVariableListSchemaValidator = defineKeyword({
