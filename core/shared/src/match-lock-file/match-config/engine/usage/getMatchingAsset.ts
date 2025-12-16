@@ -20,6 +20,9 @@ export function getMatchingAssetsForFile(
       // Replace path variables
       glob = replacePathVariables(glob, pathVariables);
       // check if the relativePath is exactly the glob
+      // TODO: eventually we want to see if the glob is a file path and if so, check for exact match
+      // Relative path isn't expected to have any glob parts, so an exact match is expected to be ok
+      // If a filepath can have glob parts, we may be in trouble
       if(relativePath === glob) return true;
       // check if the relativePath matches the glob
       if(micromatch.isMatch(relativePath, glob)) return true;
