@@ -12,7 +12,7 @@ export function Markdown(
   }
 ){
   return (
-    <div className={"markdown" + (!className ? "" : "" + className)} style={style}>
+    <div className={"markdown" + (!className ? "" : " " + className)} style={style}>
       <ReactMarkdown
         components={{
           a: ({ href, children }) => (
