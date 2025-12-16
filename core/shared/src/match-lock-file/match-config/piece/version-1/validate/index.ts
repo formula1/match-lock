@@ -14,6 +14,7 @@ import {
   validatePathVariableValue,
 } from "./path-variables";
 import {
+  validateAllExpectedRequiredPieceTypesSet,
   validateRequiredPieceType,
   validateRequiredPieceValue,
 } from "./required-pieces";
@@ -40,6 +41,7 @@ export function validateRosterLockPieces(
       }
 
       // Required Pieces
+      validateAllExpectedRequiredPieceTypesSet(piece.requiredPieces, pieceConfig);
       for(const [requiredPieceType, requiredPiece] of Object.entries(piece.requiredPieces)){
         validateRequiredPieceType(requiredPieceType, { engine, pieces });
         for(const pieceSha of requiredPiece.expected){

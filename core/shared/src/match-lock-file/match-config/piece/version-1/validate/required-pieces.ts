@@ -1,5 +1,15 @@
-import { RosterLockEngineWithRoster } from "../types";
+import { MatchLockEngineConfig, RosterLockEngineWithRoster } from "../types";
 
+export function validateAllExpectedRequiredPieceTypesSet(
+  requiredPieces: RosterLockEngineWithRoster["pieces"][string][0]["requiredPieces"],
+  pieceConfig: MatchLockEngineConfig["pieceDefinitions"][string],
+){
+  for(const requiredPieceType of pieceConfig.requires){
+    if(!(requiredPieceType in requiredPieces)){
+      throw new Error(`Piece is missing required piece type ${requiredPieceType}`);
+    }
+  }
+}
 
 export function validateRequiredPieceType(
   pieceType: string, { engine, pieces }: RosterLockEngineWithRoster
