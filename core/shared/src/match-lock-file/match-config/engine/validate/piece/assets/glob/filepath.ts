@@ -36,11 +36,6 @@ export function isValidFilePath(path: string) {
     throw new Error("Filepath contains invalid traversal");
   }
 
-  // Check for absolute paths (we want relative paths only)
-  if(path.startsWith('/') || /^[a-zA-Z]:/.test(path)){
-    throw new Error("Filepath is absolute");
-  }
-
   // Must not end with a slash (indicating a directory)
   if(path.endsWith('/')){
     throw new Error("Filepath ends with a slash");
