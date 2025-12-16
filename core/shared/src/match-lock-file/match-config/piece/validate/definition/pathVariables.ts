@@ -18,11 +18,6 @@ export function validatePathVariableValues(
   }
 }
 
-type VariableConstraints = {
-  minLength: number,
-  maxLength: number,
-  charset: string,
-}
 export function validatePathVariableValue(
   variableValue: string,
 ){
