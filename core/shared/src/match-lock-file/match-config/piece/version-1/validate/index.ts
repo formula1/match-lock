@@ -24,11 +24,11 @@ import {
 export function validateRosterLockPieces(
   { engine, pieces }: RosterLockEngineWithRosterConfig
 ){
+  validateAllEnginePiecesDefined(pieces, engine);
   for(const [pieceType, pieceList] of Object.entries(pieces)){
     for(const piece of pieceList){
+      validatePieceInEngine(pieceType, engine);
       const pieceConfig = engine.pieceDefinitions[pieceType];
-      if(!pieceConfig)
-        throw new Error(`Piece type ${pieceType} is not defined in engine`);
       validateVersions(piece.version);
       validateHumanInfo(piece.humanInfo);
       // Download Sources
@@ -53,5 +53,23 @@ export function validateRosterLockPieces(
         }
       }
     }
+  }
+}
+
+export function validateAllEnginePiecesDefined(
+  pieces: RosterLockEngineWithRosterConfig["pieces"], engine: RosterLockEngineWithRosterConfig["engine"]
+){
+  for(const pieceType of Object.keys(engine.pieceDefinitions)){
+    if(!(pieceType in pieces)){
+      throw new Error(`Piece type ${pieceType} is defined in engine but not in roster`);
+    }
+  }
+}
+
+export function validatePieceInEngine(
+  pieceType: string, engine: RosterLockEngineWithRosterConfig["engine"]
+){
+  if(!(pieceType in engine.pieceDefinitions)){
+    throw new Error(`Piece type ${pieceType} is not defined in engine`);
   }
 }

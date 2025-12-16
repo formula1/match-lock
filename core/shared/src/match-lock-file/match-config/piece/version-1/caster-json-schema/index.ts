@@ -1,4 +1,5 @@
 import { JSONSchemaType } from "ajv";
+import { defineKeyword } from "../../../../util-types/json-schema";
 import { RosterLockEngineWithRosterConfig, RosterLockPiece } from "../types";
 
 import { versionSchema, sha256SchemaValidator } from "./version";
@@ -17,8 +18,19 @@ import {
 } from "./requiresPieces";
 
 
+const pieceTypeInEngineSchemaValidator = defineKeyword({
+  keyword: "rosterPieceTypeInEngine",
+  type: "object",
+  validate: function (piece: RosterLockPiece, { engine }: RosterLockEngineWithRosterConfig, path){
+    const pathParts = path.split("/");
+    // config/pieces/pieceType/pieceIndex
+    const pieceType = pathParts[2];
+    validatePieceInEngine(pieceType, engine);
+  }
+});
 export const rosterLockPiece: JSONSchemaType<RosterLockPiece> = {
   type: "object",
+  [pieceTypeInEngineSchemaValidator.keyword]: true,
   required: ["version", "humanInfo", "downloadSources", "pathVariables", "requiredPieces"],
   additionalProperties: false,
   properties: {
@@ -30,8 +42,18 @@ export const rosterLockPiece: JSONSchemaType<RosterLockPiece> = {
   },
 }
 
+
+import { validateAllEnginePiecesDefined, validatePieceInEngine } from "../validate";
+const allPieceTypesInEngineSchemaValidator = defineKeyword({
+  keyword: "allEnginePieceTypesInRoster",
+  type: "object",
+  validate: function (pieces: RosterLockEngineWithRosterConfig["pieces"], { engine }: RosterLockEngineWithRosterConfig, path){
+    validateAllEnginePiecesDefined(pieces, engine);
+  }
+});
 export const rosterLockPiecesSchema: JSONSchemaType<RosterLockEngineWithRosterConfig["pieces"]> = {
   type: "object",
+  [allPieceTypesInEngineSchemaValidator.keyword]: true,
   required: [],
   additionalProperties: {
     type: "array",
@@ -63,4 +85,6 @@ export const rosterLockPieceKeywords = [
   allPathVariableNameSetSchemaValidator,
   requiredPieceValueSchemaValidator,
   requiredPieceTypeSchemaValidator,
+  allPieceTypesInEngineSchemaValidator,
+  pieceTypeInEngineSchemaValidator,
 ]
