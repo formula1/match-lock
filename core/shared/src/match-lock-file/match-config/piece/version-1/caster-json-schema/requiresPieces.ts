@@ -36,11 +36,11 @@ export const requiredPieceValueSchemaValidator = defineKeyword({
 export const requiredPieceTypeSchemaValidator = defineKeyword({
   keyword: "requiredPieceType",
   type: "array",
-  // config/pieces/pieceType/pieceIndex/requiredPieces/pieceType/index
+  // config/pieces/pieceType/pieceIndex/requiredPieces/pieceType
   validate: function (requiredPiece: string, { engine, pieces }: RosterLockEngineWithRoster, path){
     const pathParts = path.split("/");
-    pathParts.pop();
-    const pieceType = pathParts[2];
+    const pieceType = pathParts.at(-1);
+    if(!pieceType) throw new Error("Invalid path");
 
     validateRequiredPieceType(pieceType, { engine, pieces });
   }
@@ -53,6 +53,7 @@ export const requiredPiecesSchema: JSONSchemaType<RosterLockPiece["requiredPiece
   required: [],
   additionalProperties: {
     type: "object",
+    [requiredPieceTypeSchemaValidator.keyword]: true,
     required: ["expected", "selectable"],
     additionalProperties: false,
     properties: {
@@ -63,7 +64,6 @@ export const requiredPiecesSchema: JSONSchemaType<RosterLockPiece["requiredPiece
           [sha256SchemaValidator.keyword]: true,
           [requiredPieceValueSchemaValidator.keyword]: true,
         },
-        [requiredPieceTypeSchemaValidator.keyword]: true,
       },
       selectable: { type: "boolean" },
     },
