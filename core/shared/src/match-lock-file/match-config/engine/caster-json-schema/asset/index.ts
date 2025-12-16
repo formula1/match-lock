@@ -30,6 +30,7 @@ export const assetsSchema: JSONSchemaType<MatchLockEngineConfig["pieceDefinition
   type: "array",
   items: {
     type: "object",
+    additionalProperties: false,
     required: ["name", "classification", "count", "glob"],
     properties: {
       name: {
