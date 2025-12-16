@@ -24,6 +24,10 @@
   border-radius: 16px;
   padding: 16px;
   border: 1px solid #bbb;
+  max-height: 100%;
+
+  display: flex; /* Add this */
+  flex-direction: column; /* Add this */
 }
 
 .follow-button-container > .action-container > * > .button-list > li {
@@ -31,3 +35,17 @@
   margin-left: 2rem;
 }
 
+.follow-button-container > .action-container > * > div:first-child {
+  flex-shrink: 0; /* Prevents the header from shrinking */
+}
+
+.follow-button-container > .action-container > * > footer {
+  flex-shrink: 0; /* Keeps footer from shrinking */
+  overflow: auto; /* Keep your existing overflow for the note */
+}
+
+.follow-button-container > .action-container > * > footer {
+  flex: 1; /* Take remaining space */
+  overflow-y: auto; /* Only footer scrolls */
+  min-height: 0; /* Critical for flex scrolling */
+}

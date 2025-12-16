@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren, ReactNode, useEffect, useRef } from "react";
 
 import "./style.css";
 import { ClickableButton } from "./ClickableButton";
@@ -27,6 +27,14 @@ export function FollowButtonForm({ side, info, buttons, children }: Props){
 }
 
 function ButtonsContainer({ info, buttons }: { info: Props["info"], buttons: Props["buttons"] }){
+  const footerElementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (footerElementRef.current) {
+      footerElementRef.current.scrollTop = 0;
+    }
+  }, [info.note]); // Reset when note content changes
+
   return (
     <div className="action-container">
       <div>
@@ -49,7 +57,7 @@ function ButtonsContainer({ info, buttons }: { info: Props["info"], buttons: Pro
         </ul>
 
         {info.note && (
-          <footer>
+          <footer ref={footerElementRef} >
             <div>{info.note}</div>
           </footer>
         )}
