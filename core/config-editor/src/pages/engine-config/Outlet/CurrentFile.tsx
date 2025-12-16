@@ -6,7 +6,7 @@ import {
 import { useParams } from "react-router";
 import { FS } from "../../../globals/fs";
 import { usePromisedMemo } from "../../../utils/react/promised-memo";
-import { cloneJSON, MatchLockEngineCaster, MatchLockEngineConfig } from "@match-lock/shared";
+import { cloneJSON, ROSTERLOCK_ENGINE_CASTER_JSONSCHEMA, MatchLockEngineConfig } from "@match-lock/shared";
 
 import { diff } from 'json-diff-ts';
 
@@ -51,7 +51,7 @@ export function CurrentFileProvider({ children }: PropsWithChildren) {
 
   const loadFile = useCallback(async (filePath: string) => {
     const json = await FS.readJSON(filePath);
-    const engine = MatchLockEngineCaster.check(json);
+    const engine = ROSTERLOCK_ENGINE_CASTER_JSONSCHEMA.cast(json);
     return engine;
   }, [])
 
