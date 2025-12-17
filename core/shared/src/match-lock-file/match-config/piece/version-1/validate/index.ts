@@ -1,9 +1,11 @@
 import { RosterLockEngineWithRosterConfig } from "../types";
 
 export * from "./downloadable-source";
+export * from "./human";
 export * from "./path-variables";
 export * from "./required-pieces";
 export * from "./utils";
+export * from "./version";
 
 import { validateVersions } from "./version";
 import { validateHumanInfo } from "./human";
