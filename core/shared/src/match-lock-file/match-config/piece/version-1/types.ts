@@ -30,3 +30,8 @@ export type RosterLockPiece = {
 }
 
 type DownloadableSource = string;
+
+export type RosterLockPieceMetadata = (
+  & { rosterlockVersion: ""}
+  & Omit<RosterLockPiece, "version" | "requiredPieces">
+)

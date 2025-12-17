@@ -1,6 +1,6 @@
 import { JSONSchemaType } from "ajv";
 import { defineKeyword } from "../../../../util-types/json-schema";
-import { RosterLockEngineWithRosterConfig, RosterLockPiece } from "../types";
+import { RosterLockEngineWithRosterConfig, RosterLockPiece, RosterLockPieceMetadata } from "../types";
 
 import { versionSchema, sha256SchemaValidator } from "./version";
 import { humanInfoSchema, urlSchemaValidator } from "./human";
@@ -93,3 +93,6 @@ export const rosterLockPieceKeywords = [
   allPieceTypesInEngineSchemaValidator,
   pieceTypeInEngineSchemaValidator,
 ]
+
+
+export * from "./piecemeta";
