@@ -4,7 +4,11 @@ import { RosterLockEngineWithRosterConfig, RosterLockPiece } from "../types";
 
 import { versionSchema, sha256SchemaValidator } from "./version";
 import { humanInfoSchema, urlSchemaValidator } from "./human";
-import { downloadableSourcesSchema, downloadableSourceSchemaValidator } from "./downloadableSources";
+import {
+  downloadableSourcesSchema,
+  downloadableSourceSchemaValidator,
+  downloadableSourceListSchemaValidator,
+} from "./downloadableSources";
 import {
   pathVariablesSchema,
   pathVariableNameSchemaValidator,
@@ -80,6 +84,7 @@ export const rosterLockPieceKeywords = [
   sha256SchemaValidator,
   urlSchemaValidator,
   downloadableSourceSchemaValidator,
+  downloadableSourceListSchemaValidator,
   pathVariableNameSchemaValidator,
   pathVariableValueSchemaValidator,
   allPathVariableNameSetSchemaValidator,
