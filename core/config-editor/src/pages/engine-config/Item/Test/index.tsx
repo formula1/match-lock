@@ -26,14 +26,14 @@ export function EngineTest(){
     setScanUpdate(cloneJSON(DEFAULT_SCAN_UPDATE));
     if(!currentFile.activeFile) return;
     if(currentFile.state !== "ready") return;
-    if(!testFormValueIsReady(formValue, currentFile.config)) return;
+    if(!testFormValueIsReady(formValue, currentFile.value)) return;
     const activeId = Date.now();
     currentScan.current = activeId;
     Promise.resolve().then(async function(){
       setIsScanning(true);
       await scanFolder(
         formValue,
-        currentFile.config,
+        currentFile.value,
         (newUpdate)=>{
           if(currentScan.current !== activeId) return;
           setScanUpdate(newUpdate);
@@ -51,7 +51,7 @@ export function EngineTest(){
     return <div>Loading...</div>
   }
 
-  const engineConfig = currentFile.config;
+  const engineConfig = currentFile.value;
   const { results, statistics, countViolations } = scanUpdate;
 
   return <div>

@@ -49,7 +49,7 @@ export function EditEngineConfig(){
         note: (
           <>
             {!currentFile.isDirty ? null : <div className="error">You have unsaved changes</div>}
-            <EngineLegend engineConfig={currentFile.config} />
+            <EngineLegend engineConfig={currentFile.value} />
           </>
         ),
       }}
@@ -88,7 +88,7 @@ export function EditEngineConfig(){
       ]}
     >
       <EngineConfigForm
-        value={currentFile.config}
+        value={currentFile.value}
         onChange={currentFile.update}
       />
     </FollowButtonForm>
