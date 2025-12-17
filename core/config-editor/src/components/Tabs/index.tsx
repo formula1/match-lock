@@ -10,7 +10,7 @@ export function PageArrayTabs({
   buttonStyle = {},
   contentStyle = {},
 }: {
-  pages: Array<{ title: string, content: React.ReactNode }>;
+  pages: Array<null | { title: string, content: React.ReactNode }>;
   className?: string;
   navStyle?: CSSProperties;
   buttonStyle?: CSSProperties;
@@ -24,6 +24,7 @@ export function PageArrayTabs({
   return <>
     <nav className={combineClassNames("tabs-nav", className)} style={{...navStyle}}>
       {pages.map((page, i) => (
+        !page ? null :
         <button
           key={`${page.title}-${i}`}
           disabled={activePage === i}
