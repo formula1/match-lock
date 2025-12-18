@@ -38,7 +38,8 @@ export async function createPieceValue(
   await Promise.all([
     Promise.resolve().then(async ()=>{
       piece.version = await calculatePieceVersion(
-        folderPath, filesWithAssets, async (path)=>{
+        filesWithAssets, async (path)=>{
+          path = pathJoin(folderPath, path);
           const byteSize = await FS.stat(path).then(r=>r.size);
           return { byteSize, stream: FS.getFileStream(path) };
         },

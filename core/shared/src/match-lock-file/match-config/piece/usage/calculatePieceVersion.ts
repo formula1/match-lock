@@ -1,11 +1,9 @@
 
-import { join as pathJoin } from "path";
 
 type FileWithSha = { path: string, asset: MatchLockEngineAssetDefinition, sha: string }
 type FileGetter = (path: string) => Promise<{ byteSize: number, stream: AsyncIterable<Uint8Array> }>
 type ProgressListener = (progress: { file: string, current: number, total: number }) => any
 export async function calculatePieceVersion(
-  folderPath: string,
   files: Map<string, { assets: Array<MatchLockEngineAssetDefinition> }>,
   getFile: FileGetter,
   onProgress?: ProgressListener
@@ -15,8 +13,7 @@ export async function calculatePieceVersion(
   const docFiles: Array<FileWithSha> = [];
 
   await Promise.all(Array.from(files.entries()).map(async ([relativePath, { assets }]) => {
-    const fullPath = pathJoin(folderPath, relativePath);
-    const sha = await getHashFromFile(fullPath, getFile, onProgress);
+    const sha = await getHashFromFile(relativePath, getFile, onProgress);
     const asset = assets[0];
     if(!asset) throw new Error(`No asset found for ${relativePath}`);
     switch(asset.classification){
