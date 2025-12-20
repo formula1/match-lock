@@ -6,6 +6,7 @@ echo "Compiling Match Lock..."
 
 packages=(
   "shared"
+  "node-services"
   "config-editor"
   "relay-server"
   "match-agent"
@@ -13,6 +14,8 @@ packages=(
 
 set -e
 for package in "${packages[@]}"; do
+  echo "=================================================="
   echo ":: Installing $package"
-  cd "core/$package" && npm install && npm run build && cd ../..
+  echo "=================================================="
+  cd "core/$package" && npm install && cd ../..
 done
