@@ -3,11 +3,11 @@ type DownloadableSource = {
   protocol: string,
   validate: (url: string) => void, // throws on error
 };
-export const DOWNLOADABLE_SOURCE_PROTOCOLS: Array<DownloadableSource> = [];
+export const DOWNLOADABLE_SOURCE_PROTOCOLS: Record<string, DownloadableSource> = {};
 
 
 // HTTPS Validator
-DOWNLOADABLE_SOURCE_PROTOCOLS.push({
+DOWNLOADABLE_SOURCE_PROTOCOLS['https'] = {
   protocol: 'https',
   validate: (url: string) => {
     const parsed = new URL(url); // Will throw if invalid URL
@@ -18,10 +18,10 @@ DOWNLOADABLE_SOURCE_PROTOCOLS.push({
       throw new Error('Missing hostname');
     }
   }
-});
+};
 
 // HTTP Validator
-DOWNLOADABLE_SOURCE_PROTOCOLS.push({
+DOWNLOADABLE_SOURCE_PROTOCOLS['http'] ={
   protocol: 'http',
   validate: (url: string) => {
     const parsed = new URL(url);
@@ -32,10 +32,10 @@ DOWNLOADABLE_SOURCE_PROTOCOLS.push({
       throw new Error('Missing hostname');
     }
   }
-});
+};
 
 // FTPS Validator
-DOWNLOADABLE_SOURCE_PROTOCOLS.push({
+DOWNLOADABLE_SOURCE_PROTOCOLS['ftps'] = {
   protocol: 'ftps',
   validate: (url: string) => {
     const parsed = new URL(url);
@@ -50,10 +50,10 @@ DOWNLOADABLE_SOURCE_PROTOCOLS.push({
       throw new Error('FTPS URL must include a file path');
     }
   }
-});
+};
 
 // Magnet Validator
-DOWNLOADABLE_SOURCE_PROTOCOLS.push({
+DOWNLOADABLE_SOURCE_PROTOCOLS['magnet'] = {
   protocol: 'magnet',
   validate: (url: string) => {
     const parsed = new URL(url);
@@ -78,10 +78,10 @@ DOWNLOADABLE_SOURCE_PROTOCOLS.push({
       throw new Error('Invalid BitTorrent info hash format');
     }
   }
-});
+};
 
 // Git Validator
-DOWNLOADABLE_SOURCE_PROTOCOLS.push({
+DOWNLOADABLE_SOURCE_PROTOCOLS['git'] ={
   protocol: 'git',
   validate: (url: string) => {
     // Git supports multiple URL formats:
@@ -115,11 +115,11 @@ DOWNLOADABLE_SOURCE_PROTOCOLS.push({
       throw new Error('Git URL must include repository path');
     }
   }
-});
+};
 
 // IPFS Validator
 import { CID } from 'multiformats/cid'
-DOWNLOADABLE_SOURCE_PROTOCOLS.push({
+DOWNLOADABLE_SOURCE_PROTOCOLS['ipfs'] = {
   protocol: 'ipfs',
   validate: (url: string) => {
     const parsed = new URL(url);
@@ -141,11 +141,11 @@ DOWNLOADABLE_SOURCE_PROTOCOLS.push({
       throw new Error(`Invalid IPFS CID: ${(e as Error).message}`);
     }
   }
-});
+};
 
 // Utility function to validate any download source
 export function getDownloadableSourceProtocol(url: string): string | undefined {
-  for(const validator of DOWNLOADABLE_SOURCE_PROTOCOLS){
+  for(const validator of Object.values(DOWNLOADABLE_SOURCE_PROTOCOLS)){
     try {
       validator.validate(url);
       return validator.protocol;
