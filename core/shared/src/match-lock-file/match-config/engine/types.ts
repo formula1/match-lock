@@ -1,11 +1,7 @@
 
 import {
   PieceType,
-  AssetType,
 } from "../../config-types";
-import {
-  Count,
-} from "../../util-types";
 
 
 export type MatchLockEngineConfig = {
@@ -23,7 +19,7 @@ export type AssetClassification = "logic" | "media" | "doc";
 export type MatchLockEngineAssetDefinition = {
   name: string,
   classification: AssetClassification,
-  count: Count | "*" | [Count, Count | "*"]
+  count: number | "*" | [number, number | "*"]
   glob: Array<string>,
 }
 

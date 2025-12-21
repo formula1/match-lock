@@ -1,0 +1,16 @@
+
+
+.create-piece .progress.unstarted {
+  background-color: #eee;
+  color: #000;
+}
+
+.create-piece .progress.complete {
+  background-color: #afa;
+  color: #000;
+}
+
+.create-piece .progress.active {
+  background-color: #faa;
+  color: #000;
+}

@@ -80,7 +80,7 @@ function PieceDefinitionCreator({ value, onChange }: InputProps<MatchLockEngineC
 
 import { SelectionStrategyInput } from "./SelectionStrategyInput";
 import { RequiresInput } from "./RequiresInput";
-import { PathVariablesInput } from "./PathVariablesInput";
+import { PathVariableNamesInput } from "./PathVariablesInput";
 import { AssetsInput } from "./AssetDefinition";
 function PieceDefinition(
   { pieceName, engineConfig, value: definitions, onChange: setDefinitions }: (
@@ -111,7 +111,7 @@ function PieceDefinition(
       />
     </div>
     <div className="section">
-      <PathVariablesInput
+      <PathVariableNamesInput
         value={value.pathVariables}
         onChange={v => onChange({ ...value, pathVariables: v })}
       />

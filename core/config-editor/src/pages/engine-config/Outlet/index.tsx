@@ -1,11 +1,19 @@
-import { Outlet } from "react-router";
+import { Outlet, useParams } from "react-router";
 import { LinkTabs } from "../../../components/Tabs";
 import { EngineConfigPaths } from "../paths";
 import { replaceParams } from "../../../utils/router";
 import { CurrentFileProvider, useCurrentFile } from "./CurrentFile";
+import { useMemo } from "react";
 
 export function EngineOutlet(){
-  return <CurrentFileProvider>
+  const params = useParams();
+
+  const activeFile = useMemo(() => {
+    if(!params.enginePath) return;
+    return decodeURIComponent(params.enginePath);
+  }, [params.enginePath]);
+
+  return <CurrentFileProvider filePath={activeFile}>
     <EngineTabs />
     <FileErrorOrOutlet />
   </CurrentFileProvider>

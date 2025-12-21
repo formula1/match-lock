@@ -4,6 +4,10 @@ use std::path::{Path, PathBuf};
 use tauri::{AppHandle, Emitter, Manager};
 use walkdir::WalkDir;
 
+use tokio::fs;
+use tokio::io::{AsyncReadExt, AsyncSeekExt};
+
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DirEntry {
   name: String,
@@ -39,6 +43,29 @@ pub async fn fs_home_dir() -> Result<String, String> {
 #[tauri::command]
 pub async fn fs_read_file(path: String) -> Result<Vec<u8>, String> {
   fs::read(&path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn fs_read_file_chunk(
+    path: String, 
+    offset: u64, 
+    length: u64
+) -> Result<Vec<u8>, String> {
+    let mut file = tokio::fs::File::open(&path)
+        .await
+        .map_err(|e| e.to_string())?;
+    
+    file.seek(tokio::io::SeekFrom::Start(offset))
+        .await
+        .map_err(|e| e.to_string())?;
+    
+    let mut buf = vec![0; length as usize];
+    let n = file.read(&mut buf)
+        .await
+        .map_err(|e| e.to_string())?;
+    
+    buf.truncate(n);
+    Ok(buf)
 }
 
 #[tauri::command]

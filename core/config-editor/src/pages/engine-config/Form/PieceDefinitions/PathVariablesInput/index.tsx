@@ -4,7 +4,7 @@ import { validatePathVariableName } from "@match-lock/shared";
 
 import PathVariablesTT from "./explain.md";
 
-export function PathVariablesInput({ value, onChange }: InputProps<Array<string>>){
+export function PathVariableNamesInput({ value, onChange }: InputProps<Array<string>>){
   return <>
     <h3><ToolTipSpan tip={PathVariablesTT} clickable>Path Variables</ToolTipSpan></h3>
     <PathVariableCreator
