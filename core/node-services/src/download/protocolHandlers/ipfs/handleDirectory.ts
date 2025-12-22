@@ -5,14 +5,14 @@ import { PassThrough, Readable } from 'node:stream';
 import { storeFile } from "../../utils";
 import { IPFSError } from "./utils";
 import { IPFSHTTPClient } from "ipfs-http-client";
+import { ProcessHandlers } from "../../types";
 
 export async function handleDirectory(
   ipfs: IPFSHTTPClient,
   cid: string,
   folderDestination: string,
-  abortSignal?: AbortSignal
+  { onProgress, abortSignal }: ProcessHandlers
 ): Promise<DownloadResult> {
-  const onProgress = createSimpleEmitter<[progress: number, total: number | undefined]>();
   let totalDownloaded = 0;
   
   const filePromises: Promise<void>[] = [];
@@ -30,7 +30,7 @@ export async function handleDirectory(
       const progressWatcher = new PassThrough();
       progressWatcher.on('data', (chunk: Buffer) => {
         totalDownloaded += chunk.length;
-        onProgress.emit(totalDownloaded, undefined);
+        onProgress?.(totalDownloaded, undefined);
       });
 
       // Stream directly - no buffering!
@@ -52,7 +52,6 @@ export async function handleDirectory(
 
   return {
     finishPromise,
-    onProgress,
     metaData: {
       url: `ipfs://${cid}`,
       cid,

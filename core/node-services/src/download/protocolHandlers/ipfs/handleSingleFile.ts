@@ -7,12 +7,13 @@ import { PassThrough, Readable } from 'node:stream';
 import { saveStreamToFilesystem } from "../../utils";
 
 import { IPFSError } from "./utils";
+import { ProcessHandlers } from "../../types";
 
 export async function handleSingleFile(
   ipfs: IPFSHTTPClient,
   cid: string,
   folderDestination: string,
-  abortSignal?: AbortSignal
+  { onProgress, abortSignal }: ProcessHandlers
 ): Promise<DownloadResult> {
   if (abortSignal?.aborted) {
     throw new IPFSError(cid, 'Download aborted');
@@ -24,13 +25,12 @@ export async function handleSingleFile(
   try {
     const { decompressors, archiveHandler } = getProcessorsFromPathnameMimetypes(fileName);
     
-    const onProgress = createSimpleEmitter<[progress: number, total: number | undefined]>();
     const progressWatcher = new PassThrough();
     let downloaded = 0;
     
     progressWatcher.on('data', (chunk: Buffer) => {
       downloaded += chunk.length;
-      onProgress.emit(downloaded, undefined);
+      onProgress?.(downloaded, undefined);
     });
 
     // Stream directly from IPFS - no buffering!
@@ -47,7 +47,6 @@ export async function handleSingleFile(
 
     return {
       finishPromise,
-      onProgress,
       metaData: {
         url: `ipfs://${cid}`,
         cid,
@@ -56,7 +55,7 @@ export async function handleSingleFile(
     };
   } catch (e) {
     // Not an archive, just save as-is
-    return handleRawFile(ipfs, cid, folderDestination, abortSignal);
+    return handleRawFile(ipfs, cid, folderDestination, { onProgress, abortSignal });
   }
 }
 
@@ -65,15 +64,14 @@ async function handleRawFile(
   ipfs: IPFSHTTPClient,
   cid: string,
   folderDestination: string,
-  abortSignal?: AbortSignal
+  { onProgress, abortSignal }: ProcessHandlers
 ): Promise<DownloadResult> {
-  const onProgress = createSimpleEmitter<[progress: number, total: number | undefined]>();
   const progressWatcher = new PassThrough();
   let downloaded = 0;
   
   progressWatcher.on('data', (chunk: Buffer) => {
     downloaded += chunk.length;
-    onProgress.emit(downloaded, undefined);
+    onProgress?.(downloaded, undefined);
   });
 
   // Stream directly - no buffering
@@ -90,7 +88,6 @@ async function handleRawFile(
 
   return {
     finishPromise,
-    onProgress,
     metaData: {
       url: `ipfs://${cid}`,
       cid,

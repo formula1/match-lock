@@ -1,5 +1,9 @@
 
-export type AvailableFiles = Map<string, Uint8Array>;
+
+export type ProcessHandlers = {
+  onProgress?: (progress: number, total?: number) => void;
+  abortSignal: AbortSignal;
+}
 
 export type FileSignature = {
   offset: number;

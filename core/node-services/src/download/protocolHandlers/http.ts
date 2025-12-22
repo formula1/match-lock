@@ -7,6 +7,7 @@ import { request as httpRequest, IncomingMessage, ClientRequest } from 'node:htt
 import { request as httpsRequest } from 'node:https';
 import { once } from "node:events";
 import { saveStreamToFilesystem } from "../utils";
+import { ProcessHandlers } from "../types";
 
 export const httpHandler: ProtocolHandler = {
   protocols: [
@@ -14,13 +15,18 @@ export const httpHandler: ProtocolHandler = {
     DOWNLOADABLE_SOURCE_PROTOCOLS.https.protocol,
   ],
   
-  download: async function (url: string, folderDestination: string, abortSignal: AbortSignal) {
-    return runDownload(url, folderDestination, abortSignal);
+  download: async function (url, folderDestination, processHandlers) {
+    return runDownload(url, folderDestination, processHandlers);
   }
 }
 
-async function runDownload(url: string, folderDestination: string, abortSignal: AbortSignal, redirects = 0, maxRedirects = 10){
+async function runDownload(
+  url: string, folderDestination: string,
+  processHandlers: ProcessHandlers,
+  redirects = 0, maxRedirects = 10
+){
   if(redirects > maxRedirects) throw new Error("Too Many Redirects");
+  if(processHandlers.abortSignal.aborted) throw new Error("Download Aborted");
   let urlObj = new URL(url);
   const request = urlObj.protocol === 'https:' ? httpsRequest : httpRequest;
   const processor = getProcessorsFromPathnameMimetypes(urlObj.pathname);
@@ -38,7 +44,7 @@ async function runDownload(url: string, folderDestination: string, abortSignal: 
       );
     }
     urlObj = new URL(location, urlObj);
-    return runDownload(urlObj.href, folderDestination, abortSignal, redirects + 1, maxRedirects);
+    return runDownload(urlObj.href, folderDestination, processHandlers, redirects + 1, maxRedirects);
   } else if (res.statusCode && res.statusCode !== 200) {
     throw new HTTPError(req, res, `Invalid Status Code`);
   }
@@ -51,12 +57,14 @@ async function runDownload(url: string, folderDestination: string, abortSignal: 
   })();
 
 
-  const onProgress = createSimpleEmitter<[progress: number, total: undefined | number]>();
-  let totalProgress = 0;
-  res.on('data', (chunk: Buffer) => {
-    totalProgress += chunk.length;
-    onProgress.emit(totalProgress, contentLength);
-  });
+  if(processHandlers.onProgress){
+    const { onProgress } = processHandlers;
+    let totalProgress = 0;
+    res.on('data', (chunk: Buffer) => {
+      totalProgress += chunk.length;
+      onProgress(totalProgress, contentLength);
+    });
+  }
 
   return {
     finishPromise: saveStreamToFilesystem(
@@ -64,9 +72,8 @@ async function runDownload(url: string, folderDestination: string, abortSignal: 
       processor.decompressors,
       processor.archiveHandler,
       folderDestination,
-      { abortSignal }
+      { abortSignal: processHandlers.abortSignal }
     ),
-    onProgress,
     metaData: {
       url: urlObj.href,
       headers: res.headers,

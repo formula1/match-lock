@@ -1,9 +1,9 @@
 
 import { ISimpleEventEmitter } from "@match-lock/shared";
+import { ProcessHandlers } from "../types";
 
 export type DownloadResult = {
-  onProgress: ISimpleEventEmitter<[progress: number, total?: undefined | number]>,
-  finishPromise: Promise<void | any>,
+  finishPromise: Promise<any>,
   metaData?: any
 };
 
@@ -12,6 +12,6 @@ export type ProtocolHandler = {
   download: (
     url: string,
     folderDestination: string,
-    abortSignal: AbortSignal
+    processHandlers: ProcessHandlers
   ) => Promise<DownloadResult>;
 };

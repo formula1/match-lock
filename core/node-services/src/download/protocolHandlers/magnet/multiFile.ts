@@ -2,15 +2,15 @@ import { storeFile } from "../../utils";
 import { createSimpleEmitter } from "@match-lock/shared";
 import { Torrent } from 'webtorrent';
 import { PassThrough } from 'node:stream';
+import { ProcessHandlers } from "../../types";
 
 
 export function handleMultipleFileTorrent(
   magnetUri: string,
   torrent: Torrent,
   destinationFolder: string,
-  abortSignal: AbortSignal
+  { onProgress, abortSignal }: ProcessHandlers
 ){
-  const onProgress = createSimpleEmitter<[progress: number, total: number | undefined]>();
 
   let totalSize = 0;
   for(const file of torrent.files) totalSize += file.length;
@@ -21,7 +21,7 @@ export function handleMultipleFileTorrent(
     const progressWatcher = new PassThrough();
     progressWatcher.on('data', (chunk: Buffer) => {
       downloaded += chunk.length;
-      onProgress.emit(downloaded, totalSize);
+      onProgress?.(downloaded, totalSize);
     });
     const filePromise = storeFile(
       destinationFolder,
@@ -36,7 +36,6 @@ export function handleMultipleFileTorrent(
 
   return {
     finishPromise: pipelinePromise,
-    onProgress,
     metaData: {
       size: totalSize,
       magnetUri,

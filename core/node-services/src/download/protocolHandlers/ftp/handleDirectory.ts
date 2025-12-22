@@ -1,37 +1,16 @@
 import { Client as FTPClient, FileInfo as FTPFileInfo } from 'basic-ftp';
 import { PassThrough } from 'node:stream';
-import { createSimpleEmitter, ISimpleEventEmitter } from "@match-lock/shared";
 import { storeFile } from "../../utils";
 import { join as pathJoin } from "node:path";
-import { DownloadResult } from "../types";
 import { FTPError } from "./util";
+import { ProcessHandlers } from '../../types';
 
-export function handleDirectory(
+export async function handleDirectory(
   client: FTPClient,
   urlObj: URL,
   folderDestination: string,
-  abortSignal?: AbortSignal,
-): DownloadResult {
-  const onProgress = createSimpleEmitter<[progress: number, total: number | undefined]>();
-
-
-  return {
-    finishPromise: walkAndDownload(client, urlObj, folderDestination, onProgress, abortSignal),
-    onProgress,
-    metaData: {
-      url: urlObj.href,
-      type: 'directory',
-    }
-  };
-}
-
-async function walkAndDownload(
-  client: FTPClient,
-  urlObj: URL,
-  folderDestination: string,
-  onProgress: ISimpleEventEmitter<[progress: number, total: number | undefined]>,
-  abortSignal?: AbortSignal,
-){
+  { onProgress, abortSignal }: ProcessHandlers,
+) {
   const remotePath = urlObj.pathname;
   let totalDownloaded = 0;
 
@@ -49,7 +28,7 @@ async function walkAndDownload(
     const progressWatcher = new PassThrough();
     progressWatcher.on('data', (chunk: Buffer) => {
       totalDownloaded += chunk.length;
-      onProgress.emit(totalDownloaded, undefined);
+      onProgress?.(totalDownloaded, undefined);
     });
 
     // Download file

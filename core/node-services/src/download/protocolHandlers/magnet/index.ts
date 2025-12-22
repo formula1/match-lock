@@ -4,18 +4,23 @@ import WebTorrent from 'webtorrent';
 
 import { handleSingleFileTorrent } from "./singleFile";
 import { handleMultipleFileTorrent } from "./multiFile";
+import { ProcessHandlers } from "../../types";
 
 export const torrentHandler: ProtocolHandler = {
   protocols: [
     DOWNLOADABLE_SOURCE_PROTOCOLS.magnet.protocol,
   ],
   
-  download: async function (magnetUri: string, folderDestination: string, abortSignal: AbortSignal) {
-    return runTorrentDownload(magnetUri, folderDestination, abortSignal);
+  download: async function (magnetUri, folderDestination, processHandlers) {
+    return runTorrentDownload(magnetUri, folderDestination, processHandlers);
   }
 };
 
-async function runTorrentDownload(magnetUri: string, folderDestination: string, abortSignal: AbortSignal) {
+async function runTorrentDownload(
+  magnetUri: string,
+  folderDestination: string,
+  { onProgress, abortSignal }: ProcessHandlers
+) {
  if (abortSignal?.aborted) {
     throw new TorrentError(magnetUri, 'Download aborted');
   }
@@ -51,7 +56,7 @@ async function runTorrentDownload(magnetUri: string, folderDestination: string, 
         magnetUri, torrent,
         torrent.files[0],
         folderDestination,
-        abortSignal
+        { onProgress, abortSignal }
       );
       if(singleFile){
         singleFile.finishPromise.finally(() => {
@@ -64,7 +69,12 @@ async function runTorrentDownload(magnetUri: string, folderDestination: string, 
     }
 
 
-    const multiFile = handleMultipleFileTorrent(magnetUri, torrent, folderDestination, abortSignal);
+    const multiFile = handleMultipleFileTorrent(
+      magnetUri,
+      torrent,
+      folderDestination,
+      { onProgress, abortSignal }
+    );
     multiFile.finishPromise.finally(() => {
       client.destroy();
       abortSignal.removeEventListener('abort', abortHandler);

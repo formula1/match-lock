@@ -5,23 +5,24 @@ import { create as createIpfsClient } from 'ipfs-http-client';
 import { IPFSError } from "./utils";
 import { handleSingleFile } from "./handleSingleFile";
 import { handleDirectory } from "./handleDirectory";
+import { ProcessHandlers } from "../../types";
 
 export const ipfsHandler: ProtocolHandler = {
   protocols: [
     DOWNLOADABLE_SOURCE_PROTOCOLS.ipfs.protocol,
   ],
   
-  download: async function (url: string, folderDestination: string, abortSignal?: AbortSignal) {
-    return runIpfsDownload(url, folderDestination, abortSignal);
+  download: async function (url, folderDestination, processHandlers) {
+    return runIpfsDownload(url, folderDestination, processHandlers);
   }
 };
 
 async function runIpfsDownload(
   url: string, 
   folderDestination: string, 
-  abortSignal?: AbortSignal
+  processHandlers: ProcessHandlers
 ): Promise<DownloadResult> {
-  if (abortSignal?.aborted) {
+  if (processHandlers.abortSignal?.aborted) {
     throw new IPFSError(url, 'Download aborted');
   }
 
@@ -50,10 +51,10 @@ async function runIpfsDownload(
     
     if (stat.type === 'file') {
       // Single file
-      return handleSingleFile(ipfs, cid, folderDestination, abortSignal);
+      return handleSingleFile(ipfs, cid, folderDestination, processHandlers);
     } else {
       // Directory - download all files
-      return handleDirectory(ipfs, cid, folderDestination, abortSignal);
+      return handleDirectory(ipfs, cid, folderDestination, processHandlers);
     }
   } catch (error) {
     throw new IPFSError(url, error);

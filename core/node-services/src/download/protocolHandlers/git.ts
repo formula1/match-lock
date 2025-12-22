@@ -1,6 +1,6 @@
 // services/src/download/git.ts
 import { ProtocolHandler } from "./types";
-import { createSimpleEmitter, DOWNLOADABLE_SOURCE_PROTOCOLS, ISimpleEventEmitter } from "@match-lock/shared";
+import { DOWNLOADABLE_SOURCE_PROTOCOLS } from "@match-lock/shared";
 import git from 'isomorphic-git';
 import http from 'isomorphic-git/http/node';
 import { promises as fs } from 'node:fs';
@@ -10,7 +10,7 @@ export const gitHandler: ProtocolHandler = {
     DOWNLOADABLE_SOURCE_PROTOCOLS.git.protocol,
   ],
   
-  download: async function (url: string, folderDestination: string, abortSignal: AbortSignal) {
+  download: async function (url, folderDestination, { onProgress, abortSignal }) {
     if (abortSignal.aborted) {
       throw new GitError(url, 'Download aborted');
     }
@@ -18,24 +18,21 @@ export const gitHandler: ProtocolHandler = {
     // Parse ref from URL (e.g., https://github.com/user/repo.git#branch)
     const [repoUrl, ref] = url.split('#');
     const urlObj = new URL(repoUrl);
-    
-    const onProgress = createSimpleEmitter<[progress: number, total?: number]>();
 
     return {
-      finishPromise: runGitDownload(urlObj, ref || 'main', onProgress, folderDestination),
+      finishPromise: runGitDownload(urlObj, ref || 'main', folderDestination, onProgress),
       metaData: {
         url,
         ref: ref || 'main',
       },
-      onProgress,
     }
   }
 };
 
 async function runGitDownload(
   repoUrl: URL, ref: string,
-  onProgress: ISimpleEventEmitter<[progress: number, total?: number]>,
   folderDestination: string, 
+  onProgress?: (progress: number, total?: number) => void,
 ) {
   try {
     // Shallow clone (depth=1, no history)
@@ -48,7 +45,7 @@ async function runGitDownload(
       singleBranch: true,  // Only clone specified branch
       depth: 1,            // Shallow clone - no history!
       onProgress: (event) => {
-        onProgress.emit(event.loaded, event.total);
+        onProgress?.(event.loaded, event.total);
       },
       onAuth: () => {
         if (!repoUrl.username || !repoUrl.password) return;
