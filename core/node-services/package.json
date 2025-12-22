@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Services that need the node runtime to operate correctly",
   "main": "dist/index.js",
+  "types": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./dist && tsc",
