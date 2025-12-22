@@ -1,6 +1,7 @@
-import { AvailableFiles, FileSignature } from "../types";
+import { FileSignature } from "../types";
 
 type ToolWithSig<T> = T & { signature: Array<FileSignature> };
+type AvailableFiles = { files: Array<{ name: string, data: Uint8Array }> };
 
 const DECOMPRESSORS: Array<ToolWithSig<{ decompress: (data: Uint8Array) => Promise<Uint8Array> }>> = [];
 const ARCHIVE_HANDLERS: Array<ToolWithSig<{ extractFiles: (data: Uint8Array) => Promise<AvailableFiles> }>> = [];
