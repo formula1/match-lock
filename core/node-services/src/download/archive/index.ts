@@ -3,7 +3,7 @@ export * from "./types";
 import { ArchiveHandler } from "./types";
 export const ARCHIVE_HANDLERS: Array<ArchiveHandler> = [];
 
-import { tar } from "./tar/tar";
+import { tar } from "./tar";
 ARCHIVE_HANDLERS.push(tar);
 
 import { zip } from "./zip";
