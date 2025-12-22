@@ -5,6 +5,14 @@ import { mkdir } from "node:fs/promises";
 import { createWriteStream } from "node:fs";
 import { pipeline } from "node:stream/promises";
 import { PassThrough } from "node:stream";
+import { ReadableStream } from "node:stream/web";
+
+function toNodeReadable(src: Readable | ReadableStream): Readable {
+  if (src instanceof Readable) {
+    return src;
+  }
+  return Readable.fromWeb(src as ReadableStream);
+}
 
 type ProgressHandlers = {
   progressWatcher: PassThrough,
@@ -24,13 +32,16 @@ export function saveStreamToFilesystem(
     filePromises.push(storeFile(destinationFolder, path, contents, { abortSignal }));
   });
 
+  const nodeReadable = toNodeReadable(src);
   const pipelinePromise = pipeline(
-    src,
-    ...(progressWatcher ? [progressWatcher] : []),
-    ...decompressors,
-    archiveHandler,
+    [
+      nodeReadable,
+      ...(progressWatcher ? [progressWatcher] : []),
+      ...decompressors,
+      archiveHandler,
+    ],
     { signal: abortSignal }
-  )
+  );
   return Promise.all([
     pipelinePromise,
     Promise.all(filePromises),
@@ -47,10 +58,13 @@ export async function storeFile(
 
   const fullPath = pathJoin(destinationFolder, filePath);
   await mkdir(pathDirname(fullPath), { recursive: true });
+  const nodeReadable = toNodeReadable(fileContents);
   await pipeline(
-    fileContents,
-    ...(progressWatcher ? [progressWatcher] : []),
-    createWriteStream(fullPath),
+    [
+      nodeReadable,
+      ...(progressWatcher ? [progressWatcher] : []),
+      createWriteStream(fullPath),
+    ],
     { signal: abortSignal }
   );
 }
