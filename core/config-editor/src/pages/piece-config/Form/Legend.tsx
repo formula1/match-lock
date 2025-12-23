@@ -2,13 +2,13 @@ import { RosterLockEngineWithRosterConfig } from "@match-lock/shared";
 import { ROSTERCONFIG_ID } from "../paths";
 
 export function PieceRosterLegend(
-  { pieces }: { pieces: RosterLockEngineWithRosterConfig["pieces"] }
+  { rosters }: { rosters: RosterLockEngineWithRosterConfig["rosters"] }
 ){
   return (
     <div className="section" style={{ textAlign: "left" }}>
       <h2>Legend</h2>
       <div className="alternate-list">
-        {Object.entries(pieces).map(([pieceName, pieceValues]) => (
+        {Object.entries(rosters).map(([pieceName, pieceValues]) => (
           <div key={pieceName} className="section">
             <h4><a href={`#${ROSTERCONFIG_ID.pieceTypeId(pieceName)}`}>{pieceName}</a></h4>
             <ul>

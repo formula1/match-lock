@@ -4,7 +4,7 @@ import { InputProps } from "../../../../utils/react";
 import { PieceValueList } from "./PieceList";
 export function PieceCollection(
   { value, onChange, engineConfig }: (
-    & InputProps<RosterLockEngineWithRosterConfig["pieces"]>
+    & InputProps<RosterLockEngineWithRosterConfig["rosters"]>
     & { engineConfig: RosterLockEngineWithRosterConfig["engine"] }
   )
 ){
@@ -17,7 +17,7 @@ export function PieceCollection(
           onChange={v => onChange({ ...value, [pieceType]: v })}
           pieceType={pieceType}
           pieceDefinition={engineConfig.pieceDefinitions[pieceType]}
-          pieces={value}
+          rosters={value}
         />
       ))}
     </>

@@ -9,9 +9,9 @@ import { RosterLockEngineWithRosterConfig } from "@match-lock/shared";
 
 import requiredPiecesTT from "./requiredPiecesTT.md";
 
-export function RequiredPieces({ value, onChange, pieceDefinition, pieces }: (
+export function RequiredPieces({ value, onChange, pieceDefinition, rosters }: (
   & InputProps<PieceValue["requiredPieces"]>
-  & { pieceDefinition: PieceDefinition, pieces: RosterLockEngineWithRosterConfig["pieces"] }
+  & { pieceDefinition: PieceDefinition, rosters: RosterLockEngineWithRosterConfig["rosters"] }
 )){
 
   if(pieceDefinition.requires.length === 0) return null;
@@ -25,17 +25,17 @@ export function RequiredPieces({ value, onChange, pieceDefinition, pieces }: (
           value={value[requiredPieceType]}
           onChange={v => onChange({ ...value, [requiredPieceType]: v })}
           pieceType={requiredPieceType}
-          pieces={pieces}
+          rosters={rosters}
         />
       ))}
     </div>
   )
 }
 
-function RequiredPieceType({ value, onChange, pieceType, pieces }: (
+function RequiredPieceType({ value, onChange, pieceType, rosters }: (
   & InputProps<PieceValue["requiredPieces"][string]>
   & {
-    pieceType: string, pieces: RosterLockEngineWithRosterConfig["pieces"]
+    pieceType: string, rosters: RosterLockEngineWithRosterConfig["rosters"]
   }
 )){
   const [displayMandatory, setDisplayMandatory] = useState(false);
@@ -56,7 +56,7 @@ function RequiredPieceType({ value, onChange, pieceType, pieces }: (
             onClick={() => setDisplayMandatory(!displayMandatory)}
           >{displayMandatory ? 'Hide' : 'Show'} Mandatory</button>
         </div>
-        {displayMandatory && pieces[pieceType].map((piece, index) => (
+        {displayMandatory && rosters[pieceType].map((piece, index) => (
           <div
             key={index}
             style={{ display: "flex", flexDirection: "row"}}

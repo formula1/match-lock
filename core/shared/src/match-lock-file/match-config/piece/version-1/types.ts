@@ -6,7 +6,7 @@ import { MatchLockEngineConfig } from "../../engine";
 export { MatchLockEngineConfig };
 export type RosterLockEngineWithRosterConfig = {
   engine: MatchLockEngineConfig,
-  pieces: Record<string, Array<RosterLockPiece>>,
+  rosters: Record<string, Array<RosterLockPiece>>,
 }
 
 export type RosterLockPiece = {

@@ -26,10 +26,10 @@ import {
 } from "./required-pieces";
 import { validateId, validateIdUniqueness } from "./id";
 export function validateRosterLockPieces(
-  { engine, pieces }: RosterLockEngineWithRosterConfig
+  { engine, rosters }: RosterLockEngineWithRosterConfig
 ){
-  validateAllEnginePiecesDefined(pieces, engine);
-  for(const [pieceType, pieceList] of Object.entries(pieces)){
+  validateAllEnginePiecesDefined(rosters, engine);
+  for(const [pieceType, pieceList] of Object.entries(rosters)){
     for(let i = 0; i < pieceList.length; i++){
       const piece = pieceList[i];
       validatePieceInEngine(pieceType, engine);
@@ -56,9 +56,9 @@ export function validateRosterLockPieces(
       // Required Pieces
       validateAllExpectedRequiredPieceTypesSet(piece.requiredPieces, pieceConfig);
       for(const [requiredPieceType, requiredPiece] of Object.entries(piece.requiredPieces)){
-        validateRequiredPieceType(requiredPieceType, { engine, pieces });
+        validateRequiredPieceType(requiredPieceType, { engine, rosters });
         for(const pieceSha of requiredPiece.expected){
-          validateRequiredPieceValue(requiredPieceType, pieceSha, pieces[requiredPieceType]);
+          validateRequiredPieceValue(requiredPieceType, pieceSha, rosters[requiredPieceType]);
         }
       }
     }
@@ -66,10 +66,10 @@ export function validateRosterLockPieces(
 }
 
 export function validateAllEnginePiecesDefined(
-  pieces: RosterLockEngineWithRosterConfig["pieces"], engine: RosterLockEngineWithRosterConfig["engine"]
+  rosters: RosterLockEngineWithRosterConfig["rosters"], engine: RosterLockEngineWithRosterConfig["engine"]
 ){
   for(const pieceType of Object.keys(engine.pieceDefinitions)){
-    if(!(pieceType in pieces)){
+    if(!(pieceType in rosters)){
       throw new Error(`Piece type ${pieceType} is defined in engine but not in roster`);
     }
   }

@@ -3,7 +3,7 @@ import { validateURL } from "./utils";
 
 
 export function validateHumanInfo(
-  humanInfo: RosterLockEngineWithRosterConfig["pieces"][string][0]["humanInfo"]
+  humanInfo: RosterLockEngineWithRosterConfig["rosters"][string][0]["humanInfo"]
 ){
   validateFriendlyString(humanInfo.name);
   validateFriendlyString(humanInfo.author);

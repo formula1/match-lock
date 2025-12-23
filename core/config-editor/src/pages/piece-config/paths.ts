@@ -7,7 +7,7 @@ export const RosterConfigPaths = {
 }
 
 import { RosterLockEngineWithRosterConfig } from "@match-lock/shared";
-type RosterItem = RosterLockEngineWithRosterConfig["pieces"][string][number];
+type RosterItem = RosterLockEngineWithRosterConfig["rosters"][string][number];
 export const ROSTERCONFIG_ID = {
   pieceTypeId: (pieceName: string) => `roster-piece-id-${pieceName}`,
   pieceValueId: (value: RosterItem) => `roster-piece-value-${value.version.logic}`,

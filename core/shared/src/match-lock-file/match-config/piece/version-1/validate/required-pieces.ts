@@ -1,7 +1,7 @@
 import { MatchLockEngineConfig, RosterLockEngineWithRosterConfig } from "../types";
 
 export function validateAllExpectedRequiredPieceTypesSet(
-  requiredPieces: RosterLockEngineWithRosterConfig["pieces"][string][0]["requiredPieces"],
+  requiredPieces: RosterLockEngineWithRosterConfig["rosters"][string][0]["requiredPieces"],
   pieceConfig: MatchLockEngineConfig["pieceDefinitions"][string],
 ){
   for(const requiredPieceType of pieceConfig.requires){
@@ -12,19 +12,19 @@ export function validateAllExpectedRequiredPieceTypesSet(
 }
 
 export function validateRequiredPieceType(
-  pieceType: string, { engine, pieces }: RosterLockEngineWithRosterConfig
+  pieceType: string, { engine, rosters }: RosterLockEngineWithRosterConfig
 ){
   const pieceDefinition = engine.pieceDefinitions[pieceType];
   if(!pieceDefinition)
     throw new Error(`Piece type ${pieceType} is not defined in engine`);
-  if(!(pieceType in pieces))
+  if(!(pieceType in rosters))
     throw new Error(`Piece type ${pieceType} is not defined in roster`);
 }
 
 export function validateRequiredPieceValue(
-  pieceType: string, pieceSha: string, pieces: RosterLockEngineWithRosterConfig["pieces"][string]
+  pieceType: string, pieceSha: string, roster: RosterLockEngineWithRosterConfig["rosters"][string]
 ){
-  if(!pieces.find((p) => p.version.logic === pieceSha)){
+  if(!roster.find((p) => p.version.logic === pieceSha)){
     throw new Error(`Piece type ${pieceType} does not have the required piece`);
   }
 }

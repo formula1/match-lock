@@ -53,11 +53,11 @@ import { validateAllEnginePiecesDefined, validatePieceInEngine } from "../valida
 const allPieceTypesInEngineSchemaValidator = defineKeyword({
   keyword: "allEnginePieceTypesInRoster",
   type: "object",
-  validate: function (pieces: RosterLockEngineWithRosterConfig["pieces"], { engine }: RosterLockEngineWithRosterConfig, path){
+  validate: function (pieces: RosterLockEngineWithRosterConfig["rosters"], { engine }: RosterLockEngineWithRosterConfig, path){
     validateAllEnginePiecesDefined(pieces, engine);
   }
 });
-export const rosterLockPiecesSchema: JSONSchemaType<RosterLockEngineWithRosterConfig["pieces"]> = {
+export const rosterLockPiecesSchema: JSONSchemaType<RosterLockEngineWithRosterConfig["rosters"]> = {
   type: "object",
   [allPieceTypesInEngineSchemaValidator.keyword]: true,
   required: [],
@@ -72,11 +72,11 @@ export const rosterLockPiecesSchema: JSONSchemaType<RosterLockEngineWithRosterCo
 import { engineSchema } from "../../../engine";
 export const rosterLockEngineWithRosterSchema: JSONSchemaType<RosterLockEngineWithRosterConfig> = {
   type: "object",
-  required: ["engine", "pieces"],
+  required: ["engine", "rosters"],
   additionalProperties: false,
   properties: {
     engine: engineSchema,
-    pieces: rosterLockPiecesSchema,
+    rosters: rosterLockPiecesSchema,
   },
 }
 

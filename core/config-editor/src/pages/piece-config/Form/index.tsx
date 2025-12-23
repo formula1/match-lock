@@ -15,7 +15,7 @@ import { resetPieces } from "./resetPieces";
 export function RosterConfigForm({ value, onChange }: InputProps<RosterLockEngineWithRosterConfig>){
 
   useEffect(()=>{
-    onChange({ ...value, pieces: resetPieces(value.engine) });
+    onChange({ ...value, rosters: resetPieces(value.engine) });
   }, [value.engine])
 
   return <>
@@ -27,8 +27,8 @@ export function RosterConfigForm({ value, onChange }: InputProps<RosterLockEngin
       }}
     />
     <PieceCollection
-      value={value.pieces}
-      onChange={v => onChange({ ...value, pieces: v })}
+      value={value.rosters}
+      onChange={v => onChange({ ...value, rosters: v })}
       engineConfig={value.engine}
     />
   </>

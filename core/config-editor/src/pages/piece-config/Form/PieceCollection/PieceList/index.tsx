@@ -7,12 +7,12 @@ import { RosterLockEngineWithRosterConfig } from "@match-lock/shared";
 
 
 export function PieceValueList(
-  { value, onChange, pieceType, pieceDefinition, pieces }: (
-    & InputProps<RosterLockEngineWithRosterConfig["pieces"][string]>
+  { value, onChange, pieceType, pieceDefinition, rosters }: (
+    & InputProps<RosterLockEngineWithRosterConfig["rosters"][string]>
     & {
       pieceType: string,
       pieceDefinition: PieceDefinition,
-      pieces: RosterLockEngineWithRosterConfig["pieces"]
+      rosters: RosterLockEngineWithRosterConfig["rosters"]
     }
   )
 ){
@@ -34,7 +34,7 @@ export function PieceValueList(
           <PieceValueItem
             key={index}
             pieceDefinition={pieceDefinition}
-            pieces={pieces}
+            rosters={rosters}
 
 
             value={piece}
@@ -56,12 +56,12 @@ import { DisplayPathVariables } from "./PathVariables";
 import { HumanInfo } from "./HumanInfo";
 import { DownloadSources } from "./DownloadSources";
 import { RequiredPieces } from "./RequiredPieces";
-function PieceValueItem({ value, onChange, pieceDefinition, pieces, onDelete }: (
+function PieceValueItem({ value, onChange, pieceDefinition, rosters, onDelete }: (
   & InputProps<PieceValue>
   & ListItemProps<PieceValue>
   & {
     pieceDefinition: PieceDefinition,
-    pieces: RosterLockEngineWithRosterConfig["pieces"]
+    rosters: RosterLockEngineWithRosterConfig["rosters"]
   }
 )){
   const [displayRaw, setDisplayRaw] = useState(false);
@@ -102,7 +102,7 @@ function PieceValueItem({ value, onChange, pieceDefinition, pieces, onDelete }: 
           value={value.requiredPieces}
           onChange={v => onChange({ ...value, requiredPieces: v })}
           pieceDefinition={pieceDefinition}
-          pieces={pieces}
+          rosters={rosters}
         />
         </>
       )}

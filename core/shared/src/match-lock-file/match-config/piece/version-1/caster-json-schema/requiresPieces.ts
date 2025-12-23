@@ -24,11 +24,11 @@ export const requiredPieceValueSchemaValidator = defineKeyword({
   keyword: "requiredPieceValue",
   type: "string",
   // config/pieces/pieceType/pieceIndex/requiredPieces/pieceType/index
-  validate: function (requiredPiece: string, { engine, pieces }: RosterLockEngineWithRosterConfig, path){
+  validate: function (requiredPiece: string, { engine, rosters }: RosterLockEngineWithRosterConfig, path){
     const pathParts = path.split("/");
     pathParts.pop();
     const pieceType = pathParts[2];
-    const pieceValues = pieces[pieceType];
+    const pieceValues = rosters[pieceType];
     validateRequiredPieceValue(pieceType, requiredPiece, pieceValues);
   }
 });
@@ -37,12 +37,12 @@ export const requiredPieceTypeSchemaValidator = defineKeyword({
   keyword: "requiredPieceType",
   type: "array",
   // config/pieces/pieceType/pieceIndex/requiredPieces/pieceType
-  validate: function (requiredPiece: string, { engine, pieces }: RosterLockEngineWithRosterConfig, path){
+  validate: function (requiredPiece: string, { engine, rosters }: RosterLockEngineWithRosterConfig, path){
     const pathParts = path.split("/");
     const pieceType = pathParts.at(-1);
     if(!pieceType) throw new Error("Invalid path");
 
-    validateRequiredPieceType(pieceType, { engine, pieces });
+    validateRequiredPieceType(pieceType, { engine, rosters });
   }
 });
 
