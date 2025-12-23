@@ -1,4 +1,4 @@
-import { MatchLockSelectionConfig } from "../types";
+import { MatchLockSelectionConfig } from "../../types";
 import { validateCount } from "./count";
 import { validateScriptMeta } from "./scriptMeta";
 

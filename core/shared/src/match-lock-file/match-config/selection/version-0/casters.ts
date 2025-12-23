@@ -18,12 +18,12 @@ import {
   UserSelectionValidation,
   ScriptWithPieceMeta,
   MatchLockSelectionConfig
-} from "./types";
+} from "../version-1/types";
 import {
   CountCaster,
   JSONPrimitiveCaster,
-} from "../../util-types";
-import { JSON_Primitive } from "../../../utils/JSON";
+} from "../../piece/version-0/caster-runtypes/util-casters";
+import { JSON_Primitive } from "../../../../utils/JSON";
 
 
 const ScriptCaster = CastObject({

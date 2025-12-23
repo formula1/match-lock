@@ -1,5 +1,5 @@
 
-import { ScriptWithPieceMeta } from "../types";
+import { ScriptWithPieceMeta } from "../../types";
 
 export function validateScriptMeta(
   script: ScriptWithPieceMeta<any>, pieceIds: Set<string>
