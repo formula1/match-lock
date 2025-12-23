@@ -2,6 +2,7 @@ import { JSONSchemaType } from "ajv";
 import { defineKeyword } from "../../../../util-types/json-schema";
 import { RosterLockEngineWithRosterConfig, RosterLockPiece, RosterLockPieceMetadata } from "../types";
 
+import { idSchema, idUniquenessSchemaValidator, idSchemaValidator } from "./id";
 import { versionSchema, sha256SchemaValidator } from "./version";
 import { humanInfoSchema, urlSchemaValidator } from "./human";
 import {
@@ -38,6 +39,7 @@ export const rosterLockPiece: JSONSchemaType<RosterLockPiece> = {
   required: ["version", "humanInfo", "downloadSources", "pathVariables", "requiredPieces"],
   additionalProperties: false,
   properties: {
+    id: idSchema,
     version: versionSchema,
     humanInfo: humanInfoSchema,
     downloadSources: downloadableSourcesSchema,
@@ -81,6 +83,8 @@ export const rosterLockEngineWithRosterSchema: JSONSchemaType<RosterLockEngineWi
 
 
 export const rosterLockPieceKeywords = [
+  idSchemaValidator,
+  idUniquenessSchemaValidator,
   sha256SchemaValidator,
   urlSchemaValidator,
   downloadableSourceSchemaValidator,

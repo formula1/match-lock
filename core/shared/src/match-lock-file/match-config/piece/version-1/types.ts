@@ -10,6 +10,7 @@ export type RosterLockEngineWithRosterConfig = {
 }
 
 export type RosterLockPiece = {
+  id: string,
   version: {
     logic: Sha256,
     media: Sha256,
@@ -33,5 +34,5 @@ type DownloadableSource = string;
 
 export type RosterLockPieceMetadata = (
   & { rosterlockVersion: ""}
-  & Omit<RosterLockPiece, "version" | "requiredPieces">
+  & Omit<RosterLockPiece, "id" | "version" | "requiredPieces">
 )

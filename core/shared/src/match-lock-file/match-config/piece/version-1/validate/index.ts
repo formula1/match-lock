@@ -1,5 +1,6 @@
 import { RosterLockEngineWithRosterConfig } from "../types";
 
+export * from "./id";
 export * from "./downloadable-source";
 export * from "./human";
 export * from "./path-variables";
@@ -23,14 +24,20 @@ import {
   validateRequiredPieceType,
   validateRequiredPieceValue,
 } from "./required-pieces";
+import { validateId, validateIdUniqueness } from "./id";
 export function validateRosterLockPieces(
   { engine, pieces }: RosterLockEngineWithRosterConfig
 ){
   validateAllEnginePiecesDefined(pieces, engine);
   for(const [pieceType, pieceList] of Object.entries(pieces)){
-    for(const piece of pieceList){
+    for(let i = 0; i < pieceList.length; i++){
+      const piece = pieceList[i];
       validatePieceInEngine(pieceType, engine);
       const pieceConfig = engine.pieceDefinitions[pieceType];
+
+      validateId(piece.id);
+      validateIdUniqueness(piece.id, i, pieceList);
+
       validateVersions(piece.version);
       validateHumanInfo(piece.humanInfo);
       // Download Sources
