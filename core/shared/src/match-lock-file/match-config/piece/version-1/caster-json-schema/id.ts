@@ -1,18 +1,18 @@
 import { JSONSchemaType } from "ajv";
 
 import { defineKeyword } from "../../../../util-types/json-schema";
-import { validateId, validateIdUniqueness } from "../validate";
+import { validatePieceId, validatePieceIdUniqueness } from "../validate";
 import { RosterLockEngineWithRosterConfig } from "../types";
 
 
 export const idSchemaValidator = defineKeyword({
-  keyword: "id",
+  keyword: "pieceId",
   type: "string",
-  validate: validateId
+  validate: validatePieceId
 });
 
 export const idUniquenessSchemaValidator = defineKeyword({
-  keyword: "idUniqueness",
+  keyword: "pieceIdUniqueness",
   type: "string",
   validate: function (id: string, { rosters }: RosterLockEngineWithRosterConfig, path){
     // config/rosters/pieceType/pieceIndex
@@ -20,7 +20,7 @@ export const idUniquenessSchemaValidator = defineKeyword({
     const pieceType = pathParts[2];
     const pieceList = rosters[pieceType];
     const index = Number(pathParts[3]);
-    validateIdUniqueness(id, index, pieceList);
+    validatePieceIdUniqueness(id, index, pieceList);
   }
 });
 

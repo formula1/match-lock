@@ -22,9 +22,9 @@ export function validateRequiredPieceType(
 }
 
 export function validateRequiredPieceValue(
-  pieceType: string, pieceSha: string, roster: RosterLockEngineWithRosterConfig["rosters"][string]
+  pieceType: string, pieceId: string, roster: RosterLockEngineWithRosterConfig["rosters"][string]
 ){
-  if(!roster.find((p) => p.version.logic === pieceSha)){
-    throw new Error(`Piece type ${pieceType} does not have the required piece`);
+  if(!roster.find((p) => p.id === pieceId)){
+    throw new Error(`Piece type ${pieceType} does not have the required piece with id ${pieceId}`);
   }
 }

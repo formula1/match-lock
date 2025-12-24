@@ -1,6 +1,7 @@
 
 type Sha256 = string;
 type URLType = string;
+type PieceId = string;
 
 import { MatchLockEngineConfig } from "../../engine";
 export { MatchLockEngineConfig };
@@ -10,7 +11,7 @@ export type RosterLockEngineWithRosterConfig = {
 }
 
 export type RosterLockPiece = {
-  id: string,
+  id: PieceId,
   version: {
     logic: Sha256,
     media: Sha256,
@@ -25,7 +26,7 @@ export type RosterLockPiece = {
   downloadSources: Array<DownloadableSource>,
   pathVariables: Record<string, string>,
   requiredPieces: Record<string, {
-    expected: Array<Sha256>,
+    expected: Array<PieceId>,
     selectable: boolean,
   }>,
 }

@@ -61,7 +61,6 @@ export const requiredPiecesSchema: JSONSchemaType<RosterLockPiece["requiredPiece
         type: "array",
         items: {
           type: "string",
-          [sha256SchemaValidator.keyword]: true,
           [requiredPieceValueSchemaValidator.keyword]: true,
         },
       },

@@ -24,7 +24,7 @@ import {
   validateRequiredPieceType,
   validateRequiredPieceValue,
 } from "./required-pieces";
-import { validateId, validateIdUniqueness } from "./id";
+import { validatePieceId, validatePieceIdUniqueness } from "./id";
 export function validateRosterLockPieces(
   { engine, rosters }: RosterLockEngineWithRosterConfig
 ){
@@ -35,8 +35,8 @@ export function validateRosterLockPieces(
       validatePieceInEngine(pieceType, engine);
       const pieceConfig = engine.pieceDefinitions[pieceType];
 
-      validateId(piece.id);
-      validateIdUniqueness(piece.id, i, pieceList);
+      validatePieceId(piece.id);
+      validatePieceIdUniqueness(piece.id, i, pieceList);
 
       validateVersions(piece.version);
       validateHumanInfo(piece.humanInfo);
