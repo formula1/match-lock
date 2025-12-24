@@ -15,8 +15,9 @@ export function PieceRosterLegend(
               {pieceValues.map((piece) => (
                 <li key={piece.version.logic}>
                   <a href={`#${ROSTERCONFIG_ID.pieceValueId(piece)}`}>
-                    <div>{piece.humanInfo.author}@{piece.humanInfo.name}</div>
-                    <div>{piece.version.logic}</div>
+                    <div><pre>{piece.id}</pre></div>
+                    <div>{piece.humanInfo.name} by {piece.humanInfo.author}</div>
+                    <div>{piece.version.logic}/{piece.version.media}</div>
                   </a>
                 </li>
               ))}
