@@ -51,12 +51,13 @@ export function PieceValueList(
   )
 }
 
+import { ChangeableId } from "./ChangeableId";
 import { DisplayVersion } from "./Version";
 import { DisplayPathVariables } from "./PathVariables";
 import { HumanInfo } from "./HumanInfo";
 import { DownloadSources } from "./DownloadSources";
 import { RequiredPieces } from "./RequiredPieces";
-function PieceValueItem({ value, onChange, pieceDefinition, rosters, onDelete }: (
+function PieceValueItem({ value, onChange, index, items, pieceDefinition, rosters, onDelete }: (
   & InputProps<PieceValue>
   & ListItemProps<PieceValue>
   & {
@@ -83,6 +84,12 @@ function PieceValueItem({ value, onChange, pieceDefinition, rosters, onDelete }:
         <pre>{JSON.stringify(value, null, 2)}</pre>
       ) : (
         <>
+        <ChangeableId
+          value={value.id}
+          onChange={v => onChange({ ...value, id: v })}
+          index={index}
+          roster={items}
+        />
         <DisplayVersion
           value={value.version}
         />
