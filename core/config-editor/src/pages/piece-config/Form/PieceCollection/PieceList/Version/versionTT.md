@@ -6,5 +6,3 @@ These are mandatory, uneditable parts to the piece. Each version is based on the
 - Media - The media version decides what the piece looks and sounds like. Changing files such as sprites, 3d models, animations or sounds are expected to change the media version. Changing any media related file makes the game piece considered a new version of the same piece.
 - Docs - The docs version is mostly just for files that don't effect what the piece does or what it looks like. For example, a readme file or a license file.
 
-# Usage With Required Pieces
-If a piece requires another piece, the required piece is expected to use the logic version to identify it. The media and docs versions are not considered.

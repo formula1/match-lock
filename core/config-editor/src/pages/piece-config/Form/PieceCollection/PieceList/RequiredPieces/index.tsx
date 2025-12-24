@@ -63,12 +63,12 @@ function RequiredPieceType({ value, onChange, pieceType, rosters }: (
           >
             <input
               type="checkbox"
-              checked={value.expected.includes(piece.version.logic)}
+              checked={value.expected.includes(piece.id)}
               onChange={(e) => onChange({
                 ...value,
                 expected: (
-                  e.target.checked ? [...value.expected, piece.version.logic]
-                  : value.expected.filter((v) => v !== piece.version.logic)
+                  e.target.checked ? [...value.expected, piece.id]
+                  : value.expected.filter((v) => v !== piece.id)
                 )
               })}
             />
