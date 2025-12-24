@@ -10,14 +10,21 @@ export const urlSchemaValidator = defineKeyword({
   validate: validateURL
 });
 
+import { validateFriendlyString } from "../validate/human";
+export const friendlyStringSchemaValidator = defineKeyword({
+  keyword: "friendlyString",
+  type: "string",
+  validate: validateFriendlyString
+});
+
 
 export const humanInfoSchema: JSONSchemaType<RosterLockPiece["humanInfo"]> = {
   type: "object",
   additionalProperties: false,
   required: ["name", "author", "url"],
   properties: {
-    name: { type: "string" },
-    author: { type: "string" },
+    name: { type: "string", [friendlyStringSchemaValidator.keyword]: true },
+    author: { type: "string", [friendlyStringSchemaValidator.keyword]: true },
     url: { type: "string", [urlSchemaValidator.keyword]: true },
     image: { type: "string", [urlSchemaValidator.keyword]: true, nullable: true },
   },
