@@ -73,10 +73,9 @@ function RequiredPieceType({ value, onChange, pieceType, rosters }: (
               })}
             />
             <a href={`#${ROSTERCONFIG_ID.pieceValueId(piece)}`} >
-              <div>
-                <span>{piece.humanInfo.author}@{piece.humanInfo.name}</span>
-                <span>{piece.version.logic}</span>
-              </div>
+              <div><pre>{piece.id}</pre></div>
+              <div>{piece.humanInfo.name} by {piece.humanInfo.author}</div>
+              <div><span>Version: </span>{piece.version.logic}/{piece.version.media}</div>
             </a>
           </div>
         ))}
