@@ -60,6 +60,14 @@ export async function createPieceValue(
       }catch(e){
         console.log("Failed To Load Human Info", e);
       }
+    }),
+    Promise.resolve().then(async ()=>{
+      for(const requiredPieceType of pieceDefinition.requires){
+        piece.requiredPieces[requiredPieceType] = {
+          selectable: false,
+          expected: [],
+        };
+      }
     })
   ])
 
