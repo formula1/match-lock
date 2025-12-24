@@ -1,5 +1,5 @@
 
-import { PieceValue } from "../../types";
+import { PieceDefinition, PieceValue } from "../../types";
 import { InputProps } from "../../../../../../utils/react";
 import { ToolTipSpan } from "../../../../../../components/ToolTip";
 import { ValidatingTextInput } from "../../../../../../components/inputs/ValidatingTextInput";
@@ -21,8 +21,10 @@ downloadSourcesTT += "\n\n" + (
   .join('\n')
 );
 
-export function DownloadSources({ value, onChange }: (
+export function DownloadSources({ value, onChange, piece, pieceDefinition }: (
   & InputProps<PieceValue["downloadSources"]>
+  & { piece: PieceValue }
+  & { pieceDefinition: PieceDefinition }
 )){
   return (
     <div className="section">
@@ -31,20 +33,39 @@ export function DownloadSources({ value, onChange }: (
       {value.length > 1 && (
         <div>
           {value.map((source, index) => (
+            <>
             <div key={index}>
               <button
                 onClick={() => onChange(value.filter((_, i) => i !== index))}
               >Remove</button>
+              <button
+                onClick={async () =>{
+                  const version = await getDownloadSourceVersion(
+                    source, piece.pathVariables, pieceDefinition
+                  )
+                  if(version.logic !== piece.version.logic){
+                    alert("Logic Version Mismatch");
+                  }
+                  if(version.media !== piece.version.media){
+                    alert("Media Version Mismatch");
+                  }
+                  if(version.docs !== piece.version.docs){
+                    alert("Docs Version Mismatch");
+                  }
+                }}
+              >Test</button>
               <ValidatingTextInput
                 value={source}
                 onChange={v => onChange(value.map((oldSource, i) => i !== index ? oldSource : v))}
                 validate={validateDownloadableSource}
               />
             </div>
+            </>
           ))}
         </div>
       )}
-
     </div>
   )
 }
+
+

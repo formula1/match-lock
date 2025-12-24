@@ -97,6 +97,8 @@ function PieceValueItem({ value, onChange, pieceDefinition, rosters, onDelete }:
         <DownloadSources
           value={value.downloadSources}
           onChange={v => onChange({ ...value, downloadSources: v })}
+          piece={value}
+          pieceDefinition={pieceDefinition}
         />
         <RequiredPieces
           value={value.requiredPieces}
