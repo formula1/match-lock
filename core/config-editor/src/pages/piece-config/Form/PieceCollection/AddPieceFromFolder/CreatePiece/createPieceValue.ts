@@ -11,7 +11,7 @@ export type ProgressListener = (progress: { file: string, total: number, current
 
 export async function createPieceValue(
   { 
-    folderPath, pathVariables, filesWithAssets, progressListener }: {
+    folderPath, pathVariables, filesWithAssets, pieceDefinition, progressListener }: {
     folderPath: string,
     pathVariables: Record<string, string>,
     filesWithAssets: Awaited<ReturnType<typeof getAssetsOfFiles>>["filesWithAssets"],
@@ -20,6 +20,7 @@ export async function createPieceValue(
   }
 ){
   const piece: PieceValue = {
+    id: "",
     version: {
       logic: "",
       media: "",
@@ -35,7 +36,7 @@ export async function createPieceValue(
     requiredPieces: {},
   };
 
-  await Promise.all([
+  const [version, humanInfo] = await Promise.all([
     Promise.resolve().then(async ()=>{
       piece.version = await calculatePieceVersion(
         filesWithAssets, async (path)=>{
@@ -45,20 +46,25 @@ export async function createPieceValue(
         },
         progressListener
       )
+      return piece.version;
     }),
     Promise.resolve().then(async ()=>{
       try {
         const path = pathJoin(folderPath, PATH_ROSTERLOCK_PIECE_META);
         if(!await FS.exists(path)) return;
         const json = await FS.readJSON(path);
-        const metaData = ROSTERLOCK_PIECEMETADATA_CASTER_JSONSCHEMA.cast(json);
+        const metaData = ROSTERLOCK_PIECEMETADATA_CASTER_JSONSCHEMA.cast(json, true);
         piece.downloadSources = metaData.downloadSources;
         piece.humanInfo = metaData.humanInfo;
+        return metaData.humanInfo;
       }catch(e){
         console.log("Failed To Load Human Info", e);
       }
     })
   ])
+
+  if(humanInfo) piece.id = `@${humanInfo.author}/${humanInfo.name}`;
+  else piece.id = `#${version.logic}/${version.media}`;
 
   return piece;
 }
