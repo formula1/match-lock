@@ -5,13 +5,21 @@ import { ToolTipSpan } from "../../../../../../components/ToolTip";
 import { ValidatingTextInput } from "../../../../../../components/inputs/ValidatingTextInput";
 
 
+import { getDownloadSourceVersion } from "./getDownloadVersion";
 import {
   DOWNLOADABLE_SOURCE_PROTOCOLS,
   validateDownloadableSource
 } from "@match-lock/shared";
 import downloadSourcesTTRAW from "./downloadSourcesTT.md";
 let downloadSourcesTT = downloadSourcesTTRAW;
-downloadSourcesTT += "\n\n" + DOWNLOADABLE_SOURCE_PROTOCOLS.map((v) => `- ${v.protocol}`).join('\n');
+
+
+downloadSourcesTT += "\n\n## Available Protocols";
+downloadSourcesTT += "\n\n" + (
+  Object.values(DOWNLOADABLE_SOURCE_PROTOCOLS)
+  .map((v) => `- ${v.protocol}`)
+  .join('\n')
+);
 
 export function DownloadSources({ value, onChange }: (
   & InputProps<PieceValue["downloadSources"]>
