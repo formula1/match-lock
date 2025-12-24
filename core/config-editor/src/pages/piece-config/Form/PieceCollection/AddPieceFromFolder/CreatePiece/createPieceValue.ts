@@ -63,8 +63,22 @@ export async function createPieceValue(
     })
   ])
 
-  if(humanInfo) piece.id = `@${humanInfo.author}/${humanInfo.name}`;
+  if(humanInfo) piece.id = `@${slugify(humanInfo.author)}/${slugify(humanInfo.name)}`;
   else piece.id = `#${version.logic}/${version.media}`;
 
   return piece;
+}
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    // Replace whitespace and underscores with hyphens
+    .replace(/[\s_]+/g, '-')
+    // Remove non-alphanumeric except hyphens
+    .replace(/[^a-z0-9-]+/g, '')
+    // Remove leading/trailing hyphens
+    .replace(/^-+|-+$/g, '')
+    // Collapse multiple hyphens
+    .replace(/-+/g, '-');
 }
