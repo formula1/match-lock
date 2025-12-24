@@ -5,8 +5,10 @@ type PieceDefinition = MatchLockEngineConfig["pieceDefinitions"][string];
 
 type MatchLockEngineAssetDefinition = PieceDefinition["assets"][number];
 
+export { getMatchingAssetsForFile };
+
 export async function getAssetsOfFiles(
-  files: Iterable<string>,
+  files: Iterable<string> | AsyncIterable<string>,
   pathVariables: Record<string, string>,
   pieceDefinition: PieceDefinition,
 ): Promise<{
@@ -15,7 +17,7 @@ export async function getAssetsOfFiles(
 }>{
   const assetCounts = new Map<string, { files: Array<string>, asset: MatchLockEngineAssetDefinition }>();
   const fileCounts = new Map<string, { assets: Array<MatchLockEngineAssetDefinition> }>();
-  for(const filePath of files){
+  for await (const filePath of files){
     const assetMatching = getMatchingAssetsForFile(pieceDefinition, pathVariables, filePath);
     const asset = assetMatching[0];
     if(!asset){
@@ -49,13 +51,13 @@ export async function getAssetsOfFiles(
   return { filesWithAssets: fileCounts, assetsWithFiles: assetCounts };
 }
 
-export function collectErrors(
+export function collectAssetFileErrors(
   { assetsWithFiles, filesWithAssets }: Awaited<ReturnType<typeof getAssetsOfFiles>>
 ){
   const errors: Array<{ type: "asset" | "file", id: string, message: string }> = [];
   for(const [assetName, { asset, files }] of assetsWithFiles){
     try {
-      if(files.length === 0 && !isValidCount(asset.count, 0)){
+      if(files.length === 0 && !isValidAssetFileCount(asset.count, 0)){
         errors.push({
           type: "asset",
           id: assetName,
@@ -63,7 +65,7 @@ export function collectErrors(
         });
         continue;
       }
-      validateCount(asset.count, files.length);
+      validateAssetFileCount(asset.count, files.length);
     }catch(e){
       errors.push({
         type: "asset",
@@ -82,7 +84,7 @@ export function collectErrors(
   return errors;
 }
 
-export function validateCount(
+export function validateAssetFileCount(
   validator: MatchLockEngineAssetDefinition["count"],
   actualCount: number
 ){
@@ -103,12 +105,12 @@ export function validateCount(
   }
 }
 
-export function isValidCount(
+export function isValidAssetFileCount(
   validator: MatchLockEngineAssetDefinition["count"],
   actualCount: number
 ){
   try {
-    validateCount(validator, actualCount);
+    validateAssetFileCount(validator, actualCount);
     return true;
   }catch(e){
     return false;

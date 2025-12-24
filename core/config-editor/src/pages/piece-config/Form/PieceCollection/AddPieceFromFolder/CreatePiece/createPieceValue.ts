@@ -4,7 +4,7 @@ import { join as pathJoin } from "path";
 import { PATH_ROSTERLOCK_PIECE_META, ROSTERLOCK_PIECEMETADATA_CASTER_JSONSCHEMA } from "@match-lock/shared";
 import { calculatePieceVersion } from "@match-lock/shared";
 import { FS } from "../../../../../../globals/fs";
-import { getAssetsOfFiles } from "../AssetsAndFiles/getAssetsOfFiles";
+import { getAssetsOfFiles } from "@match-lock/shared";
 import { PieceDefinition, PieceValue } from "../../types";
 
 export type ProgressListener = (progress: { file: string, total: number, current: number })=>any

@@ -1,16 +1,17 @@
 import { usePromisedMemo } from "../../../../../../utils/react";
 import { PieceDefinition, PieceValue } from "../../types";
-import { getAssetsOfFiles, collectErrors } from "./getAssetsOfFiles";
+import { getAssetsOfFiles, collectAssetFileErrors } from "@match-lock/shared";
 
 import { PageArrayTabs } from "../../../../../../components/Tabs";
 import { DisplayByFile } from "./DisplayByFile";
 import { DisplayByAssets } from "./DisplayByAssets";
 
 import { useEffect } from "react";
+import { FS } from "../../../../../../globals/fs";
 
 export type AssetsAndFilesValue = (
   & Awaited<ReturnType<typeof getAssetsOfFiles>>
-  & { errors: ReturnType<typeof collectErrors> }
+  & { errors: ReturnType<typeof collectAssetFileErrors> }
 );
 
 export function AssetsAndFiles(
@@ -22,8 +23,11 @@ export function AssetsAndFiles(
   }
 ){
   const assetsAndFiles = usePromisedMemo(async ()=>{
-    const { assetsWithFiles, filesWithAssets } = await getAssetsOfFiles(folderPath, pathVariables, pieceDefinition);
-    const errors = collectErrors({ assetsWithFiles, filesWithAssets });
+    const files = getFilesFromFolder(folderPath);
+    const { assetsWithFiles, filesWithAssets } = await getAssetsOfFiles(
+      files, pathVariables, pieceDefinition
+    );
+    const errors = collectAssetFileErrors({ assetsWithFiles, filesWithAssets });
     return { assetsWithFiles, filesWithAssets, errors };
   }, [folderPath, pathVariables, pieceDefinition])
 
@@ -69,4 +73,11 @@ export function AssetsAndFiles(
       />
     </>
   )
+}
+
+async function* getFilesFromFolder(folderPath: string): AsyncIterable<string> {
+  for await (const file of FS.walkDirStream(folderPath)){
+    if(file.is_directory) continue;
+    yield file.relative_path;
+  }
 }
