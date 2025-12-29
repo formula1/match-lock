@@ -1,9 +1,8 @@
 
 export type JSON_Primitive = string | number | boolean | null;
 export type JSON_Array = Array<JSON_Primitive | JSON_Array | JSON_Object>;
-export type JSON_Object = { [key: string]: JSON_Primitive | JSON_Array | JSON_Object };
+export type JSON_Object = { [key: string]: JSON_Primitive | JSON_Array | JSON_Object | undefined };
 export type JSON_Unknown = JSON_Primitive | JSON_Array | JSON_Object;
-
 
 export function cloneJSON<T extends JSON_Unknown>(value: T): T {
   return JSON.parse(JSON.stringify(value));
