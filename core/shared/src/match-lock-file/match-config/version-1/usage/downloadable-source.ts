@@ -4,6 +4,17 @@ type DownloadableSource = {
   validate: (url: string) => void, // throws on error
 };
 export const DOWNLOADABLE_SOURCE_PROTOCOLS: Record<string, DownloadableSource> = {};
+// Utility function to validate any download source
+export function getDownloadableSourceProtocol(url: string): string | undefined {
+  for(const validator of Object.values(DOWNLOADABLE_SOURCE_PROTOCOLS)){
+    try {
+      validator.validate(url);
+      return validator.protocol;
+    }catch(e){
+      continue;
+    }
+  }
+}
 
 
 // HTTPS Validator
@@ -143,14 +154,3 @@ DOWNLOADABLE_SOURCE_PROTOCOLS['ipfs'] = {
   }
 };
 
-// Utility function to validate any download source
-export function getDownloadableSourceProtocol(url: string): string | undefined {
-  for(const validator of Object.values(DOWNLOADABLE_SOURCE_PROTOCOLS)){
-    try {
-      validator.validate(url);
-      return validator.protocol;
-    }catch(e){
-      continue;
-    }
-  }
-}

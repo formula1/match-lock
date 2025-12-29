@@ -1,7 +1,7 @@
 import micromatch from "micromatch";
 import type {
   MatchLockEngineConfig,
-} from '../types';
+} from '../../engine/types';
 
 import { validatePathVariableValue } from "../../rosters/validate";
 /**

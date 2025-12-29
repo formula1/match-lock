@@ -1,9 +1,6 @@
-import { getMatchingAssetsForFile } from "../engine/usage/getMatchingAsset";
-import { RosterLockV1Config } from "../types";
+import { getMatchingAssetsForFile } from "./getMatchingAsset";
 
-type PieceDefinition = RosterLockV1Config["engine"]["pieceDefinitions"][string];
-
-type MatchLockEngineAssetDefinition = PieceDefinition["assets"][number];
+import { PieceDefinition, EngineAssetDefinition } from "./types";
 
 export { getMatchingAssetsForFile };
 
@@ -12,11 +9,11 @@ export async function getAssetsOfFiles(
   pathVariables: Record<string, string>,
   pieceDefinition: PieceDefinition,
 ): Promise<{
-  assetsWithFiles: Map<string, { asset: MatchLockEngineAssetDefinition, files: Array<string> }>
-  filesWithAssets: Map<string, { assets: Array<MatchLockEngineAssetDefinition> }>
+  assetsWithFiles: Map<string, { asset: EngineAssetDefinition, files: Array<string> }>
+  filesWithAssets: Map<string, { assets: Array<EngineAssetDefinition> }>
 }>{
-  const assetCounts = new Map<string, { files: Array<string>, asset: MatchLockEngineAssetDefinition }>();
-  const fileCounts = new Map<string, { assets: Array<MatchLockEngineAssetDefinition> }>();
+  const assetCounts = new Map<string, { files: Array<string>, asset: EngineAssetDefinition }>();
+  const fileCounts = new Map<string, { assets: Array<EngineAssetDefinition> }>();
   for await (const filePath of files){
     const assetMatching = getMatchingAssetsForFile(pieceDefinition, pathVariables, filePath);
     const asset = assetMatching[0];
@@ -28,7 +25,7 @@ export async function getAssetsOfFiles(
     if(assetMatching.length > 1){
       // Warning: File matches multiple assets
     }
-    const currentCount = ((): { files: Array<string>, asset: MatchLockEngineAssetDefinition } =>{
+    const currentCount = ((): { files: Array<string>, asset: EngineAssetDefinition } =>{
       const currentCount = assetCounts.get(asset.name);
       if(currentCount) return currentCount;
       const newCount = { files: [], asset: asset };
@@ -51,6 +48,7 @@ export async function getAssetsOfFiles(
   return { filesWithAssets: fileCounts, assetsWithFiles: assetCounts };
 }
 
+import { isValidAssetFileCount, validateAssetFileCount } from "./validateAssetFileCount";
 export function collectAssetFileErrors(
   { assetsWithFiles, filesWithAssets }: Awaited<ReturnType<typeof getAssetsOfFiles>>
 ){
@@ -84,35 +82,3 @@ export function collectAssetFileErrors(
   return errors;
 }
 
-export function validateAssetFileCount(
-  validator: MatchLockEngineAssetDefinition["count"],
-  actualCount: number
-){
-  if(!Array.isArray(validator)){
-    if(validator === "*") return;
-    if(actualCount !== validator){
-      throw new Error(`Expected ${validator} files, got ${actualCount}`);
-    }
-    return;
-  }
-  const [min, max] = validator;
-  if(actualCount < min){
-    throw new Error(`Expected at least ${min} files, got ${actualCount}`);
-  }
-  if(max === "*") return;
-  if(actualCount > max){
-    throw new Error(`Expected at most ${max} files, got ${actualCount}`);
-  }
-}
-
-export function isValidAssetFileCount(
-  validator: MatchLockEngineAssetDefinition["count"],
-  actualCount: number
-){
-  try {
-    validateAssetFileCount(validator, actualCount);
-    return true;
-  }catch(e){
-    return false;
-  }
-}

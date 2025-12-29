@@ -1,10 +1,16 @@
 
 
-type FileWithSha = { path: string, asset: MatchLockEngineAssetDefinition, sha: string }
+import { createHash } from "crypto";
+import { RosterLockV1Config } from "../types";
+
+type PieceDefinition = RosterLockV1Config["engine"]["pieceDefinitions"][string];
+type EngineAssetDefinition = PieceDefinition["assets"][number];
+
+type FileWithSha = { path: string, asset: EngineAssetDefinition, sha: string }
 type FileGetter = (path: string) => Promise<{ byteSize: number, stream: AsyncIterable<Uint8Array> }>
 type ProgressListener = (progress: { file: string, current: number, total: number }) => any
 export async function calculatePieceVersion(
-  files: Map<string, { assets: Array<MatchLockEngineAssetDefinition> }>,
+  files: Map<string, { assets: Array<EngineAssetDefinition> }>,
   getFile: FileGetter,
   onProgress?: ProgressListener
 ){
@@ -53,8 +59,6 @@ async function getHashFromFile(
   }
 }
 
-import { createHash } from "crypto";
-import { MatchLockEngineAssetDefinition } from "../engine";
 
 function calculateComnbinedHash(files: Array<FileWithSha>){
   if (files.length === 0) {
