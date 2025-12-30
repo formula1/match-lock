@@ -126,6 +126,66 @@ export const fs = {
     await invoke('fs_start_walk_stream', { dirPath: path, streamId });
   },
 
+  walkDirStream: async function*(path: string): AsyncIterable<WalkResult> {
+    const streamId = `walk-${Date.now().toString(32)}-${Math.random().toString(32).substring(2)}`;
+
+    const queue: WalkResult[] = [];
+    let done = false;
+    let error: Error | null = null;
+    let resolver: (() => void) | null = null;
+
+    const notify = () => {
+      if (resolver) {
+        resolver();
+        resolver = null;
+      }
+    };
+
+    const waitForData = () => new Promise<void>((resolve) => {
+      resolver = resolve;
+    });
+
+    // Set up event listeners
+    const unlistenData = await listen(`fs-walk-stream-data-${streamId}`, (event) => {
+      queue.push(event.payload as WalkResult);
+      notify();
+    });
+
+    const unlistenError = await listen(`fs-walk-stream-error-${streamId}`, (event) => {
+      error = new Error(event.payload as string);
+      done = true;
+      notify();
+    });
+
+    const unlistenEnd = await listen(`fs-walk-stream-end-${streamId}`, () => {
+      done = true;
+      notify();
+    });
+
+    const cleanup = () => {
+      unlistenData();
+      unlistenError();
+      unlistenEnd();
+    };
+
+    try {
+      // Start the stream
+      await invoke('fs_start_walk_stream', { dirPath: path, streamId });
+
+      while (true) {
+        while (queue.length > 0) yield queue.shift()!;
+
+        if (error)  throw error;
+
+        if (done) return;
+
+        await waitForData();
+      }
+    } finally {
+      cleanup();
+    }
+  },
+
   getFileStream: async function*(
     path: string, options: Partial<{ chunkSize: number, abortSignal?: AbortSignal }> = {}
   ): AsyncIterable<Uint8Array>{
