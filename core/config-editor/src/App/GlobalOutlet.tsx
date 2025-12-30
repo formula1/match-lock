@@ -1,7 +1,7 @@
 
 import { Outlet } from "react-router";
 import { LinkTabs } from "../components/Tabs";
-import { EngineConfigPaths } from "../pages/engine-config/paths";
+import { RosterLockConfigPaths } from "../pages/config-editor/paths";
 
 export function GlobalOutlet(){
   return (
@@ -10,11 +10,12 @@ export function GlobalOutlet(){
       className="primary"
       pages={[
         { title: 'Home', href: '/' },
+        { title: 'About', href: '/about' },
         {
-          title: 'Engine',
-          href: EngineConfigPaths.root,
-          isActive: (location) => location.pathname.startsWith(EngineConfigPaths.root),
-        },
+          title: "New Config",
+          href: RosterLockConfigPaths.newRoot,
+          isActive: (location) => location.pathname.startsWith(RosterLockConfigPaths.newRoot),
+        }
       ]}
     />
     <Outlet />

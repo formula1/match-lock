@@ -42,7 +42,13 @@ export function PageArrayTabs({
 import { Link, useLocation } from "react-router-dom";
 
 type LocalURL = { pathname: string, search: string, hash: string };
-type Page = { title: string, href: string, isActive?: (location: LocalURL) => boolean };
+type Page = (
+  & { title: string, isActive?: (location: LocalURL) => boolean }
+  & (
+    | { href: string }
+    | { onClick: ()=>void }
+  )
+);
 
 export function LinkTabs({
   pages,
@@ -61,14 +67,28 @@ export function LinkTabs({
     <nav className={combineClassNames("tabs-nav", className)} style={{...navStyle}}>
       {pages.map((page, i) => (
         !page ? null :
-        <Link
-          className={isActive(page, location) ? 'active' : ''}
-          key={`${page.title}-${i}`}
-          to={page.href}
-          style={{
-            ...linkStyle
-          }}
-        >{page.title}</Link>
+        "onClick" in page ? (
+          <a
+            href="#"
+            key={`${page.title}-${i}`}
+            onClick={(e) => {
+              e.preventDefault();
+              page.onClick();
+            }}
+            style={{
+              ...linkStyle
+            }}
+          >{page.title}</a>
+        ) : (
+          <Link
+            className={isActive(page, location) ? 'active' : ''}
+            key={`${page.title}-${i}`}
+            to={page.href}
+            style={{
+              ...linkStyle
+            }}
+          >{page.title}</Link>
+        )
       ))}
     </nav>
   )
@@ -76,5 +96,6 @@ export function LinkTabs({
 
 function isActive(page: Page, location: LocalURL){
   if(page.isActive) return page.isActive(location)
+  if(!("href" in page)) return false;
   return location.pathname === page.href;
 }
