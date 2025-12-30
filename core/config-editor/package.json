@@ -9,6 +9,7 @@
     "dev:tauri": "cargo tauri dev",
     "dev:simple": "run-p dev:vite dev:watch",
     "dev:watch": "sleep 4 && echo '🔄 Watching for changes... Press Ctrl+C to stop, then run: npm run build && npm run start'",
+    "prepare": "npm run build:renderer",
     "build": "run-s build:renderer build:ipc build:tauri build:chmod",
     "build:ipc": "cd src-tauri/ipc && npm install && npm run build",
     "build:tauri": "cargo tauri build",
