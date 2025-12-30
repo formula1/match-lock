@@ -1,7 +1,7 @@
 
 import { JSONSchemaType } from "ajv";
 import { requirementListSchemaValidator, requirementItemSchemaValidator, requirementCycleSchemaValidator } from "./keywords";
-import { MatchLockEngineConfig } from "../../types";
+import { RosterLockEngineConfig } from "../../types";
 
 export { requirementCycleSchemaValidator };
 
@@ -12,7 +12,9 @@ export const requirementKeywords = [
 ]
 
 
-export const requirementsSchema: JSONSchemaType<MatchLockEngineConfig["pieceDefinitions"][string]["requires"]> = {
+export const requirementsSchema: JSONSchemaType<
+  RosterLockEngineConfig["pieceDefinitions"][string]["requires"]
+> = {
   [requirementListSchemaValidator.keyword]: true,
   [requirementCycleSchemaValidator.keyword]: true,
   type: "array",

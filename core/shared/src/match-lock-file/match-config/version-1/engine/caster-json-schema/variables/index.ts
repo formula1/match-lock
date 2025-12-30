@@ -1,7 +1,7 @@
 
 import { JSONSchemaType } from "ajv";
 import { pathVariableListSchemaValidator, pathVariableNameSchemaValidator } from "./keywords";
-import { MatchLockEngineConfig } from "../../types";
+import { RosterLockEngineConfig } from "../../types";
 
 export const pathVariableKeywords = [
   pathVariableListSchemaValidator,
@@ -9,7 +9,9 @@ export const pathVariableKeywords = [
 ]
 
 
-export const pathVariablesSchema: JSONSchemaType<MatchLockEngineConfig["pieceDefinitions"][string]["pathVariables"]> = {
+export const pathVariablesSchema: JSONSchemaType<
+  RosterLockEngineConfig["pieceDefinitions"][string]["pathVariables"]
+> = {
   [pathVariableListSchemaValidator.keyword]: true,
   type: "array",
   items: {

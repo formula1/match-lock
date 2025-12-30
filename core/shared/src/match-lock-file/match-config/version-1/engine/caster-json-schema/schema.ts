@@ -1,11 +1,11 @@
 import { JSONSchemaType } from "ajv";
-import { MatchLockEngineConfig } from "../types";
+import { RosterLockEngineConfig } from "../types";
 
 import { assetsSchema, assetKeywords } from "./asset";
 import { requirementsSchema, requirementKeywords } from "./requirements";
 import { pathVariablesSchema, pathVariableKeywords } from "./variables";
 
-export const engineSchema: JSONSchemaType<MatchLockEngineConfig> = {
+export const engineSchema: JSONSchemaType<RosterLockEngineConfig> = {
   type: "object",
   required: ["name", "version", "pieceDefinitions"],
   additionalProperties: false,

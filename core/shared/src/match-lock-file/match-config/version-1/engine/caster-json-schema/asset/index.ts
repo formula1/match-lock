@@ -1,8 +1,10 @@
 import { JSONSchemaType } from "ajv";
-import { MatchLockEngineConfig } from "../../types";
+import { RosterLockEngineConfig } from "../../types";
 
 import { assetCountSchemaValidator } from "./keywords";
-const countSchema: JSONSchemaType<MatchLockEngineConfig["pieceDefinitions"][string]["assets"][number]["count"]> = {
+const countSchema: JSONSchemaType<
+  RosterLockEngineConfig["pieceDefinitions"][string]["assets"][number]["count"]
+> = {
   [assetCountSchemaValidator.keyword]: true,
   type: ["number", "string", "array"],
   anyOf: [
@@ -26,7 +28,9 @@ import {
   assetGlobPathVariablesSchemaValidator,
   assetGlobItemSchemaValidator,
 } from "./keywords";
-export const assetsSchema: JSONSchemaType<MatchLockEngineConfig["pieceDefinitions"][string]["assets"]> = {
+export const assetsSchema: JSONSchemaType<
+  RosterLockEngineConfig["pieceDefinitions"][string]["assets"]
+> = {
   type: "array",
   items: {
     type: "object",

@@ -4,26 +4,26 @@ import {
 } from "../../../config-types";
 
 
-export type MatchLockEngineConfig = {
+export type RosterLockEngineConfig = {
   name: string,
   version: string,
   pieceDefinitions: Record<PieceType, {
-    selectionStrategy: MatchLockEngineSelectionStrategy,
+    selectionStrategy: EngineSelectionStrategy,
     requires: Array<PieceType>
     pathVariables: Array<string>,
-    assets: Array<MatchLockEngineAssetDefinition>
+    assets: Array<EngineAssetDefinition>
   }>
 }
 
 export type AssetClassification = "logic" | "media" | "doc";
-export type MatchLockEngineAssetDefinition = {
+export type EngineAssetDefinition = {
   name: string,
   classification: AssetClassification,
   count: number | "*" | [number, number | "*"]
   glob: Array<string>,
 }
 
-export type MatchLockEngineSelectionStrategy = (
+export type EngineSelectionStrategy = (
   | "mandatory"
   | "personal"
   | "shared"

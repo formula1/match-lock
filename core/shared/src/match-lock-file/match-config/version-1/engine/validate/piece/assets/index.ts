@@ -1,10 +1,10 @@
-import { MatchLockEngineAssetDefinition, MatchLockEngineConfig } from "../../../types";
+import { EngineAssetDefinition, RosterLockEngineConfig } from "../../../types";
 
 import { validateRange } from "./range";
 
 export function validateAsset(
-  pieceAssetDefinition: MatchLockEngineConfig["pieceDefinitions"][string]["assets"][0],
-  definition: MatchLockEngineConfig["pieceDefinitions"][string]
+  pieceAssetDefinition: RosterLockEngineConfig["pieceDefinitions"][string]["assets"][0],
+  definition: RosterLockEngineConfig["pieceDefinitions"][string]
 ){
   validateAssetName(pieceAssetDefinition.name, definition.assets);
   validateRange(pieceAssetDefinition.count)
@@ -16,7 +16,7 @@ export function validateAsset(
 }
 
 export function validateAssetName(
-  name: MatchLockEngineAssetDefinition["name"], assets: MatchLockEngineConfig["pieceDefinitions"][string]["assets"]
+  name: EngineAssetDefinition["name"], assets: RosterLockEngineConfig["pieceDefinitions"][string]["assets"]
 ){
   if(name === ""){
     throw new Error(`Name is empty`);
@@ -31,7 +31,7 @@ export function validateAssetName(
 
 import { validatePathVariablesInGlob, validateGlobItem } from "./glob";
 export function validateGlobList(
-  glob: MatchLockEngineAssetDefinition["glob"],
+  glob: EngineAssetDefinition["glob"],
 ){
   if(glob.length === 0){
     throw new Error(`Expecting at least 1 glob`);

@@ -1,6 +1,6 @@
 import micromatch from "micromatch";
 import type {
-  MatchLockEngineConfig,
+  RosterLockEngineConfig,
 } from '../../engine/types';
 
 import { validatePathVariableValue } from "../../rosters/validate";
@@ -8,10 +8,10 @@ import { validatePathVariableValue } from "../../rosters/validate";
  * Test a single file against piece definition assets
  */
 export function getMatchingAssetsForFile(
-  pieceDefinition: MatchLockEngineConfig['pieceDefinitions'][string],
+  pieceDefinition: RosterLockEngineConfig['pieceDefinitions'][string],
   pathVariables: Record<string, string>,
   relativePath: string,
-): Array<MatchLockEngineConfig['pieceDefinitions'][string]['assets'][number]> {
+): Array<RosterLockEngineConfig['pieceDefinitions'][string]['assets'][number]> {
 
   for(const variableValue of Object.values(pathVariables)){
     validatePathVariableValue(variableValue);
