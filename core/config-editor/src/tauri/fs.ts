@@ -125,4 +125,40 @@ export const fs = {
     // Start the stream
     await invoke('fs_start_walk_stream', { dirPath: path, streamId });
   },
+
+  getFileStream: async function*(
+    path: string, options: Partial<{ chunkSize: number, abortSignal?: AbortSignal }> = {}
+  ): AsyncIterable<Uint8Array>{
+    const chunkSize = options.chunkSize || 1024 * 1024;
+    const abortSignal = options.abortSignal;
+    if(abortSignal?.aborted) return;
+
+    let offset = 0;
+    try {
+      while(true){
+        const chunk = await invoke<number[]>('fs_read_file_chunk', { 
+          path,
+          offset,
+          length: chunkSize
+        });
+        if(abortSignal?.aborted) return;
+
+        if (chunk.length === 0) {
+          // EOF
+          return;
+        }
+
+        yield new Uint8Array(chunk);
+        offset += chunk.length;
+
+        // If we got less than requested, we're at EOF
+        if (chunk.length < chunkSize) {
+          return;
+        }
+      }
+    } catch (error) {
+      throw new Error(`Failed to read file at offset ${offset}: ${error}`);
+    }
+  }
+
 };

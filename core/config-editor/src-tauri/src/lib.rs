@@ -77,6 +77,7 @@ pub fn run() {
       console_log,
       // File system operations
       fs_read_file,
+      fs_read_file_chunk,
       fs_write_file,
       fs_remove_file,
       fs_mkdir,

@@ -3,7 +3,7 @@ import { InputProps } from "../../../../../utils/react";
 import { useEffect, useState } from "react";
 
 
-export function PathVariablesInput(
+export function PathVariableValuesInput(
   { value, onChange, pathVariables }: (
     & InputProps<Record<string, string>>
     & { pathVariables: MatchLockEngineConfig["pieceDefinitions"][string]["pathVariables"] }

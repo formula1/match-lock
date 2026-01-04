@@ -28,6 +28,11 @@
           "windows": ["main"],
           "permissions": [
             "shell:allow-open",
+            "shell:allow-execute",
+            {
+              "identifier": "shell:allow-spawn",
+              "allow": [{ "name": "binaries/node-sidecar", "sidecar": true }]
+            },
             "dialog:allow-open",
             "dialog:allow-save",
             "dialog:default",
@@ -49,6 +54,9 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": []
+    "resources": [],
+    "externalBin": [
+      "binaries/node-sidecar"
+    ]
   }
 }

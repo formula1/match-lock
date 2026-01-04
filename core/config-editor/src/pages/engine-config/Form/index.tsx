@@ -7,10 +7,6 @@ import { PieceDefinitions } from "./PieceDefinitions";
 export { EngineLegend } from "./Legend";
 
 export function EngineConfigForm({ value, onChange }: InputProps<MatchLockEngineConfig>){
-  return <Form value={value} onChange={onChange} />;
-}
-
-function Form({ value, onChange }: InputProps<MatchLockEngineConfig>){
   return <>
     <div className="section">
       <h2>Engine Config</h2>

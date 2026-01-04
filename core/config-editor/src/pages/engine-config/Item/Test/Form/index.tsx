@@ -2,7 +2,7 @@ import { MatchLockEngineConfig, validatePathVariableValue } from "@match-lock/sh
 import { InputProps } from "../../../../../utils/react";
 import { FolderInput } from "./FolderInput";
 import { PieceSelect } from "./PieceSelect";
-import { PathVariablesInput } from "./PathVariablesInput";
+import { PathVariableValuesInput } from "./PathVariablesInput";
 
 export type TestFormValue = {
   folderPath: string;
@@ -53,7 +53,7 @@ export function TestForm(
 
     {pieceDef && pieceDef.pathVariables.length > 0 && (
       <div className="section">
-        <PathVariablesInput
+        <PathVariableValuesInput
           value={value.pathVariables}
           onChange={(v)=> onChange({ ...value, pathVariables: v })}
           pathVariables={pieceDef.pathVariables}
