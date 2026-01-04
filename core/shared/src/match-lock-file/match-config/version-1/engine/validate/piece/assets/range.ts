@@ -1,6 +1,6 @@
-import { MatchLockEngineAssetDefinition } from "../../../types";
+import { EngineAssetDefinition } from "../../../types";
 
-export function validateRange(count: MatchLockEngineAssetDefinition["count"]){
+export function validateRange(count: EngineAssetDefinition["count"]){
   if(!Array.isArray(count)){
     if(count === "*") return;
     if(count <= 0) throw new Error(`count should be greater than 0`);

@@ -35,6 +35,11 @@ ul > li { margin-left: 32px; }
   font-weight: bold;
 }
 
+.warning {
+  color: orange;
+  font-weight: bold;
+}
+
 .editable-title {
   display: flex;
   align-items: center;

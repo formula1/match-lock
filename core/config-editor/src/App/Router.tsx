@@ -2,16 +2,24 @@ import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router";
 
 import { GlobalOutlet } from "./GlobalOutlet";
-import { HomePage } from "../pages/home";
-import { EngineRoute } from "../pages/engine-config";
+import { HomePage } from "../pages/Home";
+import { AboutPage } from "../pages/About";
+import {
+  NewConfigEditorRoute,
+  FileConfigEditorRoute,
+} from "../pages/config-editor";
+import { NotFoundPage } from "../pages/Util/NotFound";
 
 export function Router(){
   return <BrowserRouter>
     <Routes>
       <Route path="/" element={<GlobalOutlet />} >
         <Route index element={<HomePage />} />
-        {EngineRoute}
+        <Route path="about" element={<AboutPage />} />
+        {NewConfigEditorRoute}
+        {FileConfigEditorRoute}
       </Route>
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   </BrowserRouter>
 }

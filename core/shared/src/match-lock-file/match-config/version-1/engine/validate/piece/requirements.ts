@@ -1,5 +1,5 @@
 import { findAllCycles, getCyclesUsingKey } from "../../../../../../utils/tree";
-import { MatchLockEngineConfig } from "../../types";
+import { RosterLockEngineConfig } from "../../types";
 
 
 export class CycleError extends Error {
@@ -11,13 +11,13 @@ export class CycleError extends Error {
   }
 }
 
-export function validatePieceRequirementCycles(engine: MatchLockEngineConfig){
+export function validatePieceRequirementCycles(engine: RosterLockEngineConfig){
   const pieceTypes = Object.keys(engine.pieceDefinitions);
   const cycles = findAllCycles(pieceTypes, (pieceType) => engine.pieceDefinitions[pieceType].requires);
   if(cycles.length > 0) throw new CycleError(cycles);
 }
 
-export function validatePieceInCycles(pieceType: string, engine: MatchLockEngineConfig){
+export function validatePieceInCycles(pieceType: string, engine: RosterLockEngineConfig){
   const pieceTypes = Object.keys(engine.pieceDefinitions);
   const cycles = findAllCycles(pieceTypes, (pieceType) => engine.pieceDefinitions[pieceType].requires);
   if(cycles.length === 0) return;
@@ -35,8 +35,8 @@ export function validatePieceRequirementList(
 }
 
 export function validatePieceRequirementIsResolved(
-  requiredPieceType: MatchLockEngineConfig["pieceDefinitions"][string]["requires"][0],
-  engine: MatchLockEngineConfig
+  requiredPieceType: RosterLockEngineConfig["pieceDefinitions"][string]["requires"][0],
+  engine: RosterLockEngineConfig
 ){
   const requiredDefinition = engine.pieceDefinitions[requiredPieceType];
   if(!requiredDefinition){
@@ -52,7 +52,7 @@ export function validatePieceRequirementIsResolved(
 // This version tries to use the minimum amount of loops possible
 // Ensure that pieces not on demand can't be required by another non on demand piece
 // Ensure all on demand pieces are required by another piece
-export function eachPieceRequirementIsResolved_COMPLEX(engine: MatchLockEngineConfig){
+export function eachPieceRequirementIsResolved_COMPLEX(engine: RosterLockEngineConfig){
   const notOnDemandPieceTypes = new Set<string>();
   const unusedOnDemandPieceTypes = new Set<string>();
   const usedOnDemandPieceTypes = new Set<string>();
@@ -88,7 +88,7 @@ export function eachPieceRequirementIsResolved_COMPLEX(engine: MatchLockEngineCo
     throw new Error(`The following pieces are required but not resolved: ${Array.from(expectedRequires).join(", ")}`);
   }
 
-  function checkRequires(pieceType: string, definition: MatchLockEngineConfig["pieceDefinitions"][string]){
+  function checkRequires(pieceType: string, definition: RosterLockEngineConfig["pieceDefinitions"][string]){
 
     // Check each required piece type
     for(const requiredPieceType of definition.requires){

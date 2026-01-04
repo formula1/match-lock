@@ -1,4 +1,4 @@
-import { MatchLockEngineConfig, MatchLockEngineAssetDefinition } from "../../types";
+import { RosterLockEngineConfig } from "../../types";
 
 export * from "./requirements";
 export * from "./path-variables";
@@ -11,7 +11,7 @@ import {
 import { ValidationErrorPath } from "../error";
 
 export function validatePieceDefinition(
-  pieceType: string, definition: MatchLockEngineConfig["pieceDefinitions"][string], engine: MatchLockEngineConfig
+  pieceType: string, definition: RosterLockEngineConfig["pieceDefinitions"][string], engine: RosterLockEngineConfig
 ){
   validatePieceRequirementList(definition.requires);
   for(const requiredPieceType of definition.requires){
