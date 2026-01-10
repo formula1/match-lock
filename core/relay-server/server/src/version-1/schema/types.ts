@@ -31,6 +31,9 @@ export interface RoomStatsRow {
   user_ids: string;  // JSON string: ["user1", "user2"]
   user_count: number;
 
+  webhook_room_complete: string;
+  webhhook_room_failed: string | null;
+
   created_at: string;
   finished_at: string | null;
 

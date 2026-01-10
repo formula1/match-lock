@@ -3,10 +3,12 @@ export enum ROOM_EVENT {
   startRoom = "room-start",
   userEntered = "user-entered",
   userLeft = "user-left",
+  initGoodbye = "init-goodbye",
 }
 
 export enum USER_EVENT {
   hello = "user-hello",
+  finish = "user-finish",
   goodbye = "user-goodbye",
 }
 

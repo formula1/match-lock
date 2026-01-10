@@ -66,6 +66,10 @@ CREATE TABLE room_stats (
   user_ids TEXT NOT NULL,  -- JSON: ["user1", "user2", "user3"]
   user_count INTEGER NOT NULL,
 
+  -- Webhooks
+  webhook_room_complete TEXT NOT NULL,  -- URL to notify on room completion`
+  webhhook_room_failed TEXT,    -- URL to notify on room failure
+
   -- Timestamps
   created_at TEXT NOT NULL,
   finished_at TEXT,      -- When all users finished

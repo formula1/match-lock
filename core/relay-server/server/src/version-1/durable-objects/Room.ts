@@ -6,7 +6,9 @@ import { DurableObjectState } from '@cloudflare/workers-types';
 import { validateAuthFromSearch } from "./auth";
 
 import { handleHelloMessage } from './methods/hello';
+import { handleFinishMessage } from './methods/finish';
 import { handleGoodbyeMessage } from './methods/goodbye';
+import { failWebhook } from './webhook';
 
 /**
  * Metadata attached to each WebSocket via state.acceptWebSocket(ws, tags)
@@ -217,6 +219,7 @@ export class Room {
         return await handleHelloMessage(
           {
             state: this.state,
+            env: this.env,
             broadcast: (...args)=>(this.broadcast(...args)),
             completeRoom: ()=>(this.completeRoom()),
           },
@@ -233,11 +236,24 @@ export class Room {
         return await handleGoodbyeMessage(
           {
             state: this.state,
+            env: this.env,
             broadcast: (...args)=>(this.broadcast(...args)),
             completeRoom: ()=>(this.completeRoom()),
           },
           attachment.userId,
           data
+        );
+      }
+
+      if(data.type === USER_EVENT.finish){
+        return await handleFinishMessage(
+          {
+            state: this.state,
+            env: this.env,
+            broadcast: (...args)=>(this.broadcast(...args)),
+            completeRoom: ()=>(this.completeRoom()),
+          },
+          attachment.userId,
         );
       }
 
@@ -360,6 +376,7 @@ export class Room {
       failReason, failedUser,
       config.roomId
     ).run();
+    await failWebhook(this.env, config, failReason, failedUser);
   }
 }
 

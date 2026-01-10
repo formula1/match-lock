@@ -15,6 +15,10 @@ type CreateRoomBody = {
   rosterConfig: any;
 
   users: RoomUser[];
+  webhooks: {
+    onRoomComplete: string;
+    onRoomFailed?: string;
+  };
 
   publicKey: string;
   signature: string;
@@ -27,6 +31,10 @@ const createRoomCaster: ZodType<CreateRoomBody> = z.object({
     publicKey: z.string(),
     displayName: z.string(),
   }).strict()),
+  webhooks: z.object({
+    onRoomComplete: z.string().url(),
+    onRoomFailed: z.string().url().optional(),
+  }),
 
   publicKey: z.string(),
   signature: z.string(),
@@ -54,6 +62,7 @@ app.post('/', async (c)=> {
   const isValid = await verifySignature(matchmaker.public_key, body.signature, {
     rosterConfig: body.rosterConfig,
     users: body.users,
+    webhooks: body.webhooks,
   });
   if(!isValid) return c.json({ error: 'Invalid signature' }, 401);
   
@@ -92,13 +101,22 @@ app.post('/', async (c)=> {
       room_id, matchmaker_id,
       full_config_hash, engine_id, engine_version, roster_hash,
       user_ids, user_count,
+      webhook_room_complete, webhhook_room_failed,
       created_at,
       status
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (
+     ?, ?,
+     ?, ?, ?, ?,
+     ?, ?,
+     ?, ?
+     ?,
+     ?
+    )
   `).bind(
     roomId, matchmaker.id,
     full_hashBuffer, engineId, engineVersion, rosterHash,
     users_ids, body.users.length,
+    body.webhooks.onRoomComplete, body.webhooks.onRoomFailed || null,
     new Date().toISOString(),
     'active',
   ).run();
