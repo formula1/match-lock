@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import { useState } from 'react';
 import { useUser } from "../../globals/user";
 import { RunnableState, useRunnable } from "../../utils/runnable";
 
@@ -13,7 +13,10 @@ export function Login() {
   return (
     <div>
       <h1>Login</h1>
-      <form onSubmit={(e)=>(loginResult.run())}>
+      <form onSubmit={(e)=>{
+        e.preventDefault();
+        loginResult.run()
+      }}>
         <div>
           <label>
             Username

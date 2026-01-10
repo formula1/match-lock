@@ -5,9 +5,11 @@ import { useUser } from "../../globals/user";
 import { usePromisedMemo } from "../../utils/promised-memo";
 import { RunnableState, useRunnable } from "../../utils/runnable";
 import { Forbidden } from "../error/forbidden";
-import { MatchMakerPaths } from "./paths";
+import { useParams } from "react-router-dom";
 
-export function MatchMakerItem({ matchMakerId }: { matchMakerId: string }) {
+export function MatchMakerItem() {
+  const { matchMakerId } = useParams();
+  if(!matchMakerId) throw new Error("matchMakerId is required");
   const { user } = useUser();
   const matchMaker = usePromisedMemo(!user ? null : async ()=>{
     return RELAY_API.matchmaker.get({ authToken: user.token }, { matchMakerId });

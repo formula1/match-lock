@@ -10,11 +10,17 @@ function Home() {
   );
 }
 
+import { AuthRoute } from "./pages/auth";
+import { UsersRoute } from "./pages/users";
+import { MatchMakerRoute } from "./pages/matchmaker";
 function App() {
   return (
     <Routes>
       <Route path="/" element={<UserProvider><Outlet /></UserProvider>} >
         <Route index element={<Home />} />
+        {AuthRoute}
+        {UsersRoute}
+        {MatchMakerRoute}
       </Route>
     </Routes>
   );

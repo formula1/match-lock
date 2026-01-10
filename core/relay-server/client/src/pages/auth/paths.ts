@@ -1,5 +1,6 @@
 
 export const AuthPaths = {
-  login: "/auth",
-  self: "/auth",
+  root: "/auth",
+  login: "/auth/login",
+  self: "/auth/self",
 }

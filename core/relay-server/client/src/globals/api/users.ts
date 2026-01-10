@@ -10,6 +10,19 @@ export const USERS_API = {
       addAuthHeader(authToken)
     )) as { username: string; passwordStatus: string; passwordExpiresAt: string | null; createdAt: string }[];
   },
+  get: async ({ authToken }: Auth, { username }: { username: string })=>{
+    const GET_ENDPOINT = new URL(API_URL.pathname +'/admin/users/'+username, API_URL);
+    return await handleFetch(fetch(
+      GET_ENDPOINT,
+      addAuthHeader(authToken)
+    )) as {
+        id: string;
+        username: string;
+        password_expires_at: string | null;
+        created_at: string;
+        updated_at: string;
+    };
+  },
   create: async ({ authToken }: Auth, { username }: { username: string })=>{
     const CREATE_ENDPOINT = new URL(API_URL.pathname +'/admin/users', API_URL);
     return await handleFetch(fetch(

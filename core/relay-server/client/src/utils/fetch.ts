@@ -20,6 +20,13 @@ export function replaceParams(pathname: string, params: Record<string, undefined
   return replaced;
 }
 
+export function relative(owner: string, subpath: string){
+  if(owner.slice(-1) !== "/") owner = owner + "/";
+  const index = subpath.indexOf(owner);
+  if(index > 0) throw new Error(`subpath ${subpath} is not owned by ${owner}`);
+  if(index === -1) throw new Error(`subpath ${subpath} is not owned by ${owner}`);
+  return subpath.slice(owner.length);
+}
 
 export function addAuthHeader(authToken: string, init: RequestInit = {}): RequestInit{
   init.headers = new Headers(init.headers);

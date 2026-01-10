@@ -25,7 +25,7 @@ export function Self() {
   );
 }
 
-function UserDisplay({ self, update }: {
+function UserDisplay({ self }: {
   self: Awaited<ReturnType<typeof RELAY_API.auth.me>>,
   update: ()=>void
 }){
