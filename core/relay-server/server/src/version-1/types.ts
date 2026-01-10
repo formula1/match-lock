@@ -4,7 +4,7 @@ import { D1Database, DurableObjectNamespace, Fetcher } from "@cloudflare/workers
 export interface Env {
   ROOM: DurableObjectNamespace;
   DB: D1Database;
-  ASSETS: Fetcher;  // Static assets binding for serving the React client
+  CLIENT_ASSETS: Fetcher;  // Static assets binding for serving the React client
   ENVIRONMENT: string;
   JWT_SECRET: string;  // Secret for signing JWTs
   INITIAL_ADMIN_USERNAME?: string;  // Optional: initial admin username (default: 'admin')

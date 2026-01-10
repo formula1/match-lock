@@ -8,7 +8,7 @@ app.route('/api/v1', v1Router);
 
 // Serve static assets (React client) for all non-API routes
 app.all('*', async (c) => {
-  return c.env.ASSETS.fetch(c.req.raw);
+  return c.env.CLIENT_ASSETS.fetch(c.req.raw);
 });
 
 export default app;
