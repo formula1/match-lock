@@ -3,6 +3,8 @@ import { Env, RoomConfig, RoomUser } from '../types';
 import { RelayMessage } from './types';
 import { DurableObjectState } from '@cloudflare/workers-types';
 
+import { validateAuthFromSearch } from "./auth";
+
 import { handleHelloMessage } from './methods/hello';
 import { handleGoodbyeMessage } from './methods/goodbye';
 
@@ -29,9 +31,9 @@ const newRoomCaster: ZodType<RoomConfig> = z.object({
   rosterConfigHash: z.string(),
   users: z.array(z.object({
     userId: z.string(),
-    authToken: z.string(),
+    publicKey: z.string(),
+    displayName: z.string(),
   }).strict()),
-  expiresAt: z.string(),
 }).strict();
 
 const wsMessageCaster: ZodType<RelayMessage> = z.object({
@@ -97,9 +99,7 @@ export class Room {
       const config = await this.state.storage.get<RoomConfig>('config');
       if(!config) return c.json([], 404);
       const url = new URL(c.req.url);
-      const token = url.searchParams.get('token');
-      if(!token) return c.json([], 401);
-      const user = await this.getUserByToken(token);
+      const user = await validateAuthFromSearch(url.searchParams, config, 'room-users');
       if(!user) return c.json([], 403);
 
       const sockets = this.state.getWebSockets();
@@ -107,17 +107,23 @@ export class Room {
         const attachment = ws.deserializeAttachment() as WebSocketAttachment | null;
         return attachment;
       }).filter(Boolean);
-      const userInfo: { userId: string; connected: boolean; connectedAt?: string }[] = [];
+      const userInfo: {
+        userId: string;
+        publicKey: string;
+        displayName: string;
+        connected: boolean;
+        connectedAt?: string
+      }[] = [];
       for(const user of config.users){
         const attachment = attachments.find(attachment => {
           if(!attachment) return false;
           return attachment.userId === user.userId;
         });
         if(!attachment){
-          userInfo.push({ userId: user.userId, connected: false });
+          userInfo.push({ ...user, connected: false });
           continue;
         }
-        userInfo.push({ userId: user.userId, connected: true, connectedAt: attachment.connectedAt });
+        userInfo.push({ ...user, connected: true, connectedAt: attachment.connectedAt });
       }
       return c.json(userInfo);
     });
@@ -134,19 +140,18 @@ export class Room {
       if(!config) return c.json({ error: 'Room not found' }, 404);
 
       const url = new URL(c.req.url);
-      const token = url.searchParams.get('token');
-
-      if (!token) {
-        return c.json({ error: 'Missing auth token' }, 401);
-      }
-
-      const user = await this.verifyToken(token);
+      const user = await validateAuthFromSearch(url.searchParams, config, 'room-ws');
       if (!user) {
         return c.json({ error: 'Invalid token' }, 401);
       }
+      await this.state.storage.transaction(async (txn) => {
+        const connectedUsers = await txn.get<string[]>('connectedUsers') || [];
+        if(connectedUsers.includes(user.userId)) throw new Error("Duplicate Connection");
+        connectedUsers.push(user.userId);
+        await txn.put('connectedUsers', connectedUsers);
+      });
 
       // Create WebSocket pair - client goes to browser, server stays in DO
-      // @ts-expect-error - WebSocketPair is a global in CF Workers runtime
       const pair = new WebSocketPair() as { 0: WebSocket; 1: WebSocket };
       const client = pair[0];
       const server = pair[1];
@@ -283,37 +288,6 @@ export class Room {
 
     console.error(`Error for user ${attachment.userId}:`, error);
     await this.failRoom((error as Error).message, attachment.userId);
-  }
-
-  private async getUserByToken(token: string): Promise<null | RoomUser> {
-    const config = await this.state.storage.get<any>('config');
-    if (!config) return null;
-
-    const user = config.users.find((u: RoomUser) => u.authToken === token);
-    if (!user) return null;
-
-    return user;
-  }
-
-  private async verifyToken(token: string): Promise<RoomUser | null> {
-    const user = await this.getUserByToken(token);
-    if (!user) return null;
-
-    // Use transaction to atomically check-and-set the token
-    // This prevents race conditions where two requests with the same token
-    // could both pass the check before either writes
-    const tokenClaimed = await this.state.storage.transaction(async (txn) => {
-      const usedTokens = await txn.get<string[]>('usedTokens') || [];
-
-      // Token already used
-      if(usedTokens.includes(token)) return false; 
-
-      usedTokens.push(token);
-      await txn.put('usedTokens', usedTokens);
-      return true; // Successfully claimed
-    });
-
-    return tokenClaimed ? user : null;
   }
 
   /**

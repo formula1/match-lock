@@ -23,5 +23,6 @@ export interface RoomConfig {
 
 export interface RoomUser {
   userId: string;
-  authToken: string;
+  publicKey: string;
+  displayName: string;
 }

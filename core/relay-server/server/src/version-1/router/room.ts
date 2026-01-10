@@ -10,16 +10,26 @@ import { ContentfulStatusCode } from 'hono/utils/http-status';
 
 export const app = new Hono<{ Bindings: Env }>();
 
+import { RoomUser } from '../types';
 type CreateRoomBody = {
-  publicKey: string; signature: string;
   rosterConfig: any;
-  users: string[]
+
+  users: RoomUser[];
+
+  publicKey: string;
+  signature: string;
 };
 const createRoomCaster: ZodType<CreateRoomBody> = z.object({
+  rosterConfig: z.any(),
+
+  users: z.array(z.object({
+    userId: z.string(),
+    publicKey: z.string(),
+    displayName: z.string(),
+  }).strict()),
+
   publicKey: z.string(),
   signature: z.string(),
-  rosterConfig: z.any(),
-  users: z.array(z.string()),
 }).strict();
 
 app.post('/', async (c)=> {
@@ -48,7 +58,6 @@ app.post('/', async (c)=> {
   if(!isValid) return c.json({ error: 'Invalid signature' }, 401);
   
   const roomId = crypto.randomUUID();
-  const users = body.users.map((u: string) => ({ userId: u, authToken: crypto.randomUUID() }));
   const full_hashBuffer = await createSha(body.rosterConfig);
 
   // Create Room DO first - if this fails, we don't want orphaned D1 records
@@ -65,8 +74,8 @@ app.post('/', async (c)=> {
       matchmakerId: matchmaker.id,
       roomId,
       rosterConfigHash: full_hashBuffer,
-      users,
       expiresAt: new Date(Date.now() + 1000 * 60 * 60).toISOString(), // 1 hour
+      users: body.users,
     } satisfies RoomConfig),
   });
 
