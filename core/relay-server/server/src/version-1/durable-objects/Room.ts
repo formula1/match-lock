@@ -328,6 +328,13 @@ export class Room {
 
 
   private async cleanupRoom(reason: string){
+    const alreadyClosed = await this.state.storage.transaction(async (txn) => {
+      const isClosed = await txn.get<boolean>('isClosed') || false;
+      if(isClosed) return true;
+      await txn.put('isClosed', true);
+      return false;
+    });
+    if(alreadyClosed) return true;
     await this.state.storage.put('isClosed', true);
     await this.state.storage.put("closeReason", reason);
     const sockets = this.state.getWebSockets();
@@ -338,10 +345,12 @@ export class Room {
         console.error(`Failed to close socket:`, error);
       }
     }
+    return false;
   }
 
   private async completeRoom() {
-    await this.cleanupRoom("completed");
+    const alreadyClosed = await this.cleanupRoom("completed");
+    if(alreadyClosed) return;
     const config = await this.state.storage.get<any>('config');
     if (!config) return;
 
@@ -360,7 +369,8 @@ export class Room {
   }
 
   private async failRoom(failReason: string, failedUser: string){
-    await this.cleanupRoom("failed");
+    const alreadyClosed = await this.cleanupRoom("failed");
+    if(alreadyClosed) return;
     const config = await this.state.storage.get<any>('config');
     if (!config) return;
 
