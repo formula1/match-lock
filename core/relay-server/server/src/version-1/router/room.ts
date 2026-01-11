@@ -128,7 +128,7 @@ app.post('/', async (c)=> {
     'active',
   ).run();
 
-  return c.json({ roomId, users });
+  return c.json({ roomId });
 });
 
 // Get room users (authenticated user only)
