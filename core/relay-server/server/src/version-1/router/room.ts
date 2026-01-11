@@ -14,6 +14,7 @@ import { RoomUser } from '../types';
 type CreateRoomBody = {
   rosterConfig: any;
 
+  rosterConfigHash: string;
   users: RoomUser[];
   webhooks: {
     onRoomComplete: string;
@@ -26,6 +27,7 @@ type CreateRoomBody = {
 const createRoomCaster: ZodType<CreateRoomBody> = z.object({
   rosterConfig: z.any(),
 
+  rosterConfigHash: z.string(),
   users: z.array(z.object({
     userId: z.string(),
     publicKey: z.string(),
@@ -60,7 +62,9 @@ app.post('/', async (c)=> {
 
 
   const isValid = await verifySignature(matchmaker.public_key, body.signature, {
-    rosterConfig: body.rosterConfig,
+    service: 'create-room',
+    publicKey: body.publicKey,
+    rosterConfigHash: body.rosterConfigHash,
     users: body.users,
     webhooks: body.webhooks,
   });
@@ -68,6 +72,9 @@ app.post('/', async (c)=> {
   
   const roomId = crypto.randomUUID();
   const full_hashBuffer = await createSha(body.rosterConfig);
+  if(body.rosterConfigHash !== full_hashBuffer){
+    return c.json({ error: 'Invalid roster config hash' }, 401);
+  }
 
   // Create Room DO first - if this fails, we don't want orphaned D1 records
   const durObjRoomId = c.env.ROOM.idFromName(roomId);
