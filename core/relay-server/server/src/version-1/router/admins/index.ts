@@ -203,6 +203,21 @@ app.post('/users', requireAuth, async (c) => {
   }, 201);
 });
 
+app.get('/users/:username', requireAuth, async (c) => {
+  const username = c.req.param('username');
+
+  const admin = await c.env.DB.prepare(
+    'SELECT * EXCEPT (password_hash) FROM admins WHERE username = ?'
+  ).bind(username).first<AdminRow>();
+
+  if (!admin) {
+    return c.json({ error: 'User not found' }, 404);
+  }
+
+  return c.json(admin);
+});
+
+
 // POST /users/:username/reset - Reset user password (returns temporary password)
 app.post('/users/:username/reset', requireAuth, async (c) => {
   const username = c.req.param('username');
