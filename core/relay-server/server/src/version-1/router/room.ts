@@ -142,7 +142,7 @@ app.get('/:roomId/users', async (c) => {
     const url = new URL(c.req.url);
     url.pathname = '/users';
 
-    return room.fetch(url.toString(), {
+    return room.fetch(url, {
       headers: c.req.raw.headers,
     }) as unknown as Response;
 
@@ -170,7 +170,7 @@ app.get('/:roomId', async (c) => {
     // Forward entire request to Room DO
     const url = new URL(c.req.url);
     url.pathname = '/room-ws';
-    return room.fetch(url.toString(), {
+    return room.fetch(url, {
       method: c.req.method,
       headers: c.req.raw.headers,
     }) as unknown as Response;
