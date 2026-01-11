@@ -90,7 +90,6 @@ app.post('/', async (c)=> {
       matchmakerId: matchmaker.id,
       roomId,
       rosterConfigHash: full_hashBuffer,
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60).toISOString(), // 1 hour
       users: body.users,
     } satisfies RoomConfig),
   });

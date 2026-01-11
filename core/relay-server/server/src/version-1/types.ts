@@ -18,7 +18,6 @@ export interface RoomConfig {
   roomId: string;
   rosterConfigHash: string;
   users: RoomUser[];
-  expiresAt: string;
 }
 
 export interface RoomUser {
