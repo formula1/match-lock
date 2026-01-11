@@ -12,13 +12,19 @@ const GAME_SERVER_URL = getEnv("GAME_SERVER_URL");
 
 import { LinkedList } from './utils/LinkedList';
 
-export interface QueuedUser {
+type User = {
   userId: string;
   publicKey: string;
   displayName: string;
-  rosterConfigHash: string;
-  rosterConfig: any;
 }
+
+export type QueuedUser = (
+  & User
+  & {
+    rosterConfigHash: string;
+    rosterConfig: any;
+  }
+);
 
 type StoredUser = (
   & QueuedUser
@@ -29,14 +35,14 @@ type StoredUser = (
 );
 
 type MatchInfo = {
-  users: Array<Pick<QueuedUser, "userId" | 'publicKey' | 'displayName'>>;
+  users: Array<User>;
   rosterConfig: any;
   rosterConfigHash: string;
 };
 
 type Match = {
   matchId: string;
-  users: Array<Pick<QueuedUser, "userId" | 'publicKey' | 'displayName'>>;
+  users: Array<User>;
   rosterConfig: any;
   rosterConfigHash: string;
   roomStatus: (
@@ -198,7 +204,7 @@ export class MatchmakingQueue {
 
 import { CreateRoomBody } from './types';
 import { signMessage } from './utils/crypto';
-import { getSignatureKeys } from './globals/signiture-keys';
+import { getSignatureKeys } from './globals/signature-keys';
 async function createMatch(match: MatchInfo){
   const { publicKey, secretKey } = await getSignatureKeys();
   const webhooks = {
