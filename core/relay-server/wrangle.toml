@@ -4,7 +4,7 @@ compatibility_date = "2024-01-01"
 
 # Static assets (React client)
 [assets]
-binding = "ASSETS"
+binding = "CLIENT_ASSETS"
 directory = "./client/dist"
 
 # Durable Objects
